@@ -19,8 +19,6 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('level');
             $table->string('file');
-            $table->unsignedBigInteger('exam_id')->nullable();
-            $table->foreign('exam_id')->references('id')->on('exam_types')->onDelete('cascade');
             $table->timestamps();
         });
     }

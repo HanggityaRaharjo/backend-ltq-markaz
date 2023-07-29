@@ -15,12 +15,21 @@ return new class extends Migration
     {
         Schema::create('biodata_pesertas', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid', 36);
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('full_name');
-            $table->integer('no_ktp');
+            $table->integer('usia');
+            $table->string('jenis_kelamin');
             $table->string('photo');
-            $table->string('status');
+            $table->string('photo_ktp');
+            $table->text('alamat');
+            $table->string('keluraha');
+            $table->string('kecamatan');
+            $table->string('kabupatan_kota');
+            $table->string('provinsi');
+            $table->string('no_wa');
+            $table->string('no_alternatif');
             $table->integer('no_id')->nullable();
             $table->timestamps();
         });

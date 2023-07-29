@@ -45,9 +45,17 @@ class BiodataPesertaController extends Controller
         try {
             $request->validate([
                 'full_name' => 'required',
-                'no_ktp' => 'required',
                 'photo' => 'required',
-                'status' => 'required',
+                'photo_ktp' => 'required',
+                'usia' => 'required',
+                'jenis_kelamin' => 'required',
+                'alamat' => 'required',
+                'kelurahan' => 'required',
+                'kecataman' => 'required',
+                'kabupatan_kota' => 'required',
+                'provinsi' => 'required',
+                'no_wa' => 'required',
+                'no_alternatif' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
@@ -56,14 +64,27 @@ class BiodataPesertaController extends Controller
         }
 
         $user = Auth::user()->id;
+
         $file_name = $request->photo->getClientOriginalName();
         $image = $request->photo->storeAs('public/photo', $file_name);
+
+        $file_name2 = $request->photo_ktp->getClientOriginalName();
+        $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
+
         $biodata = BiodataPeserta::create([
             'user_id' => $user,
             'full_name' => $request->full_name,
-            'no_ktp' => $request->no_ktp,
+            'photo_ktp' => $image2,
             'photo' => $image,
-            'status' => $request->status,
+            'usia' => $request->usia,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'alamat' => $request->alamat,
+            'kelurahan' => $request->kelurahan,
+            'kecataman' => $request->kecataman,
+            'kabupatan_kota' => $request->kabupatan_kota,
+            'provinsi' => $request->provinsi,
+            'no_wa' => $request->no_wa,
+            'no_alternatif' => $request->no_alternatif,
         ]);
 
         if ($biodata) {
@@ -112,20 +133,38 @@ class BiodataPesertaController extends Controller
             }
             $file_name = $request->photo->getClientOriginalName();
             $image = $request->photo->storeAs('public/photo', $file_name);
-            // $image = $request->poto->store('thumbnail');
+
+            $file_name2 = $request->photo_ktp->getClientOriginalName();
+            $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
+
             $biodata->update([
                 'user_id' => $user,
                 'full_name' => $request->full_name,
-                'no_ktp' => $request->no_ktp,
+                'photo_ktp' => $request->nphoto_ktp,
                 'photo' => $image,
-                'status' => $request->status,
+                'usia' => $request->usia,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'kelurahan' => $request->kelurahan,
+                'kecataman' => $request->kecataman,
+                'kabupatan_kota' => $request->kabupatan_kota,
+                'provinsi' => $request->provinsi,
+                'no_wa' => $request->no_wa,
+                'no_alternatif' => $request->no_alternatif,
             ]);
         } else {
             $biodata->update([
                 'user_id' => $user,
                 'full_name' => $request->full_name,
-                'no_ktp' => $request->no_ktp,
-                'status' => $request->status,
+                'usia' => $request->usia,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'kelurahan' => $request->kelurahan,
+                'kecataman' => $request->kecataman,
+                'kabupatan_kota' => $request->kabupatan_kota,
+                'provinsi' => $request->provinsi,
+                'no_wa' => $request->no_wa,
+                'no_alternatif' => $request->no_alternatif,
             ]);
         }
         if ($biodata) {
