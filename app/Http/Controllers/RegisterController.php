@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
+use App\Models\Peserta\BiodataPeserta;
 
 class RegisterController extends Controller
 {
@@ -12,12 +15,16 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
-        return response()->json([
-            'massage' => 'success',
-
-        ]);
+        try {
+            $response = Http::get('https://ltqmarkaz.000webhostapp.com/api/me');
+            $data = $response->json();
+            return view('test', ['data' => $data]);
+        } catch (\Exception $e) {
+            return view('error', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
