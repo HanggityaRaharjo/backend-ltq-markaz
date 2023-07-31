@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('formulir_inputs', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 36);
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('role')->default('user');
-            $table->string('status')->nullable();
-            $table->rememberToken();
+            $table->unsignedBigInteger('formulir_id')->nullable();
+            $table->foreign('formulir_id')->references('id')->on('formulirs')->onDelete('cascade');
+            $table->string('label');
+            $table->string('type');
             $table->timestamps();
         });
     }
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('formulir_inputs');
     }
 };

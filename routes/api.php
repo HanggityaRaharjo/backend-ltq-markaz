@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminCabang\FormulirController;
+use App\Http\Controllers\AdminCabang\FormulirInputController;
+use App\Http\Controllers\AdminCabang\ProfileCabangController;
+use App\Http\Controllers\AdminCabang\StatusController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Peserta\BiodataPesertaController;
 use App\Http\Controllers\Peserta\Paket;
@@ -10,6 +14,7 @@ use App\Http\Controllers\Peserta\UserLevelController;
 use App\Http\Controllers\Peserta\UserPaketCntroller;
 use App\Http\Controllers\Peserta\UserProgramController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SuperAdmin\CabangLembagaController;
 use App\Http\Controllers\UserController;
 use App\Models\Peserta\UserPaket;
 use Illuminate\Http\Request;
@@ -35,13 +40,14 @@ Route::group(['middleware' => 'api'], function ($router) {
 
 
     //Management Peserta
-    Route::prefix('peserta')->group(function () {
+    Route::prefix('peserta')->middleware(['role:user,superadmin'])->group(function () {
         //Biodata Peserta
         Route::prefix('biodata')->group(function () {
-            Route::get('/', [BiodataPesertaController::class, 'get_biodata_peserta']);
-            Route::post('/create', [BiodataPesertaController::class, 'create_biodata_peserta']);
-            Route::post('/update/{id}', [BiodataPesertaController::class, 'update_biodata_peserta']);
-            Route::post('/delete/{id}', [BiodataPesertaController::class, 'delete_biodata_peserta']);
+            Route::get('/', [BiodataPesertaController::class, 'getbiodatapeserta']);
+            Route::post('/create', [BiodataPesertaController::class, 'createbiodatapeserta']);
+            Route::post('/update/{uuid}', [BiodataPesertaController::class, 'updatebiodatapeserta']);
+            Route::post('/delete/{uuid}', [BiodataPesertaController::class, 'deletebiodatapeserta']);
+            Route::post('/show/{uuid}', [BiodataPesertaController::class, 'showbiodatapeserta']);
         });
 
         //UserLevel
@@ -109,15 +115,48 @@ Route::group(['middleware' => 'api'], function ($router) {
         });
     });
 
-    Route::prefix('user')->middleware('role:user')->group(function () {
+    Route::prefix('user')->middleware('role:user,peserta,superadmin,admin')->group(function () {
         Route::post('/{uuid}', [UserController::class, 'update_user']);
     });
 
     Route::prefix('superadmin')->middleware('role:superadmin')->group(function () {
+        Route::get('/', [CabangLembagaController::class, 'GetDataCabang']);
+        Route::post('/create', [CabangLembagaController::class, 'CreateDataCabang']);
+        Route::post('/update/{id}', [CabangLembagaController::class, 'UpdateDataCabang']);
+        Route::post('/delete/{id}', [CabangLembagaController::class, 'DeleteDataCabang']);
+    });
+
+    Route::prefix('admincabang')->middleware('role:admincabang,superadmin')->group(function () {
+        //Profile Cabang
+        Route::prefix('Profile')->group(function () {
+            Route::get('/', [ProfileCabangController::class, 'GetDataProfileCabang']);
+            Route::post('/create', [ProfileCabangController::class, 'CreateDataProfileCabang']);
+            Route::post('/update/{id}', [ProfileCabangController::class, 'UpdateDataProfileCabang']);
+            Route::post('/delete/{id}', [ProfileCabangController::class, 'DeleteDataProfileCabang']);
+        });
+
+        //Status Peserta Guru TU DLL
+        Route::prefix('status')->group(function () {
+            Route::post('/update/{uuid}', [StatusController::class, 'UpdateDataStatus']);
+        });
+
+        //Formulir
+        Route::prefix('formulir')->group(function () {
+            Route::get('/', [FormulirController::class, 'GetDataFormulir']);
+            Route::post('/create', [FormulirController::class, 'CreateDataFormulir']);
+            Route::post('/update/{id}', [FormulirController::class, 'UpdateDataFormulir']);
+            Route::post('/delete/{id}', [FormulirController::class, 'DeleteDataFormulir']);
+        });
+
+        //Formulir Input
+        Route::prefix('formulirinput')->group(function () {
+            Route::get('/', [FormulirInputController::class, 'GetDataFormulirInput']);
+            Route::post('/create', [FormulirInputController::class, 'CreateDataFormulirInput']);
+            Route::post('/update/{id}', [FormulirInputController::class, 'UpdateDataFormulirInput']);
+            Route::post('/delete/{id}', [FormulirInputController::class, 'DeleteDataFormulirInput']);
+        });
     });
 });
-
-
 
 
 

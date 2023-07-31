@@ -29,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'role',
+        'status',
         'uuid',
     ];
 
@@ -74,6 +75,11 @@ class User extends Authenticatable implements JWTSubject
     public function UserPaket()
     {
         return $this->hasMany(UserPaket::class, 'user_id');
+    }
+
+    public function UserProgram()
+    {
+        return $this->hasMany(UserProgram::class, 'user_id');
     }
 
     public function RequestDay()

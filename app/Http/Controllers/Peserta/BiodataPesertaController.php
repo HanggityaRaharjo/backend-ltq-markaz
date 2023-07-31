@@ -18,7 +18,7 @@ class BiodataPesertaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get_biodata_peserta()
+    public function getbiodatapeserta()
     {
         $biodata = BiodataPeserta::all();
         return response()->json(['Data' => $biodata]);
@@ -40,7 +40,7 @@ class BiodataPesertaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create_biodata_peserta(Request $request)
+    public function createbiodatapeserta(Request $request)
     {
         try {
             $request->validate([
@@ -50,8 +50,8 @@ class BiodataPesertaController extends Controller
                 'usia' => 'required',
                 'jenis_kelamin' => 'required',
                 'alamat' => 'required',
-                'kelurahan' => 'required',
-                'kecataman' => 'required',
+                'keluraha' => 'required',
+                'kecamatan' => 'required',
                 'kabupatan_kota' => 'required',
                 'provinsi' => 'required',
                 'no_wa' => 'required',
@@ -72,6 +72,7 @@ class BiodataPesertaController extends Controller
         $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
 
         $biodata = BiodataPeserta::create([
+            'uuid' => Str::uuid(),
             'user_id' => $user,
             'full_name' => $request->full_name,
             'photo_ktp' => $image2,
@@ -79,8 +80,8 @@ class BiodataPesertaController extends Controller
             'usia' => $request->usia,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat' => $request->alamat,
-            'kelurahan' => $request->kelurahan,
-            'kecataman' => $request->kecataman,
+            'keluraha' => $request->keluraha,
+            'kecamatan' => $request->kecamatan,
             'kabupatan_kota' => $request->kabupatan_kota,
             'provinsi' => $request->provinsi,
             'no_wa' => $request->no_wa,
@@ -111,9 +112,10 @@ class BiodataPesertaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function showbiodatapeserta($uuid)
     {
-        //
+        $biodata = BiodataPeserta::where('uuid', $uuid)->first();
+        return response()->json(['Data' => $biodata]);
     }
 
     /**
@@ -123,30 +125,52 @@ class BiodataPesertaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update_biodata_peserta(Request $request, $id)
+    public function updatebiodatapeserta(Request $request, $uuid)
     {
-        $biodata = BiodataPeserta::find($id);
+        $biodata = BiodataPeserta::find($uuid);
         $user = Auth::user()->id;
         if (Request()->hasFile('photo')) {
             if (Storage::exists($biodata->photo)) {
                 Storage::delete($biodata->photo);
             }
+
             $file_name = $request->photo->getClientOriginalName();
             $image = $request->photo->storeAs('public/photo', $file_name);
+
+            $biodata->update([
+                'uuid' => Str::uuid(),
+                'user_id' => $user,
+                'full_name' => $request->full_name,
+                'photo' => $image,
+                'usia' => $request->usia,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'keluraha' => $request->keluraha,
+                'kecamatan' => $request->kecamatan,
+                'kabupatan_kota' => $request->kabupatan_kota,
+                'provinsi' => $request->provinsi,
+                'no_wa' => $request->no_wa,
+                'no_alternatif' => $request->no_alternatif,
+            ]);
+        }
+        if (Request()->hasFile('photo_ktp')) {
+            if (Storage::exists($biodata->photo_ktp)) {
+                Storage::delete($biodata->photo_ktp);
+            }
 
             $file_name2 = $request->photo_ktp->getClientOriginalName();
             $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
 
             $biodata->update([
+                'uuid' => Str::uuid(),
                 'user_id' => $user,
                 'full_name' => $request->full_name,
-                'photo_ktp' => $request->nphoto_ktp,
-                'photo' => $image,
+                'photo_ktp' => $image2,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
-                'kelurahan' => $request->kelurahan,
-                'kecataman' => $request->kecataman,
+                'keluraha' => $request->keluraha,
+                'kecamatan' => $request->kecamatan,
                 'kabupatan_kota' => $request->kabupatan_kota,
                 'provinsi' => $request->provinsi,
                 'no_wa' => $request->no_wa,
@@ -159,8 +183,8 @@ class BiodataPesertaController extends Controller
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
-                'kelurahan' => $request->kelurahan,
-                'kecataman' => $request->kecataman,
+                'keluraha' => $request->keluraha,
+                'kecamatan' => $request->kecamatan,
                 'kabupatan_kota' => $request->kabupatan_kota,
                 'provinsi' => $request->provinsi,
                 'no_wa' => $request->no_wa,
@@ -180,9 +204,9 @@ class BiodataPesertaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function delete_biodata_peserta($id)
+    public function deletebiodatapeserta($uuid)
     {
-        $data = BiodataPeserta::where('id', $id)->first();
+        $data = BiodataPeserta::where('uuid', $uuid)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }
