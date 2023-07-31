@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cabang_lembagas', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_cabang');
-            $table->string('no_cabang')->nullable();
-            $table->string('logo');
-            $table->text('alamat');
-            $table->boolean('is_active')->default(true);
+            $table->string('nama_role');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cabang_lembagas');
+        Schema::dropIfExists('roles');
     }
 };

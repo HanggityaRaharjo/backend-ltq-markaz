@@ -9,6 +9,7 @@ use App\Models\Peserta\Cuti;
 use App\Models\Peserta\RequestDay;
 use App\Models\Peserta\UserLevel;
 use App\Models\Peserta\UserPaket;
+use App\Models\SuperAdmin\CabangLembaga;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -28,8 +29,9 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'role',
         'status',
+        'role_id',
+        'cabang_lembaga_id',
         'uuid',
     ];
 
@@ -60,6 +62,16 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo(CabangLembaga::class, 'cabang_lembaga_id');
     }
 
     public function biodata_peserta()

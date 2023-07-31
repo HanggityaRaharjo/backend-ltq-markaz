@@ -14,6 +14,8 @@ use App\Http\Controllers\Peserta\UserLevelController;
 use App\Http\Controllers\Peserta\UserPaketCntroller;
 use App\Http\Controllers\Peserta\UserProgramController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SuperAdmin\BuatAkunController;
 use App\Http\Controllers\SuperAdmin\CabangLembagaController;
 use App\Http\Controllers\UserController;
 use App\Models\Peserta\UserPaket;
@@ -40,7 +42,7 @@ Route::group(['middleware' => 'api'], function ($router) {
 
 
     //Management Peserta
-    Route::prefix('peserta')->middleware(['role:user,superadmin'])->group(function () {
+    Route::prefix('peserta')->middleware(['role:peserta,superadmin,admincabang'])->group(function () {
         //Biodata Peserta
         Route::prefix('biodata')->group(function () {
             Route::get('/', [BiodataPesertaController::class, 'getbiodatapeserta']);
@@ -120,10 +122,20 @@ Route::group(['middleware' => 'api'], function ($router) {
     });
 
     Route::prefix('superadmin')->middleware('role:superadmin')->group(function () {
-        Route::get('/', [CabangLembagaController::class, 'GetDataCabang']);
-        Route::post('/create', [CabangLembagaController::class, 'CreateDataCabang']);
-        Route::post('/update/{id}', [CabangLembagaController::class, 'UpdateDataCabang']);
-        Route::post('/delete/{id}', [CabangLembagaController::class, 'DeleteDataCabang']);
+        Route::prefix('Profile')->group(function () {
+            Route::get('/', [CabangLembagaController::class, 'GetDataCabang']);
+            Route::get('/show/{id}', [CabangLembagaController::class, 'ShowDataCabang']);
+            Route::post('/create', [CabangLembagaController::class, 'CreateDataCabang']);
+            Route::post('/update/{id}', [CabangLembagaController::class, 'UpdateDataCabang']);
+            Route::post('/delete/{id}', [CabangLembagaController::class, 'DeleteDataCabang']);
+        });
+        Route::prefix('akun')->group(function () {
+            Route::get('/', [BuatAkunController::class, 'GetDataAkun']);
+            Route::get('/show/{id}', [BuatAkunController::class, 'ShowDataAkun']);
+            Route::post('/create', [BuatAkunController::class, 'CreateDataAkun']);
+            Route::post('/update/{id}', [BuatAkunController::class, 'UpdateDataAkun']);
+            Route::post('/delete/{id}', [BuatAkunController::class, 'DeleteDataAkun']);
+        });
     });
 
     Route::prefix('admincabang')->middleware('role:admincabang,superadmin')->group(function () {
@@ -138,6 +150,15 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Status Peserta Guru TU DLL
         Route::prefix('status')->group(function () {
             Route::post('/update/{uuid}', [StatusController::class, 'UpdateDataStatus']);
+        });
+
+        //Role
+        Route::prefix('role')->group(function () {
+            Route::get('/', [RoleController::class, 'GetDataRole']);
+            Route::post('/create', [RoleController::class, 'CreateDataRole']);
+            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
+            Route::post('/update/{id}', [RoleController::class, 'UpdateDataRole']);
+            Route::post('/delete/{id}', [RoleController::class, 'DeleteDataRole']);
         });
 
         //Formulir
@@ -157,7 +178,6 @@ Route::group(['middleware' => 'api'], function ($router) {
         });
     });
 });
-
 
 
 //Exam Type

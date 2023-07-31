@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('profile_cabangs', function (Blueprint $table) {
             $table->id();
             $table->string('nama_cabang');
+            $table->string('no_cabang')->nullable();
             $table->string('logo');
             $table->text('alamat');
             $table->timestamps();

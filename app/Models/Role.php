@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\SuperAdmin;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CabangLembaga extends Model
+class Role extends Model
 {
     use HasFactory;
 
@@ -13,6 +13,6 @@ class CabangLembaga extends Model
 
     public function users()
     {
-        return $this->hasOne(User::class, 'cabang_lembaga_id');
+        return $this->hasMany(User::class, 'role_id');
     }
 }
