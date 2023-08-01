@@ -39,7 +39,7 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataRole(Request $request)
+    public function CreateDataRole(Request $request, $id)
     {
         try {
             $request->validate([
@@ -52,6 +52,7 @@ class RoleController extends Controller
         }
 
         $role = Role::create([
+            'user_id' => $request->user_id,
             'nama_role' => $request->nama_role,
         ]);
 
@@ -101,6 +102,7 @@ class RoleController extends Controller
         }
 
         $role = Role::where('id', $id)->first()->update([
+            'user_id' => $request->user_id,
             'nama_role' => $request->nama_role,
         ]);
 

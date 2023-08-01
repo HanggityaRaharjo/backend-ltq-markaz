@@ -45,6 +45,7 @@ class CabangLembagaController extends Controller
         try {
             $request->validate([
                 'nama_cabang' => 'required',
+                'no_cabang' => 'required',
                 'logo' => 'required',
                 'alamat' => 'required',
             ]);
@@ -59,6 +60,7 @@ class CabangLembagaController extends Controller
         $image = $request->logo->storeAs('public/logo', $file_name);
         $cabang = CabangLembaga::create([
             'nama_cabang' => $request->nama_cabang,
+            'no_cabang' => $request->no_cabang,
             'logo' => $image,
             'alamat' => $request->alamat,
         ]);
@@ -112,12 +114,14 @@ class CabangLembagaController extends Controller
             // $image = $request->poto->store('thumbnail');
             $cabang->update([
                 'nama_cabang' => $request->nama_cabang,
+                'no_cabang' => $request->no_cabang,
                 'logo' => $image,
                 'alamat' => $request->alamat,
             ]);
         } else {
             $cabang->update([
                 'nama_cabang' => $request->nama_cabang,
+                'no_cabang' => $request->no_cabang,
                 'alamat' => $request->alamat,
             ]);
         }

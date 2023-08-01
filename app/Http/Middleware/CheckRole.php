@@ -20,14 +20,17 @@ class CheckRole
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
-        } catch (Exception $e) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
 
-        if (!$user && !in_array($user->role->nama_role, $roles)) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
+            // Jika token valid, periksa apakah pengguna memiliki peran yang diizinkan
+            foreach ($roles as $role) {
+                if ($user->roles->pluck('nama_role')->contains($role)) {
+                    return $next($request);
+                }
+            }
 
-        return $next($request);
+            return response()->json(['error' => 'Unauthorized action.'], 403);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid token.'], 401);
+        }
     }
 }

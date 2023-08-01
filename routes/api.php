@@ -17,6 +17,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SuperAdmin\BuatAkunController;
 use App\Http\Controllers\SuperAdmin\CabangLembagaController;
+use App\Http\Controllers\SuperAdmin\CreateTableController;
 use App\Http\Controllers\UserController;
 use App\Models\Peserta\UserPaket;
 use Illuminate\Http\Request;
@@ -40,12 +41,93 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 
+    //Management Super Admin
+    Route::prefix('superadmin')->middleware(['role:superadmin'])->group(function () {
+
+        //Create Cabang
+        Route::prefix('cabang')->group(function () {
+            Route::get('/', [CabangLembagaController::class, 'GetDataCabang']);
+            Route::get('/show/{id}', [CabangLembagaController::class, 'ShowDataCabang']);
+            Route::post('/create', [CabangLembagaController::class, 'CreateDataCabang']);
+            Route::post('/update/{id}', [CabangLembagaController::class, 'UpdateDataCabang']);
+            Route::post('/delete/{id}', [CabangLembagaController::class, 'DeleteDataCabang']);
+        });
+
+        //Create Akun
+        Route::prefix('akun')->group(function () {
+            Route::get('/', [BuatAkunController::class, 'GetDataAkun']);
+            Route::get('/show/{id}', [BuatAkunController::class, 'ShowDataAkun']);
+            Route::post('/create', [BuatAkunController::class, 'CreateDataAkun']);
+            Route::post('/update/{id}', [BuatAkunController::class, 'UpdateDataAkun']);
+            Route::post('/delete/{id}', [BuatAkunController::class, 'DeleteDataAkun']);
+        });
+
+        //Role
+        Route::prefix('role')->group(function () {
+            Route::get('/', [RoleController::class, 'GetDataRole']);
+            Route::post('/create', [RoleController::class, 'CreateDataRole']);
+            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
+            Route::post('/update/{id}', [RoleController::class, 'UpdateDataRole']);
+            Route::post('/delete/{id}', [RoleController::class, 'DeleteDataRole']);
+        });
+
+        //Create Table
+        Route::prefix('table')->group(function () {
+            Route::get('/', [CreateTableController::class, 'GetDataUserCabang']);
+            Route::post('/create', [CreateTableController::class, 'CreateDataUserCabang']);
+            Route::get('/show/{id}', [CreateTableController::class, 'ShowDataUserCabang']);
+            Route::post('/update/{id}', [CreateTableController::class, 'UpdateDataUserCabang']);
+            Route::post('/delete/{id}', [CreateTableController::class, 'DeleteDataUserCabang']);
+        });
+    });
+
+    //Management Admin Cabang
+    Route::prefix('admincabang')->middleware('role:admincabang,superadmin')->group(function () {
+        //Profile Cabang
+        Route::prefix('Profile')->group(function () {
+            Route::get('/', [ProfileCabangController::class, 'GetDataProfileCabang']);
+            Route::post('/create', [ProfileCabangController::class, 'CreateDataProfileCabang']);
+            Route::post('/update/{id}', [ProfileCabangController::class, 'UpdateDataProfileCabang']);
+            Route::post('/delete/{id}', [ProfileCabangController::class, 'DeleteDataProfileCabang']);
+        });
+
+        //Status Peserta Guru TU DLL
+        Route::prefix('status')->group(function () {
+            Route::post('/update/{uuid}', [StatusController::class, 'UpdateDataStatus']);
+        });
+
+        //Role
+        Route::prefix('role')->group(function () {
+            Route::get('/', [RoleController::class, 'GetDataRole']);
+            Route::post('/create', [RoleController::class, 'CreateDataRole']);
+            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
+            Route::post('/update/{id}', [RoleController::class, 'UpdateDataRole']);
+            Route::post('/delete/{id}', [RoleController::class, 'DeleteDataRole']);
+        });
+
+        //Formulir
+        Route::prefix('formulir')->group(function () {
+            Route::get('/', [FormulirController::class, 'GetDataFormulir']);
+            Route::post('/create', [FormulirController::class, 'CreateDataFormulir']);
+            Route::post('/update/{id}', [FormulirController::class, 'UpdateDataFormulir']);
+            Route::post('/delete/{id}', [FormulirController::class, 'DeleteDataFormulir']);
+        });
+
+        //Formulir Input
+        Route::prefix('formulirinput')->group(function () {
+            Route::get('/', [FormulirInputController::class, 'GetDataFormulirInput']);
+            Route::post('/create', [FormulirInputController::class, 'CreateDataFormulirInput']);
+            Route::post('/update/{id}', [FormulirInputController::class, 'UpdateDataFormulirInput']);
+            Route::post('/delete/{id}', [FormulirInputController::class, 'DeleteDataFormulirInput']);
+        });
+    });
 
     //Management Peserta
     Route::prefix('peserta')->middleware(['role:superadmin, peserta, admincabang'])->group(function () {
         //Biodata Peserta
         Route::prefix('biodata')->group(function () {
             Route::get('/', [BiodataPesertaController::class, 'getbiodatapeserta']);
+            Route::get('/show/{uuid}', [BiodataPesertaController::class, 'showbiodatapeserta']);
             Route::post('/create', [BiodataPesertaController::class, 'createbiodatapeserta']);
             Route::post('/update/{id}', [BiodataPesertaController::class, 'updatebiodatapeserta']);
             Route::post('/delete/{uuid}', [BiodataPesertaController::class, 'deletebiodatapeserta']);
@@ -117,65 +199,8 @@ Route::group(['middleware' => 'api'], function ($router) {
         });
     });
 
-    Route::prefix('user')->middleware('role:1,2,3')->group(function () {
+    Route::prefix('user')->middleware('role:superadmi,admincabang,peserta')->group(function () {
         Route::post('/{uuid}', [UserController::class, 'update_user']);
-    });
-
-    Route::prefix('superadmin')->middleware('role:superadmin')->group(function () {
-        Route::prefix('Profile')->group(function () {
-            Route::get('/', [CabangLembagaController::class, 'GetDataCabang']);
-            Route::get('/show/{id}', [CabangLembagaController::class, 'ShowDataCabang']);
-            Route::post('/create', [CabangLembagaController::class, 'CreateDataCabang']);
-            Route::post('/update/{id}', [CabangLembagaController::class, 'UpdateDataCabang']);
-            Route::post('/delete/{id}', [CabangLembagaController::class, 'DeleteDataCabang']);
-        });
-        Route::prefix('akun')->group(function () {
-            Route::get('/', [BuatAkunController::class, 'GetDataAkun']);
-            Route::get('/show/{id}', [BuatAkunController::class, 'ShowDataAkun']);
-            Route::post('/create', [BuatAkunController::class, 'CreateDataAkun']);
-            Route::post('/update/{id}', [BuatAkunController::class, 'UpdateDataAkun']);
-            Route::post('/delete/{id}', [BuatAkunController::class, 'DeleteDataAkun']);
-        });
-    });
-
-    Route::prefix('admincabang')->middleware('role:1,2')->group(function () {
-        //Profile Cabang
-        Route::prefix('Profile')->group(function () {
-            Route::get('/', [ProfileCabangController::class, 'GetDataProfileCabang']);
-            Route::post('/create', [ProfileCabangController::class, 'CreateDataProfileCabang']);
-            Route::post('/update/{id}', [ProfileCabangController::class, 'UpdateDataProfileCabang']);
-            Route::post('/delete/{id}', [ProfileCabangController::class, 'DeleteDataProfileCabang']);
-        });
-
-        //Status Peserta Guru TU DLL
-        Route::prefix('status')->group(function () {
-            Route::post('/update/{uuid}', [StatusController::class, 'UpdateDataStatus']);
-        });
-
-        //Role
-        Route::prefix('role')->group(function () {
-            Route::get('/', [RoleController::class, 'GetDataRole']);
-            Route::post('/create', [RoleController::class, 'CreateDataRole']);
-            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
-            Route::post('/update/{id}', [RoleController::class, 'UpdateDataRole']);
-            Route::post('/delete/{id}', [RoleController::class, 'DeleteDataRole']);
-        });
-
-        //Formulir
-        Route::prefix('formulir')->group(function () {
-            Route::get('/', [FormulirController::class, 'GetDataFormulir']);
-            Route::post('/create', [FormulirController::class, 'CreateDataFormulir']);
-            Route::post('/update/{id}', [FormulirController::class, 'UpdateDataFormulir']);
-            Route::post('/delete/{id}', [FormulirController::class, 'DeleteDataFormulir']);
-        });
-
-        //Formulir Input
-        Route::prefix('formulirinput')->group(function () {
-            Route::get('/', [FormulirInputController::class, 'GetDataFormulirInput']);
-            Route::post('/create', [FormulirInputController::class, 'CreateDataFormulirInput']);
-            Route::post('/update/{id}', [FormulirInputController::class, 'UpdateDataFormulirInput']);
-            Route::post('/delete/{id}', [FormulirInputController::class, 'DeleteDataFormulirInput']);
-        });
     });
 });
 

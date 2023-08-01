@@ -2,6 +2,7 @@
 
 namespace App\Models\SuperAdmin;
 
+use App\Models\UserCabang;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,8 +12,8 @@ class CabangLembaga extends Model
 
     protected $guarded = ['id'];
 
-    public function users()
+    public function UserCabang()
     {
-        return $this->hasOne(User::class, 'cabang_lembaga_id');
+        return $this->hasOne(UserCabang::class, 'cabang_lembaga_id');
     }
 }

@@ -1,26 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\UserProgram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\UserCabang;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class UserProgramController extends Controller
+class UserCabangController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataUserProgram()
+    public function GetDataUserCabang()
     {
-        //
+        $UserCabang = UserCabang::get();
+        return response()->json(['data' => $UserCabang]);
     }
 
     /**
@@ -39,12 +40,12 @@ class UserProgramController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataUserProgram(Request $request)
+    public function CreateDataUserCabang(Request $request)
     {
         try {
             $request->validate([
                 'user_id' => 'required',
-                'program_id' => 'required',
+                'cabang_lembaga_id' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
@@ -52,15 +53,15 @@ class UserProgramController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $UserProgram = UserProgram::create([
+        $UserCabang = UserCabang::create([
             'user_id' => $request->user_id,
-            'program_id' => $request->program_id,
+            'cabang_lembaga_id' => $request->cabang_lembaga_id,
         ]);
 
-        if ($UserProgram) {
-            return response()->json(['message' => 'UserProgram Berhasil Ditambahkan']);
+        if ($UserCabang) {
+            return response()->json(['message' => 'UserCabang Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'UserProgram Gagal Ditambahkan']);
+            return response()->json(['message' => 'UserCabang Gagal Ditambahkan']);
         }
     }
 
@@ -70,9 +71,10 @@ class UserProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataUserCabang($id)
     {
-        //
+        $UserCabang = UserCabang::where('id', $id)->first();
+        return response()->json(['data' => $UserCabang]);
     }
 
     /**
@@ -93,17 +95,28 @@ class UserProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataUserProgram(Request $request, $id)
+    public function UpdateDataUserCabang(Request $request, $id)
     {
-        $user = Auth::user()->id;
-        $UserProgram = UserProgram::where('id', $id)->first()->update([
-            'user_id' => $user,
-            'program_id' => $request->program_id,
+        try {
+            $request->validate([
+                'user_id' => 'required',
+                'cabang_lembaga_id' => 'required',
+            ]);
+
+            // Kode untuk mengupdate data pengguna jika validasi berhasil
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+
+        $UserCabang = UserCabang::where('id', $id)->first()->update([
+            'user_id' => $request->user_id,
+            'cabang_lembaga_id' => $request->cabang_lembaga_id,
         ]);
-        if ($UserProgram) {
-            return response()->json(['message' => 'UserProgram Berhasil Diubah']);
+
+        if ($UserCabang) {
+            return response()->json(['message' => 'UserCabang Berhasil Diupdate']);
         } else {
-            return response()->json(['message' => 'UserProgram Gagal Diubah']);
+            return response()->json(['message' => 'UserCabang Gagal Diupdate']);
         }
     }
 
@@ -113,10 +126,9 @@ class UserProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataUserProgram($id)
+    public function DeleteDataUserCabang($id)
     {
-        $data = UserProgram::where('id', $id)->first();
-        $data->delete();
-        return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
+        $UserCabang = UserCabang::where('id', $id)->first()->delete();
+        return response()->json(['massage' => 'Data Berhasil Didelete']);
     }
 }

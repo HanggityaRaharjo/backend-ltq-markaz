@@ -30,7 +30,6 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'status',
-        'role_id',
         'cabang_lembaga_id',
         'uuid',
     ];
@@ -61,17 +60,19 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [];
+        return [
+            'roles' => $this->roles->pluck('nama_role'), // Mengambil daftar peran (roles) dari pengguna
+        ];
     }
 
-    public function role()
+    public function roles()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->hasMany(Role::class, 'user_id');
     }
 
-    public function cabang()
+    public function UserCabang()
     {
-        return $this->belongsTo(CabangLembaga::class, 'cabang_lembaga_id');
+        return $this->hasMany(UserCabang::class, 'user_id');
     }
 
     public function biodata_peserta()

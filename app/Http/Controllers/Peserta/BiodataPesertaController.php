@@ -18,9 +18,9 @@ class BiodataPesertaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getbiodatapeserta()
+    public function getbiodatapeserta($cabang_id)
     {
-        $biodata = BiodataPeserta::all();
+        $biodata = BiodataPeserta::where('cabaang_id', $cabang_id)->get();
         return response()->json(['Data' => $biodata]);
     }
 
