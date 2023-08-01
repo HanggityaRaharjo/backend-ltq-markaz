@@ -42,12 +42,12 @@ Route::group(['middleware' => 'api'], function ($router) {
 
 
     //Management Peserta
-    Route::prefix('peserta')->middleware(['role:peserta,superadmin,admincabang'])->group(function () {
+    Route::prefix('peserta')->middleware(['role:superadmin, peserta, admincabang'])->group(function () {
         //Biodata Peserta
         Route::prefix('biodata')->group(function () {
             Route::get('/', [BiodataPesertaController::class, 'getbiodatapeserta']);
             Route::post('/create', [BiodataPesertaController::class, 'createbiodatapeserta']);
-            Route::post('/update/{uuid}', [BiodataPesertaController::class, 'updatebiodatapeserta']);
+            Route::post('/update/{id}', [BiodataPesertaController::class, 'updatebiodatapeserta']);
             Route::post('/delete/{uuid}', [BiodataPesertaController::class, 'deletebiodatapeserta']);
             Route::post('/show/{uuid}', [BiodataPesertaController::class, 'showbiodatapeserta']);
         });
@@ -117,7 +117,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         });
     });
 
-    Route::prefix('user')->middleware('role:user,peserta,superadmin,admin')->group(function () {
+    Route::prefix('user')->middleware('role:1,2,3')->group(function () {
         Route::post('/{uuid}', [UserController::class, 'update_user']);
     });
 
@@ -138,7 +138,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         });
     });
 
-    Route::prefix('admincabang')->middleware('role:admincabang,superadmin')->group(function () {
+    Route::prefix('admincabang')->middleware('role:1,2')->group(function () {
         //Profile Cabang
         Route::prefix('Profile')->group(function () {
             Route::get('/', [ProfileCabangController::class, 'GetDataProfileCabang']);

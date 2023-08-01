@@ -16,7 +16,7 @@ class CheckRole
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$roles)
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
@@ -24,7 +24,7 @@ class CheckRole
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        if (!$user || $user->role->name !== $role) {
+        if (!$user && !in_array($user->role->nama_role, $roles)) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 

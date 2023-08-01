@@ -125,9 +125,9 @@ class BiodataPesertaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updatebiodatapeserta(Request $request, $uuid)
+    public function updatebiodatapeserta(Request $request, $id)
     {
-        $biodata = BiodataPeserta::find($uuid);
+        $biodata = BiodataPeserta::find($id);
         $user = Auth::user()->id;
         if (Request()->hasFile('photo')) {
             if (Storage::exists($biodata->photo)) {
@@ -152,8 +152,7 @@ class BiodataPesertaController extends Controller
                 'no_wa' => $request->no_wa,
                 'no_alternatif' => $request->no_alternatif,
             ]);
-        }
-        if (Request()->hasFile('photo_ktp')) {
+        } elseif (Request()->hasFile('photo_ktp')) {
             if (Storage::exists($biodata->photo_ktp)) {
                 Storage::delete($biodata->photo_ktp);
             }
