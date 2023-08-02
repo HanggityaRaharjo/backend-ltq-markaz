@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Peserta\BiodataPeserta;
+use App\Models\Peserta\BuktiPembayaran;
 use App\Models\Peserta\Cuti;
 use App\Models\Peserta\RequestDay;
 use App\Models\Peserta\UserLevel;
@@ -78,6 +79,11 @@ class User extends Authenticatable implements JWTSubject
     public function biodata_peserta()
     {
         return $this->hasOne(BiodataPeserta::class, 'user_id');
+    }
+
+    public function BuktiPembayaran()
+    {
+        return $this->hasOne(BuktiPembayaran::class, 'user_id');
     }
 
     public function user_level()

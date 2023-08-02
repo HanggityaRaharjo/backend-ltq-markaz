@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminCabang\ProfileCabangController;
 use App\Http\Controllers\AdminCabang\StatusController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Peserta\BiodataPesertaController;
+use App\Http\Controllers\Peserta\BuktiPembayaranController;
 use App\Http\Controllers\Peserta\Paket;
 use App\Http\Controllers\Peserta\PaketController;
 use App\Http\Controllers\Peserta\ProgramController;
@@ -198,6 +199,38 @@ Route::group(['middleware' => 'api'], function ($router) {
             Route::post('/update/{id}', [UserProgramController::class, 'UpdateDataCuti']);
             Route::post('/delete/{id}', [UserProgramController::class, 'DeleteGetDataCuti']);
         });
+
+        //Bukti Pembayaran
+        Route::prefix('buktipembayaran')->group(function () {
+            Route::get('/', [BuktiPembayaranController::class, 'GetDataBuktiPembayaran']);
+            Route::post('/create', [BuktiPembayaranController::class, 'CreateDataBuktiPembayaran']);
+            Route::post('/update/{id}', [BuktiPembayaranController::class, 'UpdateDataBuktiPembayaran']);
+            Route::post('/delete/{id}', [BuktiPembayaranController::class, 'DeleteGetDataBuktiPembayaran']);
+        });
+
+        //Exam PG
+        Route::prefix('examtype')->group(function () {
+            Route::get('/', [UserLevelController::class, 'GetDataExamPG']);
+            Route::post('/create', [UserLevelController::class, 'CreateDataExamPG']);
+            Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamPG']);
+            Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamPG']);
+        });
+
+        //Exam Essai
+        Route::prefix('examtype')->group(function () {
+            Route::get('/', [UserLevelController::class, 'GetDataExamEssai']);
+            Route::post('/create', [UserLevelController::class, 'CreateDataExamEssai']);
+            Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamEssai']);
+            Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamEssai']);
+        });
+
+        //Exam Praktikum
+        Route::prefix('examtype')->group(function () {
+            Route::get('/', [UserLevelController::class, 'GetDataExamPraktikum']);
+            Route::post('/create', [UserLevelController::class, 'CreateDataExamPraktikum']);
+            Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamPraktikum']);
+            Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamPraktikum']);
+        });
     });
 
     Route::prefix('user')->middleware('role:superadmi,admincabang,peserta')->group(function () {
@@ -214,29 +247,6 @@ Route::prefix('examtype')->group(function () {
     Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataUserLevel']);
 });
 
-//Exam PG
-Route::prefix('examtype')->group(function () {
-    Route::get('/', [UserLevelController::class, 'GetDataExamPG']);
-    Route::post('/create', [UserLevelController::class, 'CreateDataExamPG']);
-    Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamPG']);
-    Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamPG']);
-});
-
-//Exam Essai
-Route::prefix('examtype')->group(function () {
-    Route::get('/', [UserLevelController::class, 'GetDataExamEssai']);
-    Route::post('/create', [UserLevelController::class, 'CreateDataExamEssai']);
-    Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamEssai']);
-    Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamEssai']);
-});
-
-//Exam Praktikum
-Route::prefix('examtype')->group(function () {
-    Route::get('/', [UserLevelController::class, 'GetDataExamPraktikum']);
-    Route::post('/create', [UserLevelController::class, 'CreateDataExamPraktikum']);
-    Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamPraktikum']);
-    Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamPraktikum']);
-});
 
 //Create Table
 Route::prefix('createtable')->group(function () {
