@@ -3,7 +3,13 @@
 namespace App\Http\Controllers\AdminCabang;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminCabang\FormulirInput;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class FormulirInputController extends Controller
 {
@@ -12,9 +18,10 @@ class FormulirInputController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function GetDataFormulirInput()
     {
-        //
+        $FormulirInput = FormulirInput::latest()->get();
+        return response()->json(['data' => $FormulirInput]);
     }
 
     /**
@@ -33,9 +40,31 @@ class FormulirInputController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function CreateDataFormulirInput(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'formulir_id' => 'required',
+                'type' => 'required',
+                'label' => 'required',
+            ]);
+
+            // Kode untuk mengupdate data pengguna jika validasi berhasil
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+
+        $FormulirInput = FormulirInput::create([
+            'formulir_id' => $request->formulir_id,
+            'type' => $request->type,
+            'label' => $request->label,
+        ]);
+
+        if ($FormulirInput) {
+            return response()->json(['message' => 'FormulirInput Berhasil Ditambahkan']);
+        } else {
+            return response()->json(['message' => 'FormulirInput Gagal Ditambahkan']);
+        }
     }
 
     /**
@@ -44,9 +73,11 @@ class FormulirInputController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataFormulirInput($id)
     {
-        //
+        $user = Auth::user()->id;
+        $role = FormulirInput::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['data' => $role]);
     }
 
     /**
@@ -67,9 +98,19 @@ class FormulirInputController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function UpdateDataFormulirInput(Request $request, $id)
     {
-        //
+        $FormulirInput = FormulirInput::where('id', $id)->first()->update([
+            'formulir_id' => $request->formulir_id,
+            'type' => $request->type,
+            'label' => $request->label,
+        ]);
+
+        if ($FormulirInput) {
+            return response()->json(['message' => 'FormulirInput Berhasil Diupdate']);
+        } else {
+            return response()->json(['message' => 'FormulirInput Gagal Diupdate']);
+        }
     }
 
     /**
@@ -78,8 +119,10 @@ class FormulirInputController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function DeleteDataFormulirInput($id)
     {
-        //
+        $data = FormulirInput::where('id', $id)->first();
+        $data->delete();
+        return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }
 }

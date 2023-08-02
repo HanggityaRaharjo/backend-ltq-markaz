@@ -20,7 +20,7 @@ class ProgramDayController extends Controller
      */
     public function GetDataProgramDay()
     {
-        $ProgramDay = ProgramDay::all();
+        $ProgramDay = ProgramDay::latest()->all();
         return response()->json(['Data' => $ProgramDay]);
     }
 
@@ -71,9 +71,11 @@ class ProgramDayController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataProgramDay($id)
     {
-        //
+        $user = Auth::user()->id;
+        $ProgramDay = ProgramDay::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $ProgramDay]);
     }
 
     /**

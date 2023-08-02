@@ -20,7 +20,7 @@ class ExamPGController extends Controller
      */
     public function GetDataExamPG()
     {
-        $ExamPg = ExamPg::all();
+        $ExamPg = ExamPg::latest()->all();
         return response()->json(['Data' => $ExamPg]);
     }
 
@@ -83,9 +83,11 @@ class ExamPGController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataExamPG($id)
     {
-        //
+        $user = Auth::user()->id;
+        $ExamPg = ExamPg::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $ExamPg]);
     }
 
     /**

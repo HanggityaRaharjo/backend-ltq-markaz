@@ -20,7 +20,7 @@ class ProgramController extends Controller
      */
     public function GetDataProgram()
     {
-        $Program = Program::all();
+        $Program = Program::latest()->all();
         return response()->json(['Data' => $Program]);
     }
 
@@ -73,9 +73,11 @@ class ProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataProgram($id)
     {
-        //
+        $user = Auth::user()->id;
+        $Program = Program::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $Program]);
     }
 
     /**

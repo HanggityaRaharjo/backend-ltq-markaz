@@ -20,7 +20,8 @@ class UserProgramController extends Controller
      */
     public function GetDataUserProgram()
     {
-        //
+        $UserProgram = UserProgram::latest()->all();
+        return response()->json(['Data' => $UserProgram]);
     }
 
     /**
@@ -70,9 +71,11 @@ class UserProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataUserProgram($id)
     {
-        //
+        $user = Auth::user()->id;
+        $UserProgram = UserProgram::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $UserProgram]);
     }
 
     /**

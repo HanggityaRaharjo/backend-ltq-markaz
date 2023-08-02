@@ -20,7 +20,8 @@ class ExamPraktikumController extends Controller
      */
     public function GetDataExamPraktikum()
     {
-        //
+        $ExamPraktikum = ExamPraktikum::latest()->all();
+        return response()->json(['Data' => $ExamPraktikum]);
     }
 
     /**
@@ -72,9 +73,11 @@ class ExamPraktikumController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataExamPraktikum($id)
     {
-        //
+        $user = Auth::user()->id;
+        $ExamPraktikum = ExamPraktikum::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $ExamPraktikum]);
     }
 
     /**

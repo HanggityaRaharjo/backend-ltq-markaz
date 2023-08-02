@@ -20,7 +20,7 @@ class UserPaketCntroller extends Controller
      */
     public function GetDataUserPaket()
     {
-        $UserPaket = UserPaket::all();
+        $UserPaket = UserPaket::latest()->all();
         return response()->json(['Data' => $UserPaket]);
     }
 
@@ -76,9 +76,11 @@ class UserPaketCntroller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataUserPaket($id)
     {
-        //
+        $user = Auth::user()->id;
+        $UserPaket = UserPaket::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['data' => $UserPaket]);
     }
 
     /**

@@ -18,9 +18,9 @@ class BiodataPesertaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getbiodatapeserta($cabang_id)
+    public function getbiodatapeserta()
     {
-        $biodata = BiodataPeserta::where('cabaang_id', $cabang_id)->get();
+        $biodata = BiodataPeserta::latest()->get();
         return response()->json(['Data' => $biodata]);
     }
 
@@ -114,7 +114,8 @@ class BiodataPesertaController extends Controller
      */
     public function showbiodatapeserta($uuid)
     {
-        $biodata = BiodataPeserta::where('uuid', $uuid)->first();
+        $user = Auth::user()->uuid;
+        $biodata = BiodataPeserta::where('uuid', $user)->orWhere('uuid', $uuid)->first();
         return response()->json(['Data' => $biodata]);
     }
 

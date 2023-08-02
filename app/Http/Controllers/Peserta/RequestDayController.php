@@ -20,7 +20,7 @@ class RequestDayController extends Controller
      */
     public function GetDataRequestDay()
     {
-        $RequestDay = RequestDay::all();
+        $RequestDay = RequestDay::latest()->all();
         return response()->json(['Data' => $RequestDay]);
     }
 
@@ -73,9 +73,11 @@ class RequestDayController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataRequestDay($id)
     {
-        //
+        $user = Auth::user()->id;
+        $RequestDay = RequestDay::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $RequestDay]);
     }
 
     /**

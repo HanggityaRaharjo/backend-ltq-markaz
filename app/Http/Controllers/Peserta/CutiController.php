@@ -20,7 +20,7 @@ class CutiController extends Controller
      */
     public function GetDataCuti()
     {
-        $Cuti = Cuti::all();
+        $Cuti = Cuti::latest()->all();
         return response()->json(['Data' => $Cuti]);
     }
 
@@ -75,9 +75,11 @@ class CutiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataCuti($id)
     {
-        //
+        $user = Auth::user()->id;
+        $Cuti = Cuti::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $Cuti]);
     }
 
     /**

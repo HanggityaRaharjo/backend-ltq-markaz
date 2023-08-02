@@ -20,7 +20,7 @@ class FormulirController extends Controller
      */
     public function GetDataFormulir()
     {
-        $formulir = Formulir::get();
+        $formulir = Formulir::latest()->get();
         return response()->json(['data' => $formulir]);
     }
 
@@ -69,9 +69,11 @@ class FormulirController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataFormulir($id)
     {
-        //
+        $user = Auth::user()->id;
+        $Formulir = Formulir::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['data' => $Formulir]);
     }
 
     /**

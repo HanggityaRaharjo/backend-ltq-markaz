@@ -21,7 +21,7 @@ class BuktiPembayaranController extends Controller
      */
     public function GetDataBuktiPembayaran()
     {
-        $BuktiPembayaran = BuktiPembayaran::get();
+        $BuktiPembayaran = BuktiPembayaran::latest()->get();
         return response()->json(['Data' => $BuktiPembayaran]);
     }
 
@@ -46,6 +46,7 @@ class BuktiPembayaranController extends Controller
         try {
             $request->validate([
                 'bukti_pembayaran' => 'required',
+                'status' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
@@ -61,6 +62,7 @@ class BuktiPembayaranController extends Controller
         $BuktiPembayaran = BuktiPembayaran::create([
             'user_id' => $user,
             'bukti_pembayaran' => $image,
+            'status' => 'Unpaid',
         ]);
 
         if ($BuktiPembayaran) {
@@ -76,9 +78,11 @@ class BuktiPembayaranController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataBuktiPembayaran($id)
     {
-        //
+        $user = Auth::user()->id;
+        $BuktiPembayaran = BuktiPembayaran::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $BuktiPembayaran]);
     }
 
     /**
@@ -114,10 +118,12 @@ class BuktiPembayaranController extends Controller
             $biodata->update([
                 'user_id' => $user,
                 'bukti_pembayaran' => $image,
+                'status' => $request->status,
             ]);
         } else {
             $biodata->update([
                 'user_id' => $user,
+                'status' => $request->status,
             ]);
         }
         if ($biodata) {

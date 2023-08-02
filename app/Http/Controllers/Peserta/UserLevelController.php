@@ -20,7 +20,7 @@ class UserLevelController extends Controller
      */
     public function GetDataUserLevel()
     {
-        $userlevel = UserLevel::all();
+        $userlevel = UserLevel::latest()->all();
         return response()->json(['Data' => $userlevel]);
     }
 
@@ -76,9 +76,11 @@ class UserLevelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataUserLevel($id)
     {
-        //
+        $user = Auth::user()->id;
+        $userlevel = UserLevel::where('id', $user)->orWhere('id', $id)->all();
+        return response()->json(['Data' => $userlevel]);
     }
 
     /**

@@ -20,7 +20,7 @@ class PaketController extends Controller
      */
     public function GetDataPaket()
     {
-        $Paket = PaketPeserta::all();
+        $Paket = PaketPeserta::latest()->all();
         return response()->json(['Data' => $Paket]);
     }
 
@@ -73,9 +73,11 @@ class PaketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataPaketPeserta($id)
     {
-        //
+        $user = Auth::user()->id;
+        $PaketPeserta = PaketPeserta::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $PaketPeserta]);
     }
 
     /**

@@ -19,7 +19,7 @@ class RoleController extends Controller
      */
     public function GetDataRole()
     {
-        $role = Role::get();
+        $role = Role::latest()->get();
         return response()->json(['data' => $role]);
     }
 
@@ -67,7 +67,8 @@ class RoleController extends Controller
      */
     public function ShowDataRole($id)
     {
-        $role = Role::where('id', $id)->first();
+        $user = Auth::user()->id;
+        $role = Role::where('id', $user)->orWhere('id', $id)->first();
         return response()->json(['data' => $role]);
     }
 

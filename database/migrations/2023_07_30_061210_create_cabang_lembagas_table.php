@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('no_cabang')->nullable();
             $table->string('logo');
             $table->text('alamat');
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

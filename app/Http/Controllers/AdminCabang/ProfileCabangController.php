@@ -20,7 +20,7 @@ class ProfileCabangController extends Controller
      */
     public function GetDataProfileCabang()
     {
-        $profilecabang = ProfileCabang::get();
+        $profilecabang = ProfileCabang::latest()->get();
         return response()->json(['data' => $profilecabang]);
     }
 
@@ -76,9 +76,11 @@ class ProfileCabangController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataProfileCabang($id)
     {
-        //
+        $user = Auth::user()->id;
+        $ProfileCabang = ProfileCabang::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $ProfileCabang]);
     }
 
     /**

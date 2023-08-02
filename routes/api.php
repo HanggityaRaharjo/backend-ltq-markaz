@@ -67,6 +67,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Role
         Route::prefix('role')->group(function () {
             Route::get('/', [RoleController::class, 'GetDataRole']);
+            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
             Route::post('/create', [RoleController::class, 'CreateDataRole']);
             Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
             Route::post('/update/{id}', [RoleController::class, 'UpdateDataRole']);
@@ -76,6 +77,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Create Table
         Route::prefix('table')->group(function () {
             Route::get('/', [CreateTableController::class, 'GetDataUserCabang']);
+            Route::get('/show/{id}', [CreateTableController::class, 'ShowDataUserCabang']);
             Route::post('/create', [CreateTableController::class, 'CreateDataUserCabang']);
             Route::get('/show/{id}', [CreateTableController::class, 'ShowDataUserCabang']);
             Route::post('/update/{id}', [CreateTableController::class, 'UpdateDataUserCabang']);
@@ -88,6 +90,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Profile Cabang
         Route::prefix('Profile')->group(function () {
             Route::get('/', [ProfileCabangController::class, 'GetDataProfileCabang']);
+            Route::get('/show/{id}', [ProfileCabangController::class, 'ShowDataProfileCabang']);
             Route::post('/create', [ProfileCabangController::class, 'CreateDataProfileCabang']);
             Route::post('/update/{id}', [ProfileCabangController::class, 'UpdateDataProfileCabang']);
             Route::post('/delete/{id}', [ProfileCabangController::class, 'DeleteDataProfileCabang']);
@@ -101,6 +104,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Role
         Route::prefix('role')->group(function () {
             Route::get('/', [RoleController::class, 'GetDataRole']);
+            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
             Route::post('/create', [RoleController::class, 'CreateDataRole']);
             Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
             Route::post('/update/{id}', [RoleController::class, 'UpdateDataRole']);
@@ -110,6 +114,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Formulir
         Route::prefix('formulir')->group(function () {
             Route::get('/', [FormulirController::class, 'GetDataFormulir']);
+            Route::get('/show/{id}', [FormulirController::class, 'ShowDataFormulir']);
             Route::post('/create', [FormulirController::class, 'CreateDataFormulir']);
             Route::post('/update/{id}', [FormulirController::class, 'UpdateDataFormulir']);
             Route::post('/delete/{id}', [FormulirController::class, 'DeleteDataFormulir']);
@@ -118,6 +123,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Formulir Input
         Route::prefix('formulirinput')->group(function () {
             Route::get('/', [FormulirInputController::class, 'GetDataFormulirInput']);
+            Route::get('/show/{id}', [FormulirInputController::class, 'ShowDataFormulirInput']);
             Route::post('/create', [FormulirInputController::class, 'CreateDataFormulirInput']);
             Route::post('/update/{id}', [FormulirInputController::class, 'UpdateDataFormulirInput']);
             Route::post('/delete/{id}', [FormulirInputController::class, 'DeleteDataFormulirInput']);
@@ -139,6 +145,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //UserLevel
         Route::prefix('userlevel')->group(function () {
             Route::get('/', [UserLevelController::class, 'GetDataUserLevel']);
+            Route::get('/show/{id}', [UserLevelController::class, 'ShowDataUserLevel']);
             Route::post('/create', [UserLevelController::class, 'CreateDataUserLevel']);
             Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataUserLevel']);
             Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataUserLevel']);
@@ -147,6 +154,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Paket
         Route::prefix('paket')->group(function () {
             Route::get('/', [PaketController::class, 'GetDataPaket']);
+            Route::get('/show/{id}', [PaketController::class, 'ShowDataPaket']);
             Route::post('/create', [PaketController::class, 'CreateDataPaket']);
             Route::post('/update/{id}', [PaketController::class, 'UpdateDataPaket']);
             Route::post('/delete/{id}', [PaketController::class, 'DeleteDataPaket']);
@@ -155,6 +163,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //UserPaket
         Route::prefix('userpaket')->group(function () {
             Route::get('/', [UserPaketCntroller::class, 'GetDataUserPaket']);
+            Route::get('/show/{id}', [UserPaketCntroller::class, 'ShowDataUserPaket']);
             Route::post('/create', [UserPaketCntroller::class, 'CreateDataUserPaket']);
             Route::post('/update/{id}', [UserPaketCntroller::class, 'UpdateDataUserPaket']);
             Route::post('/delete/{id}', [UserPaketCntroller::class, 'DeleteDataUserPaket']);
@@ -163,6 +172,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Program
         Route::prefix('program')->group(function () {
             Route::get('/', [ProgramController::class, 'GetDataProgram']);
+            Route::get('/show', [ProgramController::class, 'ShowDataProgram']);
             Route::post('/create', [ProgramController::class, 'CreateDataProgram']);
             Route::post('/update/{id}', [ProgramController::class, 'UpdateDataProgram']);
             Route::post('/delete/{id}', [ProgramController::class, 'DeleteDataProgram']);
@@ -171,6 +181,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Program Day
         Route::prefix('programday')->group(function () {
             Route::get('/', [ProgramDayController::class, 'GetDataProgramDay']);
+            Route::get('/show', [ProgramDayController::class, 'ShowDataProgramDay']);
             Route::post('/create', [ProgramDayController::class, 'CreateDataProgramDay']);
             Route::post('/update/{id}', [ProgramDayController::class, 'UpdateDataProgramDay']);
             Route::post('/delete/{id}', [ProgramDayController::class, 'DeleteDataProgramDay']);
@@ -179,6 +190,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //UserProgram
         Route::prefix('userprogram')->group(function () {
             Route::get('/', [UserProgramController::class, 'GetDataUserProgram']);
+            Route::get('/show', [UserProgramController::class, 'ShowDataUserProgram']);
             Route::post('/create', [UserProgramController::class, 'CreateDataUserProgram']);
             Route::post('/update/{id}', [UserProgramController::class, 'UpdateDataUserProgram']);
             Route::post('/delete/{id}', [UserProgramController::class, 'DeleteDataUserProgram']);
@@ -187,6 +199,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //RequestDay
         Route::prefix('requestday')->group(function () {
             Route::get('/', [UserProgramController::class, 'GetDataRequestDay']);
+            Route::get('/show', [UserProgramController::class, 'ShowDataRequestDay']);
             Route::post('/create', [UserProgramController::class, 'CreateDataRequestDay']);
             Route::post('/update/{id}', [UserProgramController::class, 'UpdateDataRequestDay']);
             Route::post('/delete/{id}', [UserProgramController::class, 'DeleteDataRequestDay']);
@@ -195,6 +208,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Cuti
         Route::prefix('cuti')->group(function () {
             Route::get('/', [UserProgramController::class, 'GetDataCuti']);
+            Route::get('/show', [UserProgramController::class, 'ShowDataCuti']);
             Route::post('/create', [UserProgramController::class, 'CreateDataCuti']);
             Route::post('/update/{id}', [UserProgramController::class, 'UpdateDataCuti']);
             Route::post('/delete/{id}', [UserProgramController::class, 'DeleteGetDataCuti']);
@@ -203,6 +217,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Bukti Pembayaran
         Route::prefix('buktipembayaran')->group(function () {
             Route::get('/', [BuktiPembayaranController::class, 'GetDataBuktiPembayaran']);
+            Route::get('/show/{id}', [BuktiPembayaranController::class, 'ShowDataBuktiPembayaran']);
             Route::post('/create', [BuktiPembayaranController::class, 'CreateDataBuktiPembayaran']);
             Route::post('/update/{id}', [BuktiPembayaranController::class, 'UpdateDataBuktiPembayaran']);
             Route::post('/delete/{id}', [BuktiPembayaranController::class, 'DeleteGetDataBuktiPembayaran']);
@@ -211,6 +226,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Exam PG
         Route::prefix('examtype')->group(function () {
             Route::get('/', [UserLevelController::class, 'GetDataExamPG']);
+            Route::get('/show/{id}', [UserLevelController::class, 'ShowDataExamPG']);
             Route::post('/create', [UserLevelController::class, 'CreateDataExamPG']);
             Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamPG']);
             Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamPG']);
@@ -219,6 +235,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Exam Essai
         Route::prefix('examtype')->group(function () {
             Route::get('/', [UserLevelController::class, 'GetDataExamEssai']);
+            Route::get('/show/{id}', [UserLevelController::class, 'ShowDataExamEssai']);
             Route::post('/create', [UserLevelController::class, 'CreateDataExamEssai']);
             Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamEssai']);
             Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamEssai']);
@@ -227,6 +244,7 @@ Route::group(['middleware' => 'api'], function ($router) {
         //Exam Praktikum
         Route::prefix('examtype')->group(function () {
             Route::get('/', [UserLevelController::class, 'GetDataExamPraktikum']);
+            Route::get('/show/{id}', [UserLevelController::class, 'ShowDataExamPraktikum']);
             Route::post('/create', [UserLevelController::class, 'CreateDataExamPraktikum']);
             Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamPraktikum']);
             Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamPraktikum']);

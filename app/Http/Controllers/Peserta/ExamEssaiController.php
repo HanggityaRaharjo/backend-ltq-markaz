@@ -20,7 +20,7 @@ class ExamEssaiController extends Controller
      */
     public function GetDataExamEssai()
     {
-        $ExamEssai = ExamEssai::all();
+        $ExamEssai = ExamEssai::latest()->all();
         return response()->json(['Data' => $ExamEssai]);
     }
 
@@ -74,9 +74,11 @@ class ExamEssaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataExamEssai($id)
     {
-        //
+        $user = Auth::user()->id;
+        $ExamEssai = ExamEssai::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $ExamEssai]);
     }
 
     /**
