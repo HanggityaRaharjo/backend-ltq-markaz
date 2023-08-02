@@ -13,6 +13,6 @@ class ExamPraktikum extends Model
 
     public function ExamTypePrak()
     {
-        return $this->hasMany(ExamType::class, 'exam_prak_id');
+        return $this->belongsTo(UserLevel::class, 'user_level_id');
     }
 }

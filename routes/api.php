@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 //Login JWT
 Route::group(['middleware' => 'api'], function ($router) {
     Route::post('register', [AuthController::class, 'register']);
@@ -235,6 +236,11 @@ Route::prefix('examtype')->group(function () {
     Route::post('/create', [UserLevelController::class, 'CreateDataExamPraktikum']);
     Route::post('/update/{id}', [UserLevelController::class, 'UpdateDataExamPraktikum']);
     Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataExamPraktikum']);
+});
+
+//Create Table
+Route::prefix('createtable')->group(function () {
+    Route::post('/', [CreateTableController::class, 'createTable']);
 });
 
 Route::get('/test', function () {

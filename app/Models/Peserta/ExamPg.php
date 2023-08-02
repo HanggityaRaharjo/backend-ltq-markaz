@@ -13,6 +13,6 @@ class ExamPg extends Model
 
     public function ExamTypePG()
     {
-        return $this->hasMany(ExamType::class, 'exam_pg_id');
+        return $this->belongsTo(UserLevel::class, 'user_level_id');
     }
 }

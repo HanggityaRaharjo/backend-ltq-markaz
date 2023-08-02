@@ -55,6 +55,7 @@ class ExamEssaiController extends Controller
         }
 
         $ExamEssai = ExamEssai::create([
+            'jenis_ujian' => $request->jenis_exam,
             'question' => $request->question,
             'true_answer' => $request->true_answer,
             'code' => $request->code,
@@ -99,6 +100,7 @@ class ExamEssaiController extends Controller
     public function UpdateDataExamEssai(Request $request, $id)
     {
         $ExamEssai = ExamEssai::where('id', $id)->first()->update([
+            'jenis_ujian' => $request->jenis_exam,
             'question' => $request->question,
             'true_answer' => $request->true_answer,
             'code' => $request->code,

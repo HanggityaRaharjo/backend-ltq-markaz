@@ -109,6 +109,7 @@ class ExamPGController extends Controller
     public function UpdateDataExamPG(Request $request, $id)
     {
         $ExamPg = ExamPg::where('id', $id)->first()->update([
+            'jenis_ujian' => $request->jenis_exam,
             'question' => $request->question,
             'option_a' => $request->option_a,
             'option_b' => $request->option_b,

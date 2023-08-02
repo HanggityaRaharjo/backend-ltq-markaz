@@ -13,6 +13,6 @@ class ExamEssai extends Model
 
     public function ExamTypeEssai()
     {
-        return $this->hasMany(ExamType::class, 'exam_essai_id');
+        return $this->belongsTo(UserLevel::class, 'user_level_id');
     }
 }

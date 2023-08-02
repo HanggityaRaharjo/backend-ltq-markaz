@@ -18,4 +18,18 @@ class UserLevel extends Model
     {
         return $this->belongsTo(ExamType::class, 'exam_id');
     }
+    public function ExamPg()
+    {
+        return $this->hasMany(ExamPg::class, 'user_level_id');
+    }
+
+    public function ExamEssai()
+    {
+        return $this->hasMany(ExamEssai::class, 'user_level_id');
+    }
+
+    public function ExamPrak()
+    {
+        return $this->hasMany(ExamPraktikum::class, 'user_level_id');
+    }
 }

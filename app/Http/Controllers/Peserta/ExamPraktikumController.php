@@ -54,6 +54,7 @@ class ExamPraktikumController extends Controller
         }
 
         $ExamPraktikum = ExamPraktikum::create([
+            'jenis_ujian' => $request->jenis_exam,
             'media' => $request->media,
             'grade' => $request->grade,
         ]);
@@ -97,6 +98,7 @@ class ExamPraktikumController extends Controller
     public function UpdateDataExamPraktikum(Request $request, $id)
     {
         $ExamPraktikum = ExamPraktikum::where('id', $id)->first()->update([
+            'jenis_ujian' => $request->jenis_exam,
             'media' => $request->media,
             'grade' => $request->grade,
         ]);

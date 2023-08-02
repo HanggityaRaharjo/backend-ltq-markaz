@@ -24,11 +24,13 @@ class CreateTableController extends Controller
         }
 
         // Buat tabel baru
-        Schema::create($tableName, function (Blueprint $table) {
+        $typeData = $request->input();
+        $columnNames = $request->input();
+        Schema::create($tableName, function (Blueprint $table) use ($columnNames, $typeData) {
             $table->id();
-            // Definisi kolom tabel lainnya
-            // $table->string('column_name');
-            // ...
+            foreach ($columnNames as $columnName => $columnValue) {
+                $table->string($columnName);
+            }
             $table->timestamps();
         });
 
