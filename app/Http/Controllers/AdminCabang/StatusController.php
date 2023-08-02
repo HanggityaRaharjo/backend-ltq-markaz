@@ -1,30 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AdminCabang;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Client\Response;
-use Illuminate\Support\Facades\Http;
-use App\Models\Peserta\BiodataPeserta;
+use Illuminate\Http\Request;
 
-class RegisterController extends Controller
+class StatusController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
     public function index()
     {
-        try {
-            $response = Http::get('https://ltqmarkaz.000webhostapp.com/api/me');
-            $data = $response->json();
-            return view('test', ['data' => $data]);
-        } catch (\Exception $e) {
-            return view('error', ['error' => $e->getMessage()]);
-        }
+        //
     }
 
     /**
@@ -45,12 +36,7 @@ class RegisterController extends Controller
      */
     public function store(Request $request)
     {
-        $data = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
-        ]);
-        return response()->json(['msg' => ['status' => 201, 'pesan' => 'success created'], "data" => $data]);
+        //
     }
 
     /**
@@ -82,14 +68,12 @@ class RegisterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function UpdateDataStatus(Request $request, $uuid)
     {
-        $data = User::where('id', $id)->first()->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
+        $user = User::where('uuid', $uuid)->first()->update([
+            'status' => $request->status,
         ]);
-        return response()->json(['msg' => ['status' => 201, 'pesan' => 'success update'], "data" => $data]);
+        return response()->json(['message' => 'Data Berhasil Di Update'], 200);
     }
 
     /**
@@ -100,9 +84,6 @@ class RegisterController extends Controller
      */
     public function destroy($id)
     {
-        $data = User::where('id', $id)->first();
-        $data->delete();
-
-        return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
+        //
     }
 }

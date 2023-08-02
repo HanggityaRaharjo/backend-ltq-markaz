@@ -13,15 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('exam_essais', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 36);
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('status')->nullable();
-            $table->rememberToken();
+            $table->unsignedBigInteger('user_level_id')->nullable();
+            $table->foreign('user_level_id')->references('id')->on('user_levels')->onDelete('cascade');
+            $table->string('jenis_exam');
+            $table->string('question');
+            $table->string('true_answer');
+            $table->string('code');
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('exam_essais');
     }
 };
