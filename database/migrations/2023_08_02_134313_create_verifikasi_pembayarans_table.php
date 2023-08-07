@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('exam_praktikums', function (Blueprint $table) {
+        Schema::create('verifikasi_pembayarans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_level_id')->nullable();
-            $table->foreign('user_level_id')->references('id')->on('user_levels')->onDelete('cascade');
-            $table->string('jenis_exam');
-            $table->string('madia');
-            $table->string('grade');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_praktikums');
+        Schema::dropIfExists('bukti_pembayarans');
     }
 };

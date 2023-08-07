@@ -19,12 +19,13 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('full_name');
+            $table->date('tanggal_lahir');
             $table->integer('usia');
             $table->string('jenis_kelamin');
             $table->string('photo');
             $table->string('photo_ktp');
             $table->text('alamat');
-            $table->string('keluraha');
+            $table->string('kelurahan');
             $table->string('kecamatan');
             $table->string('kabupatan_kota');
             $table->string('provinsi');

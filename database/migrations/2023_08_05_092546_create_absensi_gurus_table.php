@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_programs', function (Blueprint $table) {
+        Schema::create('absensi_gurus', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('program_id')->nullable();
-            $table->foreign('program_id')->references('id')->on('programs')->onDelete('cascade');
-            $table->unsignedBigInteger('program_harga_id')->nullable();
-            $table->foreign('program_harga_id')->references('id')->on('program_hargas')->onDelete('cascade');
+            $table->unsignedBigInteger('kelas_id')->nullable();
+            $table->foreign('kelas_id')->references('id')->on('kelas')->onDelete('cascade');
+            $table->string('nomor_id');
+            $table->string('keterangan');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_programs');
+        Schema::dropIfExists('absensi_gurus');
     }
 };

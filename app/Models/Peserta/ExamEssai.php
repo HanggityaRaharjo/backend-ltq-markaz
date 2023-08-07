@@ -13,6 +13,6 @@ class ExamEssai extends Model
 
     public function ExamTypeEssai()
     {
-        return $this->belongsTo(UserLevel::class, 'user_level_id');
+        return $this->belongsTo(ExamType::class, 'exam_id');
     }
 }

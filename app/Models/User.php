@@ -4,9 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Guru\AbsensiPeserta;
+use App\Models\Guru\kelas;
 use App\Models\Peserta\BiodataPeserta;
 use App\Models\Peserta\BuktiPembayaran;
 use App\Models\Peserta\Cuti;
+use App\Models\Peserta\ExamType;
+use App\Models\Peserta\Pembayaran;
+use App\Models\Peserta\ProgramPembayaran;
 use App\Models\Peserta\RequestDay;
 use App\Models\Peserta\UserLevel;
 use App\Models\Peserta\UserPaket;
@@ -109,5 +114,21 @@ class User extends Authenticatable implements JWTSubject
     public function Cuti()
     {
         return $this->hasMany(Cuti::class, 'user_id');
+    }
+    public function kelas()
+    {
+        return $this->hasMany(kelas::class, 'user_id');
+    }
+    public function absensi_peserta()
+    {
+        return $this->hasMany(AbsensiPeserta::class, 'user_id');
+    }
+    public function program_pembayaran()
+    {
+        return $this->hasMany(ProgramPembayaran::class, 'user_id');
+    }
+    public function examtype()
+    {
+        return $this->hasMany(ExamType::class, 'user_id');
     }
 }

@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('exam_essais', function (Blueprint $table) {
+        Schema::create('kelas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_level_id')->nullable();
-            $table->foreign('user_level_id')->references('id')->on('user_levels')->onDelete('cascade');
-            $table->string('jenis_exam');
-            $table->string('question');
-            $table->string('true_answer');
-            $table->string('code');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('nama_pengajar');
+            $table->string('jumlah_peserta');
+            $table->string('nama_kelas');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_essais');
+        Schema::dropIfExists('kelas');
     }
 };

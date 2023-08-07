@@ -2,6 +2,8 @@
 
 namespace App\Models\Peserta;
 
+use App\Models\ProgramHarga;
+use App\Models\SuperAdmin\CabangLembaga;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,5 +21,15 @@ class Program extends Model
     public function ProgramDay()
     {
         return $this->belongsTo(ProgramDay::class, 'program_day_id');
+    }
+
+    public function programharga()
+    {
+        return $this->hasOne(ProgramHarga::class, 'program_id');
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo(CabangLembaga::class, 'cabang_lembaga_id');
     }
 }

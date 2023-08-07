@@ -1,19 +1,23 @@
 <?php
 
-namespace App\Models\Peserta;
+namespace App\Models\Guru;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BiodataPeserta extends Model
+class AbsensiPeserta extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
 
-    public function userbiodata()
+    public function users()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(kelas::class, 'kelas_id');
     }
 }

@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('exam_pgs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_level_id')->nullable();
-            $table->foreign('user_level_id')->references('id')->on('user_levels')->onDelete('cascade');
+            $table->unsignedBigInteger('exam_id')->nullable();
+            $table->foreign('exam_id')->references('id')->on('exam_types')->onDelete('cascade');
             $table->string('jenis_exam');
             $table->string('question');
             $table->string('option_a');

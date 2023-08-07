@@ -20,7 +20,7 @@ class UserLevelController extends Controller
      */
     public function GetDataUserLevel()
     {
-        $userlevel = UserLevel::latest()->all();
+        $userlevel = UserLevel::with('users')->latest()->get();
         return response()->json(['Data' => $userlevel]);
     }
 
@@ -59,7 +59,6 @@ class UserLevelController extends Controller
         $userlevel = UserLevel::create([
             'user_id' => $user,
             'level' => $request->level,
-            'exam_id' => $request->exam_id,
             'file' => $image,
         ]);
 
@@ -79,7 +78,7 @@ class UserLevelController extends Controller
     public function ShowDataUserLevel($id)
     {
         $user = Auth::user()->id;
-        $userlevel = UserLevel::where('id', $user)->orWhere('id', $id)->all();
+        $userlevel = UserLevel::with('users')->where('id', $user)->orWhere('id', $id)->all();
         return response()->json(['Data' => $userlevel]);
     }
 

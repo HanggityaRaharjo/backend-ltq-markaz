@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -18,10 +19,10 @@ class UserProgramController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataUserProgram()
+    public function GetDataUserProgram(Request $request)
     {
-        $UserProgram = UserProgram::latest()->all();
-        return response()->json(['Data' => $UserProgram]);
+        $user_program = UserProgram::with('program_harga', 'program', 'users')->latest()->get();
+        return response()->json($user_program);
     }
 
     /**
@@ -44,7 +45,6 @@ class UserProgramController extends Controller
     {
         try {
             $request->validate([
-                'user_id' => 'required',
                 'program_id' => 'required',
             ]);
 
@@ -52,10 +52,12 @@ class UserProgramController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-
+        // $user = Auth::user()->uuid;
+        $user_id = User::where('uuid', $request->uuid)->first();
         $UserProgram = UserProgram::create([
-            'user_id' => $request->user_id,
+            'user_id' => $user_id->id,
             'program_id' => $request->program_id,
+            'program_harga_id' => $request->program_harga_id,
         ]);
 
         if ($UserProgram) {
@@ -71,11 +73,27 @@ class UserProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataUserProgram($id)
+    public function ShowDataUserProgram($uuid)
     {
-        $user = Auth::user()->id;
-        $UserProgram = UserProgram::where('id', $user)->orWhere('id', $id)->first();
-        return response()->json(['Data' => $UserProgram]);
+        // return response()->json([$uuid]);
+        $user = User::where('uuid', $uuid)->first();
+        // $uuid = '0a29ae94-6aa8-4e13-8494-d84b5c683942';
+        $User_programs = UserProgram::with('program', 'program_harga', 'users')->where('user_id', $user->id)->get();
+
+        $response_data = [];
+
+        foreach ($User_programs as $user_program) {
+            $response_data[] = [
+                "id" => $user_program->id,
+                "name" => $user_program->users->name,
+                "user_id" => $user_program->user_id,
+                "program" => $user_program->program,
+                "harga" => $user_program->program_harga,
+            ];
+        }
+
+
+        return response()->json($response_data);
     }
 
     /**
@@ -99,9 +117,11 @@ class UserProgramController extends Controller
     public function UpdateDataUserProgram(Request $request, $id)
     {
         $user = Auth::user()->id;
+        $user_id = User::where('uuid', $request->uuid);
         $UserProgram = UserProgram::where('id', $id)->first()->update([
-            'user_id' => $user,
+            'user_id' => $user_id->id,
             'program_id' => $request->program_id,
+            'program_harga_id' => $request->program_harga_id
         ]);
         if ($UserProgram) {
             return response()->json(['message' => 'UserProgram Berhasil Diubah']);

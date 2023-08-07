@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('programs', function (Blueprint $table) {
+        Schema::create('pembayarans', function (Blueprint $table) {
             $table->id();
-            $table->string('program_name');
-            $table->string('description');
-            $table->unsignedBigInteger('program_day_id')->nullable();
-            $table->foreign('program_day_id')->references('id')->on('program_days')->onDelete('cascade');
+            $table->string('norek');
+            $table->string('type_bank');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('programs');
+        Schema::dropIfExists('pembayarans');
     }
 };

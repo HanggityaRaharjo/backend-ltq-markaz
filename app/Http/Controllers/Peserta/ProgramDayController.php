@@ -56,6 +56,7 @@ class ProgramDayController extends Controller
         $ProgramDay = ProgramDay::create([
             'date_start' => $request->date_start,
             'date_end' => $request->date_end,
+            'jam' => $request->jam,
         ]);
 
         if ($ProgramDay) {
@@ -99,9 +100,9 @@ class ProgramDayController extends Controller
     public function UpdateDataProgramDay(Request $request, $id)
     {
         $ProgramDay = ProgramDay::where('id', $id)->first()->update([
-            'program_name' => $request->program_name,
-            'description' => $request->description,
-            'program_day_id' => $request->program_day_id,
+            'date_start' => $request->date_start,
+            'date_end' => $request->date_end,
+            'jam' => $request->jam,
         ]);
         if ($ProgramDay) {
             return response()->json(['message' => 'ProgramDay Berhasil Diubah']);

@@ -20,7 +20,7 @@ class ExamPGController extends Controller
      */
     public function GetDataExamPG()
     {
-        $ExamPg = ExamPg::latest()->all();
+        $ExamPg = ExamPg::with('ExamTypePG')->latest()->get();
         return response()->json(['Data' => $ExamPg]);
     }
 
@@ -60,6 +60,8 @@ class ExamPGController extends Controller
         }
 
         $ExamPg = ExamPg::create([
+            'user_level_id' => $request->user_level_id,
+            'jenis_exam' => $request->jenis_exam,
             'question' => $request->question,
             'option_a' => $request->option_a,
             'option_b' => $request->option_b,
@@ -86,7 +88,7 @@ class ExamPGController extends Controller
     public function ShowDataExamPG($id)
     {
         $user = Auth::user()->id;
-        $ExamPg = ExamPg::where('id', $user)->orWhere('id', $id)->first();
+        $ExamPg = ExamPg::with('ExamTypePG')->where('id', $user)->orWhere('id', $id)->first();
         return response()->json(['Data' => $ExamPg]);
     }
 
@@ -111,7 +113,8 @@ class ExamPGController extends Controller
     public function UpdateDataExamPG(Request $request, $id)
     {
         $ExamPg = ExamPg::where('id', $id)->first()->update([
-            'jenis_ujian' => $request->jenis_exam,
+            'user_level_id' => $request->user_level_id,
+            'jenis_exam' => $request->jenis_exam,
             'question' => $request->question,
             'option_a' => $request->option_a,
             'option_b' => $request->option_b,

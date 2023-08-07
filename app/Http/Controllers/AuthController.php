@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -78,9 +79,9 @@ class AuthController extends Controller
                 'uuid' => $user->uuid,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->role,
+                'role' => $user->roles,
             ];
-        return response()->json(['masage' => $response]);
+        return response()->json($response);
     }
 
     /**

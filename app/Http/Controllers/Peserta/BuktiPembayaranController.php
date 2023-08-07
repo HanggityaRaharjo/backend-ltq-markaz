@@ -46,7 +46,6 @@ class BuktiPembayaranController extends Controller
         try {
             $request->validate([
                 'bukti_pembayaran' => 'required',
-                'status' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
@@ -62,7 +61,7 @@ class BuktiPembayaranController extends Controller
         $BuktiPembayaran = BuktiPembayaran::create([
             'user_id' => $user,
             'bukti_pembayaran' => $image,
-            'status' => 'Unpaid',
+            'status' => 'Paid',
         ]);
 
         if ($BuktiPembayaran) {

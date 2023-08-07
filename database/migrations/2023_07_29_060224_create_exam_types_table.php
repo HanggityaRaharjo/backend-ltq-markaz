@@ -13,14 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_pakets', function (Blueprint $table) {
+        Schema::create('exam_types', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('status');
-            $table->string('upload_file');
-            $table->unsignedBigInteger('paket_id')->nullable();
-            $table->foreign('paket_id')->references('id')->on('pakets')->onDelete('cascade');
+            $table->string('type_name');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_pakets');
+        Schema::dropIfExists('exam_types');
     }
 };

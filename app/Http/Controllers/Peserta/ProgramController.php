@@ -20,8 +20,8 @@ class ProgramController extends Controller
      */
     public function GetDataProgram()
     {
-        $Program = Program::latest()->all();
-        return response()->json(['Data' => $Program]);
+        $Program = Program::with('ProgramDay', 'programharga')->latest()->get();
+        return response()->json($Program);
     }
 
     /**
@@ -40,7 +40,7 @@ class ProgramController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataProgramtore(Request $request)
+    public function CreateDataProgram(Request $request)
     {
         try {
             $request->validate([
@@ -73,11 +73,18 @@ class ProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataProgram($id)
+    public function ShowDataProgram($uuid)
+    {
+        $user = User::where('uuid', $uuid)->first();
+        $Program = Program::with('ProgramDay', 'program_harga')->where('user_id', $user->id)->get();
+        return response()->json($Program);
+    }
+
+    public function ShowDataProgramByCabang($id)
     {
         $user = Auth::user()->id;
-        $Program = Program::where('id', $user)->orWhere('id', $id)->first();
-        return response()->json(['Data' => $Program]);
+        $Program = Program::with('ProgramDay', 'program_harga')->where('id', $user)->orWhere('id', $id)->first();
+        return response()->json($Program);
     }
 
     /**

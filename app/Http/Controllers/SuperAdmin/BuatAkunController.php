@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -19,7 +20,7 @@ class BuatAkunController extends Controller
      */
     public function GetDataAkun()
     {
-        $akun = User::get();
+        $akun = User::latest()->get();
         return response()->json(['data' => $akun]);
     }
 
@@ -58,7 +59,6 @@ class BuatAkunController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role_id' => $request->role_id,
         ]);
 
         if ($user) {
@@ -74,9 +74,9 @@ class BuatAkunController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataAkun($id)
+    public function ShowDataAkun($uuid)
     {
-        $akun = User::where('id', $id)->first();
+        $akun = User::where('uuid', $uuid)->first();
         return response()->json(['data' => $akun]);
     }
 

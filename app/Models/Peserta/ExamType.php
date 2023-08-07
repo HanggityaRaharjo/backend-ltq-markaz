@@ -2,6 +2,7 @@
 
 namespace App\Models\Peserta;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,23 +12,8 @@ class ExamType extends Model
 
     protected $guarded = ['id'];
 
-    public function user_level()
+    public function users()
     {
-        return $this->hasMany(UserLevel::class, 'exam_id');
-    }
-
-    public function ExamPg()
-    {
-        return $this->belongsTo(ExamPg::class, 'exam_pg_id');
-    }
-
-    public function ExamEssai()
-    {
-        return $this->belongsTo(ExamEssai::class, 'exam_essai_id');
-    }
-
-    public function ExamPrak()
-    {
-        return $this->belongsTo(ExamPraktikum::class, 'exam_prak_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -61,7 +61,7 @@ class CabangLembagaController extends Controller
         $cabang = CabangLembaga::create([
             'nama_cabang' => $request->nama_cabang,
             'no_cabang' => $request->no_cabang,
-            'logo' => $image,
+            'logo' => 'logo/' . $file_name,
             'alamat' => $request->alamat,
         ]);
 
@@ -115,7 +115,7 @@ class CabangLembagaController extends Controller
             $cabang->update([
                 'nama_cabang' => $request->nama_cabang,
                 'no_cabang' => $request->no_cabang,
-                'logo' => $image,
+                'logo' => 'logo/' . $file_name,
                 'alamat' => $request->alamat,
             ]);
         } else {

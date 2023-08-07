@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
-            $table->string('program_name');
-            $table->string('description');
+            $table->unsignedBigInteger('cabang_lembaga_id')->nullable();
+            $table->foreign('cabang_lembaga_id')->references('id')->on('cabang_lembagas')->onDelete('cascade');
             $table->unsignedBigInteger('program_day_id')->nullable();
             $table->foreign('program_day_id')->references('id')->on('program_days')->onDelete('cascade');
+            $table->string('program_name');
+            $table->string('description');
             $table->timestamps();
         });
     }

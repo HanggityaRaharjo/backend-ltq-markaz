@@ -5,14 +5,14 @@ namespace App\Models\Peserta;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ExamPraktikum extends Model
+class VerifikasiPembayaran extends Model
 {
     use HasFactory;
 
+    protected $table = 'verifikasi_pembayarans';
     protected $guarded = ['id'];
-
-    public function ExamTypePrak()
+    public function users()
     {
-        return $this->belongsTo(ExamPraktikum::class, 'exam_id');
+        return $this->hasOne(User::class, 'user_id');
     }
 }

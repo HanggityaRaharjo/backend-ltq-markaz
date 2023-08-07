@@ -20,7 +20,7 @@ class BiodataPesertaController extends Controller
      */
     public function getbiodatapeserta()
     {
-        $biodata = BiodataPeserta::latest()->get();
+        $biodata = BiodataPeserta::with('userbiodata')->latest()->get();
         return response()->json(['Data' => $biodata]);
     }
 
@@ -45,14 +45,14 @@ class BiodataPesertaController extends Controller
         try {
             $request->validate([
                 'full_name' => 'required',
-                'photo' => 'required',
-                'photo_ktp' => 'required',
+                // 'photo' => 'required',
+                // 'photo_ktp' => 'required',
                 'usia' => 'required',
                 'jenis_kelamin' => 'required',
                 'alamat' => 'required',
-                'keluraha' => 'required',
+                'kelurahan' => 'required',
                 'kecamatan' => 'required',
-                'kabupatan_kota' => 'required',
+                'kabupaten_kota' => 'required',
                 'provinsi' => 'required',
                 'no_wa' => 'required',
                 'no_alternatif' => 'required',
@@ -63,26 +63,28 @@ class BiodataPesertaController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
+        $user_id = User::where('uuid', $request->uuid)->first();
         $user = Auth::user()->id;
 
-        $file_name = $request->photo->getClientOriginalName();
-        $image = $request->photo->storeAs('public/photo', $file_name);
+        // $file_name = $request->photo->getClientOriginalName();
+        // $image = $request->photo->storeAs('public/photo', $file_name);
 
-        $file_name2 = $request->photo_ktp->getClientOriginalName();
-        $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
+        // $file_name2 = $request->photo_ktp->getClientOriginalName();
+        // $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
 
         $biodata = BiodataPeserta::create([
             'uuid' => Str::uuid(),
-            'user_id' => $user,
+            'user_id' => $user_id->id,
             'full_name' => $request->full_name,
-            'photo_ktp' => $image2,
-            'photo' => $image,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'photo_ktp' => 'photo_ktp',
+            'photo' => 'photo',
             'usia' => $request->usia,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat' => $request->alamat,
-            'keluraha' => $request->keluraha,
+            'kelurahan' => $request->kelurahan,
             'kecamatan' => $request->kecamatan,
-            'kabupatan_kota' => $request->kabupatan_kota,
+            'kabupaten_kota' => $request->kabupaten_kota,
             'provinsi' => $request->provinsi,
             'no_wa' => $request->no_wa,
             'no_alternatif' => $request->no_alternatif,
@@ -115,7 +117,7 @@ class BiodataPesertaController extends Controller
     public function showbiodatapeserta($uuid)
     {
         $user = Auth::user()->uuid;
-        $biodata = BiodataPeserta::where('uuid', $user)->orWhere('uuid', $uuid)->first();
+        $biodata = BiodataPeserta::with('userbiodata')->where('uuid', $user)->orWhere('uuid', $uuid)->first();
         return response()->json(['Data' => $biodata]);
     }
 
@@ -142,13 +144,14 @@ class BiodataPesertaController extends Controller
                 'uuid' => Str::uuid(),
                 'user_id' => $user,
                 'full_name' => $request->full_name,
+                'tanggal_lahir' => $request->tanggal_lahir,
                 'photo' => $image,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
-                'keluraha' => $request->keluraha,
+                'kelurahan' => $request->kelurahan,
                 'kecamatan' => $request->kecamatan,
-                'kabupatan_kota' => $request->kabupatan_kota,
+                'kabupaten_kota' => $request->kabupaten_kota,
                 'provinsi' => $request->provinsi,
                 'no_wa' => $request->no_wa,
                 'no_alternatif' => $request->no_alternatif,
@@ -165,13 +168,14 @@ class BiodataPesertaController extends Controller
                 'uuid' => Str::uuid(),
                 'user_id' => $user,
                 'full_name' => $request->full_name,
+                'tanggal_lahir' => $request->tanggal_lahir,
                 'photo_ktp' => $image2,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
-                'keluraha' => $request->keluraha,
+                'kelurahan' => $request->kelurahan,
                 'kecamatan' => $request->kecamatan,
-                'kabupatan_kota' => $request->kabupatan_kota,
+                'kabupaten_kota' => $request->kabupaten_kota,
                 'provinsi' => $request->provinsi,
                 'no_wa' => $request->no_wa,
                 'no_alternatif' => $request->no_alternatif,
@@ -180,12 +184,13 @@ class BiodataPesertaController extends Controller
             $biodata->update([
                 'user_id' => $user,
                 'full_name' => $request->full_name,
+                'tanggal_lahir' => $request->tanggal_lahir,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
                 'keluraha' => $request->keluraha,
                 'kecamatan' => $request->kecamatan,
-                'kabupatan_kota' => $request->kabupatan_kota,
+                'kabupaten_kota' => $request->kabupaten_kota,
                 'provinsi' => $request->provinsi,
                 'no_wa' => $request->no_wa,
                 'no_alternatif' => $request->no_alternatif,

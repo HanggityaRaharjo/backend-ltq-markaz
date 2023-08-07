@@ -20,7 +20,7 @@ class ExamTypeController extends Controller
      */
     public function GetDataExamType()
     {
-        $ExamType = ExamType::all();
+        $ExamType = ExamType::with('users')->latest()->get();
         return response()->json(['Data' => $ExamType]);
     }
 
@@ -51,9 +51,12 @@ class ExamTypeController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-
+        $user = Auth::user()->id;
         $ExamType = ExamType::create([
+            'user_id' => $user,
             'type_name' => $request->type_name,
+            'code' => $request->code,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         if ($ExamType) {
@@ -69,9 +72,10 @@ class ExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function ShowDataExamType($id)
     {
-        //
+        $ExamType = ExamType::with('users')->where('id', $id)->latest()->get();
+        return response()->json(['Data' => $ExamType]);
     }
 
     /**
@@ -94,8 +98,11 @@ class ExamTypeController extends Controller
      */
     public function UpdateDataExamType(Request $request, $id)
     {
+        $user = Auth::user()->id;
         $ExamType = ExamType::where('id', $id)->first()->update([
             'type_name' => $request->type_name,
+            'code' => $request->code,
+            'deskripsi' => $request->deskripsi,
         ]);
         if ($ExamType) {
             return response()->json(['message' => 'ExamType Berhasil Diubah']);
