@@ -24,6 +24,7 @@ use App\Http\Controllers\Peserta\ProgramPembayaranController;
 use App\Http\Controllers\Peserta\UserLevelController;
 use App\Http\Controllers\Peserta\UserPaketCntroller;
 use App\Http\Controllers\Peserta\UserProgramController;
+use App\Http\Controllers\Peserta\VerifikasiPembayaranController;
 use App\Http\Controllers\ProgramHarga;
 use App\Http\Controllers\ProgramHargaController as ControllersProgramHargaController;
 use App\Http\Controllers\RegisterController;
@@ -151,13 +152,13 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::post('/delete/{id}', [UserLevelController::class, 'DeleteDataUserLevel']);
     });
 
-    //Bukti Pembayaran
-    Route::prefix('bukti-pembayaran')->group(function () {
-        Route::get('/', [BuktiPembayaranController::class, 'GetDataBuktiPembayaran']);
-        Route::get('/show/{id}', [BuktiPembayaranController::class, 'ShowDataBuktiPembayaran']);
-        Route::post('/create', [BuktiPembayaranController::class, 'CreateDataBuktiPembayaran']);
-        Route::post('/update/{id}', [BuktiPembayaranController::class, 'UpdateDataBuktiPembayaran']);
-        Route::post('/delete/{id}', [BuktiPembayaranController::class, 'DeleteGetDataBuktiPembayaran']);
+    //Verifikasi Pembayaran
+    Route::prefix('verifikasi-pembayaran')->group(function () {
+        Route::get('/', [VerifikasiPembayaranController::class, 'GetDataVerifikasiPembayaran']);
+        Route::get('/show/{id}', [VerifikasiPembayaranController::class, 'ShowDataVerifikasiPembayaran']);
+        Route::post('/create', [VerifikasiPembayaranController::class, 'CreateDataVerifikasiPembayaran']);
+        Route::post('/update/{id}', [VerifikasiPembayaranController::class, 'UpdateDataVerifikasiPembayaran']);
+        Route::post('/delete/{id}', [VerifikasiPembayaranController::class, 'DeleteDataVerifikasiPembayaran']);
     });
 
 

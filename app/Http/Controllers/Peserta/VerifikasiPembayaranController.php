@@ -5,24 +5,24 @@ namespace App\Http\Controllers\Peserta;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Peserta\BiodataPeserta;
-use App\Models\Peserta\BuktiPembayaran;
+use App\Models\Peserta\VerifikasiPembayaran;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 
-class BuktiPembayaranController extends Controller
+class VerifikasiPembayaranController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataBuktiPembayaran()
+    public function GetDataVerifikasiPembayaran()
     {
-        $BuktiPembayaran = BuktiPembayaran::latest()->get();
-        return response()->json(['Data' => $BuktiPembayaran]);
+        $VerifikasiPembayaran = VerifikasiPembayaran::latest()->get();
+        return response()->json(['Data' => $VerifikasiPembayaran]);
     }
 
     /**
@@ -41,33 +41,31 @@ class BuktiPembayaranController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataBuktiPembayaran(Request $request)
+    public function CreateDataVerifikasiPembayaran(Request $request)
     {
         try {
-            $request->validate([
-                'bukti_pembayaran' => 'required',
-            ]);
+            $request->validate([]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $user = Auth::user()->id;
+        $user = User::where('uuid', $request->uuid)->first();
 
         $file_name = $request->bukti_pembayaran->getClientOriginalName();
         $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $file_name);
 
-        $BuktiPembayaran = BuktiPembayaran::create([
-            'user_id' => $user,
-            'bukti_pembayaran' => $image,
-            'status' => 'Paid',
+        $VerifikasiPembayaran = VerifikasiPembayaran::create([
+            'user_id' => $user->id,
+            'bukti_pembayaran' => 'bukti_pembayaran/' . $file_name,
+            'status' => 'Unpaid',
         ]);
 
-        if ($BuktiPembayaran) {
-            return response()->json(['message' => 'BuktiPembayaran Berhasil Ditambahkan']);
+        if ($VerifikasiPembayaran) {
+            return response()->json(['message' => 'VerifikasiPembayaran Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'BuktiPembayaran Gagal Ditambahkan']);
+            return response()->json(['message' => 'VerifikasiPembayaran Gagal Ditambahkan']);
         }
     }
 
@@ -77,11 +75,11 @@ class BuktiPembayaranController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataBuktiPembayaran($id)
+    public function ShowDataVerifikasiPembayaran($id)
     {
         $user = Auth::user()->id;
-        $BuktiPembayaran = BuktiPembayaran::where('id', $user)->orWhere('id', $id)->first();
-        return response()->json(['Data' => $BuktiPembayaran]);
+        $VerifikasiPembayaran = VerifikasiPembayaran::where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $VerifikasiPembayaran]);
     }
 
     /**
@@ -102,33 +100,33 @@ class BuktiPembayaranController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataBuktiPembayaran(Request $request, $id)
+    public function UpdateDataVerifikasiPembayaran(Request $request, $id)
     {
-        $biodata = BuktiPembayaran::find($id);
-        $user = Auth::user()->id;
-        if (Request()->hasFile('photo')) {
-            if (Storage::exists($biodata->photo)) {
-                Storage::delete($biodata->photo);
+        $user = User::where('uuid', $request->uuid)->first();
+        $VerifikasiPembayaran = VerifikasiPembayaran::find($id);
+        if (Request()->hasFile('bukti_pembayaran')) {
+            if (Storage::exists($VerifikasiPembayaran->bukti_pembayaran)) {
+                Storage::delete($VerifikasiPembayaran->bukti_pembayaran);
             }
 
             $file_name = $request->bukti_pembayaran->getClientOriginalName();
             $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $file_name);
 
-            $biodata->update([
-                'user_id' => $user,
-                'bukti_pembayaran' => $image,
+            $VerifikasiPembayaran->update([
+                'user_id' => $user->id,
+                'bukti_pembayaran' => 'bukti_pembayaran/' . $file_name,
                 'status' => $request->status,
             ]);
         } else {
-            $biodata->update([
+            $VerifikasiPembayaran->update([
                 'user_id' => $user,
                 'status' => $request->status,
             ]);
         }
-        if ($biodata) {
-            return response()->json(['message' => 'Biodata Berhasil Diubah']);
+        if ($VerifikasiPembayaran) {
+            return response()->json(['message' => 'VerifikasiPembayaran Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'Biodata Gagal Diubah']);
+            return response()->json(['message' => 'VerifikasiPembayaran Gagal Diubah']);
         }
     }
 
@@ -138,9 +136,9 @@ class BuktiPembayaranController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataBuktiPembayaran($id)
+    public function DeleteDataVerifikasiPembayaran($id)
     {
-        $BuktiPembayaran = BuktiPembayaran::where('id', $id)->first()->delete();
+        $VerifikasiPembayaran = VerifikasiPembayaran::where('id', $id)->first()->delete();
         return response()->json(['massage' => 'Bukti Pembayaran Berhasil Dihapus']);
     }
 }

@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('verifikasi_pembayarans', function (Blueprint $table) {
+        Schema::create('pembayaran_programs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('bukti_pembayaran');
-            $table->string('status');
+            $table->unsignedBigInteger('pembayaran_id')->nullable();
+            $table->foreign('pembayaran_id')->references('id')->on('pembayarans')->onDelete('cascade');
+            $table->string('total');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bukti_pembayarans');
+        Schema::dropIfExists('pembayaran_program');
     }
 };

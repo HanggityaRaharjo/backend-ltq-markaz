@@ -84,6 +84,7 @@ class PembayaranController extends Controller
         $file_name = $request->type_bank->getClientOriginalName();
         $image = $request->type_bank->storeAs('public/type_bank', $file_name);
         $Pembayaran = Pembayaran::create([
+            'nama_bank' => $request->nama_bank,
             'norek' => $code,
             'code' => $request->code,
             'type_bank' => 'type_bank/' . $file_name,
@@ -102,10 +103,9 @@ class PembayaranController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataPemabayaran($id)
+    public function ShowDataPembayaran($id)
     {
-        $user = Auth::user()->uuid;
-        $Pembayaran = Pembayaran::with('user')->where('id', $id)->orWhere('uuid', $user)->latest()->first();
+        $Pembayaran = Pembayaran::with('user')->where('id', $id)->latest()->first();
         return response()->json(['data' => $Pembayaran]);
     }
 
@@ -138,12 +138,14 @@ class PembayaranController extends Controller
             $image = $request->type_bank->storeAs('public/type_bank', $file_name);
             // $image = $request->poto->store('thumbnail');
             $Pembayaran->update([
+                'nama_bank' => $request->nama_bank,
                 'norek' => $request->norek,
                 'type_bank' => 'type_bank/' . $file_name,
             ]);
         } else {
             $Pembayaran->update([
                 'norek' => $request->norek,
+                'nama_bank' => $request->nama_bank,
             ]);
         }
         if ($Pembayaran) {

@@ -16,4 +16,8 @@ class Pembayaran extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function ProgramPembayaran()
+    {
+        return $this->hasOne(ProgramPembayaran::class, 'pembayaran_id');
+    }
 }

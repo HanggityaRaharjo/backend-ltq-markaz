@@ -11,7 +11,7 @@ class ProgramPembayaran extends Model
 {
     use HasFactory;
 
-    protected $table = 'program_pembayarans';
+    protected $table = 'pembayaran_programs';
 
     protected $guarded = ['id'];
 
@@ -26,5 +26,9 @@ class ProgramPembayaran extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    public function pembayaran()
+    {
+        return $this->belongsTo(Pembayaran::class, 'pembayaran_id');
     }
 }

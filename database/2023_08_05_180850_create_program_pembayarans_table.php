@@ -17,13 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('program_id')->nullable();
-            $table->foreign('program_id')->references('id')->on('programs')->onDelete('cascade');
-            $table->unsignedBigInteger('cabang_lembaga_id')->nullable();
-            $table->foreign('cabang_lembaga_id')->references('id')->on('cabang_lembagas')->onDelete('cascade');
-            $table->string('harga');
+            $table->unsignedBigInteger('pembayaran_id')->nullable();
+            $table->foreign('pembayaran_id')->references('id')->on('pembayarans')->onDelete('cascade');
             $table->string('total');
-            $table->string('bukti_pembayaran');
             $table->timestamps();
         });
     }

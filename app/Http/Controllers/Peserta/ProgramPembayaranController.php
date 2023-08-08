@@ -21,7 +21,7 @@ class ProgramPembayaranController extends Controller
      */
     public function GetDataProgramPembayaran()
     {
-        $ProgramPembayaran = ProgramPembayaran::with('program', 'cabang')->get();
+        $ProgramPembayaran = ProgramPembayaran::with('program', 'cabang', 'pembayaran')->get();
         return response()->json($ProgramPembayaran);
     }
 
@@ -64,20 +64,12 @@ class ProgramPembayaranController extends Controller
 
         $total = $request->total;
 
-        $file_name = $request->bukti_pembayaran->getClientOriginalName();
-        $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $file_name);
         $user_id = User::where('uuid', $request->uuid)->first();
         $ProgramPembayaran = ProgramPembayaran::create([
             'user_id' => $user_id->id,
-            'bukti_pembayaran' => 'bukti_pembayaran/' . $file_name,
+            'pembayaran_id' => $request->pembayaran_id,
             'total' => $total,
 
-        ]);
-
-        $user_id = User::where('uuid', $request->uuid)->first();
-        $verif = VerifikasiPembayaran::create([
-            'user_id' => $user_id->id,
-            'status' => 'unpaid',
         ]);
 
         if ($ProgramPembayaran) {
