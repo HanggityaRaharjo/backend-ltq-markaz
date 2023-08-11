@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class UserProgramController extends Controller
+class PesertaUserProgramController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -78,22 +78,22 @@ class UserProgramController extends Controller
         // return response()->json([$uuid]);
         $user = User::where('uuid', $uuid)->first();
         // $uuid = '0a29ae94-6aa8-4e13-8494-d84b5c683942';
-        $User_programs = UserProgram::with('program', 'program_harga', 'users')->where('user_id', $user->id)->get();
+        $User_programs = UserProgram::with('program', 'program_harga', 'users')->where('user_id', $user->id)->first();
 
-        $response_data = [];
+        // $response_data = [];
 
-        foreach ($User_programs as $user_program) {
-            $response_data[] = [
-                "id" => $user_program->id,
-                "name" => $user_program->users->name,
-                "user_id" => $user_program->user_id,
-                "program" => $user_program->program,
-                "harga" => $user_program->program_harga,
-            ];
-        }
+        // foreach ($User_programs as $user_program) {
+        //     $response_data[] = [
+        //         "id" => $user_program->id,
+        //         "name" => $user_program->users->name,
+        //         "user_id" => $user_program->user_id,
+        //         "program" => $user_program->program,
+        //         "harga" => $user_program->program_harga,
+        //     ];
+        // }
 
 
-        return response()->json($response_data);
+        return response()->json($User_programs);
     }
 
     /**

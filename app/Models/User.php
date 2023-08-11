@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Guru\AbsensiPeserta;
+use App\Models\Guru\BiodataGuru;
 use App\Models\Guru\kelas;
 use App\Models\Peserta\BiodataPeserta;
 use App\Models\Peserta\BuktiPembayaran;
@@ -84,6 +85,11 @@ class User extends Authenticatable implements JWTSubject
     public function biodata_peserta()
     {
         return $this->hasOne(BiodataPeserta::class, 'user_id');
+    }
+
+    public function biodata_guru()
+    {
+        return $this->hasOne(BiodataGuru::class, 'user_id');
     }
 
     public function BuktiPembayaran()

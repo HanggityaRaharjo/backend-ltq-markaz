@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 
-class VerifikasiPembayaranController extends Controller
+class PesertaVerifikasiPembayaranController extends Controller
 {
     /**
      * Display a listing of the resource.

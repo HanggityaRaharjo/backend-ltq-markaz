@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Guru\BiodataGuru;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
@@ -11,16 +12,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class BiodataPesertaController extends Controller
+class GuruBiodataGuruController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getbiodatapeserta()
+    public function getbiodataguru()
     {
-        $biodata = BiodataPeserta::with('userbiodata')->latest()->get();
+        $biodata = BiodataGuru::with('userbiodata')->latest()->get();
         return response()->json(['Data' => $biodata]);
     }
 
@@ -40,7 +36,7 @@ class BiodataPesertaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function createbiodatapeserta(Request $request)
+    public function createbiodataguru(Request $request)
     {
         try {
             $request->validate([
@@ -66,19 +62,19 @@ class BiodataPesertaController extends Controller
         $user_id = User::where('uuid', $request->uuid)->first();
         $user = Auth::user()->id;
 
-        // $file_name = $request->photo->getClientOriginalName();
-        // $image = $request->photo->storeAs('public/photo', $file_name);
+        $file_name = $request->photo->getClientOriginalName();
+        $image = $request->photo->storeAs('public/photo', $file_name);
 
-        // $file_name2 = $request->photo_ktp->getClientOriginalName();
-        // $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
+        $file_name2 = $request->photo_ktp->getClientOriginalName();
+        $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
 
-        $biodata = BiodataPeserta::create([
+        $biodata = BiodataGuru::create([
             'uuid' => Str::uuid(),
             'user_id' => $user_id->id,
             'full_name' => $request->full_name,
             'tanggal_lahir' => $request->tanggal_lahir,
-            'photo_ktp' => 'photo_ktp',
-            'photo' => 'photo',
+            'photo_ktp' => 'photo_ktp/' . $file_name2,
+            'photo' => 'photo/' . $file_name,
             'usia' => $request->usia,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat' => $request->alamat,
@@ -114,10 +110,10 @@ class BiodataPesertaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showbiodatapeserta($uuid)
+    public function showbiodataguru($uuid)
     {
         $user = Auth::user()->uuid;
-        $biodata = BiodataPeserta::with('userbiodata')->where('uuid', $user)->orWhere('uuid', $uuid)->first();
+        $biodata = BiodataGuru::with('userbiodata')->where('uuid', $user)->orWhere('uuid', $uuid)->first();
         return response()->json(['Data' => $biodata]);
     }
 
@@ -128,9 +124,9 @@ class BiodataPesertaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updatebiodatapeserta(Request $request, $id)
+    public function updatebiodataguru(Request $request, $id)
     {
-        $biodata = BiodataPeserta::find($id);
+        $biodata = BiodataGuru::find($id);
         $user = Auth::user()->id;
         if (Request()->hasFile('photo')) {
             if (Storage::exists($biodata->photo)) {
@@ -145,7 +141,7 @@ class BiodataPesertaController extends Controller
                 'user_id' => $user,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'photo' => $image,
+                'photo' => 'photo/' . $file_name,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
@@ -169,7 +165,7 @@ class BiodataPesertaController extends Controller
                 'user_id' => $user,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'photo_ktp' => $image2,
+                'photo_ktp' => 'photo_ktp/' . $file_name2,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
@@ -209,9 +205,9 @@ class BiodataPesertaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deletebiodatapeserta($uuid)
+    public function deletebiodataguru($id)
     {
-        $data = BiodataPeserta::where('uuid', $uuid)->first();
+        $data = BiodataGuru::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Peserta;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\ExamEssai;
+use App\Models\Peserta\ExamPg;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class ExamEssaiController extends Controller
+class PesertaExamPGController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataExamEssai()
+    public function GetDataExamPG()
     {
-        $ExamEssai = ExamEssai::latest()->all();
-        return response()->json(['Data' => $ExamEssai]);
+        $ExamPg = ExamPg::with('ExamTypePG')->latest()->get();
+        return response()->json(['Data' => $ExamPg]);
     }
 
     /**
@@ -40,11 +40,16 @@ class ExamEssaiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataExamEssai(Request $request)
+    public function CreateDataExamPG(Request $request)
     {
         try {
             $request->validate([
                 'question' => 'required',
+                'option_a' => 'required',
+                'option_b' => 'required',
+                'option_c' => 'required',
+                'option_d' => 'required',
+                'option_e' => 'required',
                 'true_answer' => 'required',
                 'code' => 'required',
             ]);
@@ -54,17 +59,23 @@ class ExamEssaiController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $ExamEssai = ExamEssai::create([
-            'jenis_ujian' => $request->jenis_exam,
+        $ExamPg = ExamPg::create([
+            'user_level_id' => $request->user_level_id,
+            'jenis_exam' => $request->jenis_exam,
             'question' => $request->question,
+            'option_a' => $request->option_a,
+            'option_b' => $request->option_b,
+            'option_c' => $request->option_c,
+            'option_d' => $request->option_d,
+            'option_e' => $request->option_e,
             'true_answer' => $request->true_answer,
             'code' => $request->code,
         ]);
 
-        if ($ExamEssai) {
-            return response()->json(['message' => 'ExamEssai Berhasil Ditambahkan']);
+        if ($ExamPg) {
+            return response()->json(['message' => 'ExamPg Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'ExamEssai Gagal Ditambahkan']);
+            return response()->json(['message' => 'ExamPg Gagal Ditambahkan']);
         }
     }
 
@@ -74,11 +85,11 @@ class ExamEssaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataExamEssai($id)
+    public function ShowDataExamPG($id)
     {
         $user = Auth::user()->id;
-        $ExamEssai = ExamEssai::where('id', $user)->orWhere('id', $id)->first();
-        return response()->json(['Data' => $ExamEssai]);
+        $ExamPg = ExamPg::with('ExamTypePG')->where('id', $user)->orWhere('id', $id)->first();
+        return response()->json(['Data' => $ExamPg]);
     }
 
     /**
@@ -99,18 +110,24 @@ class ExamEssaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataExamEssai(Request $request, $id)
+    public function UpdateDataExamPG(Request $request, $id)
     {
-        $ExamEssai = ExamEssai::where('id', $id)->first()->update([
-            'jenis_ujian' => $request->jenis_exam,
+        $ExamPg = ExamPg::where('id', $id)->first()->update([
+            'user_level_id' => $request->user_level_id,
+            'jenis_exam' => $request->jenis_exam,
             'question' => $request->question,
+            'option_a' => $request->option_a,
+            'option_b' => $request->option_b,
+            'option_c' => $request->option_c,
+            'option_d' => $request->option_d,
+            'option_e' => $request->option_e,
             'true_answer' => $request->true_answer,
             'code' => $request->code,
         ]);
-        if ($ExamEssai) {
-            return response()->json(['message' => 'ExamEssai Berhasil Diubah']);
+        if ($ExamPg) {
+            return response()->json(['message' => 'ExamPg Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'ExamEssai Gagal Diubah']);
+            return response()->json(['message' => 'ExamPg Gagal Diubah']);
         }
     }
 
@@ -120,9 +137,9 @@ class ExamEssaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataExamEssai($id)
+    public function DeleteDataExamPG($id)
     {
-        $data = ExamEssai::where('id', $id)->first();
+        $data = ExamPg::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

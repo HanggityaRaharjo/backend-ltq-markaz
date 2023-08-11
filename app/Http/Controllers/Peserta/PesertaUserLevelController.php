@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class UserLevelController extends Controller
+class PesertaUserLevelController extends Controller
 {
     /**
      * Display a listing of the resource.

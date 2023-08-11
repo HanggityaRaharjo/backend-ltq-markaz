@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
-use App\Models\Guru\kelas;
+use App\Models\Guru\AbsensiGuru;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -11,17 +11,17 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class KelasController extends Controller
+class GuruAbsensiGuruController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataKelas()
+    public function GetDataAbsensiGuru()
     {
-        $kelas = kelas::latest()->get();
-        return response()->json(['data' => $kelas]);
+        $AbsensiGuru = AbsensiGuru::latest()->get();
+        return response()->json(['data' => $AbsensiGuru]);
     }
 
     /**
@@ -40,32 +40,29 @@ class KelasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataKelas(Request $request)
+    public function CreateDataAbsensiGuru(Request $request)
     {
         try {
             $request->validate([
-                'nama_pengajar' => 'required',
-                'jumlah_peserta' => 'required',
-                'nama_kelas' => 'required',
+                'keterangan' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-
         $user_id = Auth::user()->id;
-        $Kelas = Kelas::create([
+        $AbsensiGuru = AbsensiGuru::create([
             'user_id' => $user_id,
-            'nama_pengajar' => $request->nama_pengajar,
-            'jumlah_peserta' => $request->jumlah_peserta,
-            'nama_kelas' => $request->nama_kelas,
+            'kelas_id' => $request->kelas_id,
+            'nomor_id' => $request->nomor_id,
+            'keterangan' => $request->keterangan,
         ]);
 
-        if ($Kelas) {
-            return response()->json(['message' => 'Kelas Berhasil Ditambahkan']);
+        if ($AbsensiGuru) {
+            return response()->json(['message' => 'AbsensiGuru Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'Kelas Gagal Ditambahkan']);
+            return response()->json(['message' => 'AbsensiGuru Gagal Ditambahkan']);
         }
     }
 
@@ -75,12 +72,12 @@ class KelasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataKelas($id)
+    public function ShowDataAbsensiGuru($id)
     {
-        $user = Auth::user()->id;
-        $kelas = kelas::where('id', $id)->where('id', $user)->first();
-        return response()->json(['data' => $kelas]);
+        $AbsensiGuru = AbsensiGuru::where('id', $id)->first();
+        return response()->json(['data' => $AbsensiGuru]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -100,20 +97,20 @@ class KelasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataKelas(Request $request, $id)
+    public function UpdateDataAbsensiGuru(Request $request, $id)
     {
         $user_id = Auth::user()->id;
-        $Kelas = Kelas::where('id', $id)->first()->update([
+        $AbsensiGuru = AbsensiGuru::where('id', $id)->first()->update([
             'user_id' => $user_id,
-            'nama_pengajar' => $request->nama_pengajar,
-            'jumlah_peserta' => $request->jumlah_peserta,
-            'nama_kelas' => $request->nama_kelas,
+            'kelas_id' => $request->kelas_id,
+            'nomor_id' => $request->nomor_id,
+            'keterangan' => $request->keterangan,
         ]);
 
-        if ($Kelas) {
-            return response()->json(['message' => 'Kelas Berhasil Diubah']);
+        if ($AbsensiGuru) {
+            return response()->json(['message' => 'AbsensiGuru Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'Kelas Gagal Diubah']);
+            return response()->json(['message' => 'AbsensiGuru Gagal Diubah']);
         }
     }
 
@@ -123,9 +120,9 @@ class KelasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataKelas($id)
+    public function DeleteDataAbsensiGuru($id)
     {
-        $kelas = kelas::where('id', $id)->first()->delete();
-        return response()->json(['massage' => 'Data berhasil Dihapus']);
+        $AbsensiPeserta = AbsensiGuru::where('id', $id)->first()->delete();
+        return response()->json(['massage' => 'Data Berhasil Di Hapus']);
     }
 }

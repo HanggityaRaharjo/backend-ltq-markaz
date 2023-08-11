@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Peserta;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\Program;
+use App\Models\Peserta\ExamType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class ProgramController extends Controller
+class PesertaExamTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataProgram()
+    public function GetDataExamType()
     {
-        $Program = Program::with('ProgramDay', 'programharga')->latest()->get();
-        return response()->json($Program);
+        $ExamType = ExamType::with('users')->latest()->get();
+        return response()->json(['Data' => $ExamType]);
     }
 
     /**
@@ -40,30 +40,29 @@ class ProgramController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataProgram(Request $request)
+    public function CreateDataExamType(Request $request)
     {
         try {
             $request->validate([
-                'program_name' => 'required',
-                'description' => 'required',
-                'program_day_id' => 'required',
+                'type_name' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-
-        $Program = Program::create([
-            'program_name' => $request->program_name,
-            'description' => $request->description,
-            'program_day_id' => $request->program_day_id,
+        $user = Auth::user()->id;
+        $ExamType = ExamType::create([
+            'user_id' => $user,
+            'type_name' => $request->type_name,
+            'code' => $request->code,
+            'deskripsi' => $request->deskripsi,
         ]);
 
-        if ($Program) {
-            return response()->json(['message' => 'Program Berhasil Ditambahkan']);
+        if ($ExamType) {
+            return response()->json(['message' => 'ExamType Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'Program Gagal Ditambahkan']);
+            return response()->json(['message' => 'ExamType Gagal Ditambahkan']);
         }
     }
 
@@ -73,18 +72,10 @@ class ProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataProgram($uuid)
+    public function ShowDataExamType($id)
     {
-        $user = User::where('uuid', $uuid)->first();
-        $Program = Program::with('ProgramDay', 'program_harga')->where('user_id', $user->id)->get();
-        return response()->json($Program);
-    }
-
-    public function ShowDataProgramByCabang($id)
-    {
-        $user = Auth::user()->id;
-        $Program = Program::with('ProgramDay', 'program_harga')->where('id', $user)->orWhere('id', $id)->first();
-        return response()->json($Program);
+        $ExamType = ExamType::with('users')->where('id', $id)->latest()->get();
+        return response()->json(['Data' => $ExamType]);
     }
 
     /**
@@ -105,17 +96,18 @@ class ProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataProgram(Request $request, $id)
+    public function UpdateDataExamType(Request $request, $id)
     {
-        $Program = Program::where('id', $id)->first()->update([
-            'program_name' => $request->program_name,
-            'description' => $request->description,
-            'program_day_id' => $request->program_day_id,
+        $user = Auth::user()->id;
+        $ExamType = ExamType::where('id', $id)->first()->update([
+            'type_name' => $request->type_name,
+            'code' => $request->code,
+            'deskripsi' => $request->deskripsi,
         ]);
-        if ($Program) {
-            return response()->json(['message' => 'Program Berhasil Diubah']);
+        if ($ExamType) {
+            return response()->json(['message' => 'ExamType Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'Program Gagal Diubah']);
+            return response()->json(['message' => 'ExamType Gagal Diubah']);
         }
     }
 
@@ -125,9 +117,9 @@ class ProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataProgram($id)
+    public function DeleteDataExamType($id)
     {
-        $data = Program::where('id', $id)->first();
+        $data = ExamType::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

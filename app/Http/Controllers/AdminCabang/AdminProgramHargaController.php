@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AdminCabang;
 
+use App\Http\Controllers\Controller;
 use App\Models\ProgramHarga;
-use App\Models\SuperAdmin\ProgramHarga as SuperAdminProgramHarga;
 use Illuminate\Http\Request;
-
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
 
-class ProgramHargaController extends Controller
+
+class AdminProgramHargaController extends Controller
 {
     /**
      * Display a listing of the resource.

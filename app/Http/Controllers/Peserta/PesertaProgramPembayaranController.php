@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class ProgramPembayaranController extends Controller
+class PesertaProgramPembayaranController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -85,10 +85,11 @@ class ProgramPembayaranController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataProgramPembayaran($id)
+    public function ShowDataProgramPembayaran($id, $uuid)
     {
-        $ProgramPembayaran = ProgramPembayaran::with('program', 'cabang')->where('id', $id)->get();
-        return response()->json(['data' => $ProgramPembayaran]);
+        $user = User::where('uuid', $uuid)->first();
+        $ProgramPembayaran = ProgramPembayaran::with('program', 'pembayaran', 'cabang')->where('user_id', $user->id)->first();
+        return response()->json($ProgramPembayaran);
     }
 
     /**
