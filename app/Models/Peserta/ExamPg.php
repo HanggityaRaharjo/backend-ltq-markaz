@@ -9,6 +9,7 @@ class ExamPg extends Model
 {
     use HasFactory;
 
+    protected $table = 'exam_pgs';
     protected $guarded = ['id'];
 
     public function ExamTypePG()

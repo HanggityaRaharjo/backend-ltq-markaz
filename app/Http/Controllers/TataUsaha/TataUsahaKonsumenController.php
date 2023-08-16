@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\TataUsaha;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\ExamType;
+use App\Models\TataUsaha\Konsumen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class PesertaExamTypeController extends Controller
+class TataUsahaKonsumenController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataExamType()
+    public function GetDataKonsumen()
     {
-        $ExamType = ExamType::with('exampg')->get();
-        return response()->json($ExamType);
+        $Konsumen = Konsumen::with('users')->get();
+        return response()->json($Konsumen);
     }
 
     /**
@@ -40,29 +40,24 @@ class PesertaExamTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataExamType(Request $request)
+    public function CreateDataKonsumen(Request $request,)
     {
         try {
-            $request->validate([
-                'type_name' => 'required',
-            ]);
+            $request->validate([]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-        $user = Auth::user()->id;
-        $ExamType = ExamType::create([
-            'user_id' => $user,
-            'type_name' => $request->type_name,
-            'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
+
+        $Konsumen = Konsumen::create([
+            'user_id' => $request->user_id,
         ]);
 
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Ditambahkan']);
+        if ($Konsumen) {
+            return response()->json(['message' => 'Konsumen Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Ditambahkan']);
+            return response()->json(['message' => 'Konsumen Gagal Ditambahkan']);
         }
     }
 
@@ -72,10 +67,11 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataExamType($id)
+    public function ShowDataKonsumen($id)
     {
-        $ExamType = ExamType::with('exampg')->where('id', $id)->first();
-        return response()->json($ExamType);
+        // $user = User::where('uuid', $uuid)->first();
+        $Konsumen = Konsumen::where('id', $id)->first();
+        return response()->json(['Data' => $Konsumen]);
     }
 
     /**
@@ -96,18 +92,16 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataExamType(Request $request, $id)
+    public function UpdateDataKonsumen(Request $request, $id)
     {
-        // $user = Auth::user()->id;
-        $ExamType = ExamType::where('id', $id)->first()->update([
-            'type_name' => $request->type_name,
-            'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
+        // $user = User::where('uuid', $uuid)->first();
+        $Konsumen = Konsumen::where('id', $id)->first()->update([
+            'user_id' => $request->user_id,
         ]);
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Diubah']);
+        if ($Konsumen) {
+            return response()->json(['message' => 'Konsumen Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Diubah']);
+            return response()->json(['message' => 'Konsumen Gagal Diubah']);
         }
     }
 
@@ -117,9 +111,9 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataExamType($id)
+    public function DeleteDataKonsumen($id)
     {
-        $data = ExamType::where('id', $id)->first();
+        $data = Konsumen::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

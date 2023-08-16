@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\TataUsaha;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\Cuti;
+use App\Models\TataUsaha\Ziswaf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class CutiController extends Controller
+class TataUsahaZiswafController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataCuti()
+    public function GetDataZiswaf()
     {
-        $Cuti = Cuti::latest()->all();
-        return response()->json(['Data' => $Cuti]);
+        $Ziswaf = Ziswaf::latest()->get();
+        return response()->json($Ziswaf);
     }
 
     /**
@@ -40,32 +40,27 @@ class CutiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataCuti(Request $request)
+    public function CreateDataZiswaf(Request $request,)
     {
         try {
-            $request->validate([
-                'date_start' => 'required',
-                'date_end' => 'required',
-                'reason' => 'required',
-            ]);
+            $request->validate([]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $user = Auth::user()->id;
-        $Cuti = Cuti::create([
-            'user_id' => $user,
-            'date_start' => $request->date_start,
-            'date_end' => $request->date_end,
-            'reason' => $request->reason,
+        $Ziswaf = Ziswaf::create([
+            'user_id' => $request->user_id,
+            'nama_pembayaran' => $request->nama_pembayaran,
+            'jumlah_tagihan' => $request->jumlah_tagihan,
+            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
         ]);
 
-        if ($Cuti) {
-            return response()->json(['message' => 'Cuti Berhasil Ditambahkan']);
+        if ($Ziswaf) {
+            return response()->json(['message' => 'Ziswaf Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'Cuti Gagal Ditambahkan']);
+            return response()->json(['message' => 'Ziswaf Gagal Ditambahkan']);
         }
     }
 
@@ -75,11 +70,11 @@ class CutiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataCuti($id)
+    public function ShowDataZiswaf($id)
     {
-        $user = Auth::user()->id;
-        $Cuti = Cuti::where('id', $user)->orWhere('id', $id)->first();
-        return response()->json(['Data' => $Cuti]);
+        // $user = User::where('uuid', $uuid)->first();
+        $Ziswaf = Ziswaf::where('id', $id)->first();
+        return response()->json(['Data' => $Ziswaf]);
     }
 
     /**
@@ -100,19 +95,19 @@ class CutiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataCuti(Request $request, $id)
+    public function UpdateDataZiswaf(Request $request, $id)
     {
-        $user = Auth::user()->id;
-        $Cuti = Cuti::where('id', $id)->first()->update([
-            'user_id' => $user,
-            'date_start' => $request->date_start,
-            'date_end' => $request->date_end,
-            'reason' => $request->reason,
+        // $user = User::where('uuid', $uuid)->first();
+        $Ziswaf = Ziswaf::where('id', $id)->first()->update([
+            'user_id' => $request->user_id,
+            'nama_pembayaran' => $request->nama_pembayaran,
+            'jumlah_tagihan' => $request->jumlah_tagihan,
+            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
         ]);
-        if ($Cuti) {
-            return response()->json(['message' => 'Cuti Berhasil Diubah']);
+        if ($Ziswaf) {
+            return response()->json(['message' => 'Ziswaf Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'Cuti Gagal Diubah']);
+            return response()->json(['message' => 'Ziswaf Gagal Diubah']);
         }
     }
 
@@ -122,9 +117,9 @@ class CutiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataCuti($id)
+    public function DeleteDataZiswaf($id)
     {
-        $data = Cuti::where('id', $id)->first();
+        $data = Ziswaf::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

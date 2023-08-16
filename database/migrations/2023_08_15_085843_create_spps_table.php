@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('program_pembayarans', function (Blueprint $table) {
+        Schema::create('spps', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('pembayaran_id')->nullable();
-            $table->foreign('pembayaran_id')->references('id')->on('pembayarans')->onDelete('cascade');
-            $table->string('total');
+            $table->string('nama_pembayaran');
+            $table->decimal('jumlah_tagihan');
+            $table->date('tanggal_jatuh_tempo');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('program_hargas');
+        Schema::dropIfExists('spps');
     }
 };

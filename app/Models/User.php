@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Models\Guru\AbsensiPeserta;
 use App\Models\Guru\BiodataGuru;
+use App\Models\Guru\CutiGuru;
+use App\Models\Guru\InputNilatSiswa;
 use App\Models\Guru\kelas;
 use App\Models\Peserta\BiodataPeserta;
 use App\Models\Peserta\BuktiPembayaran;
@@ -17,6 +19,13 @@ use App\Models\Peserta\RequestDay;
 use App\Models\Peserta\UserLevel;
 use App\Models\Peserta\UserPaket;
 use App\Models\SuperAdmin\CabangLembaga;
+use App\Models\TataUsaha\BiodataTataUsaha;
+use App\Models\TataUsaha\Cuti as TataUsahaCuti;
+use App\Models\TataUsaha\Dpp;
+use App\Models\TataUsaha\Kegiatan;
+use App\Models\TataUsaha\Konsumen;
+use App\Models\TataUsaha\Spp;
+use App\Models\TataUsaha\Ziswaf;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -91,6 +100,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(BiodataGuru::class, 'user_id');
     }
+    public function biodata_tatausaha()
+    {
+        return $this->hasOne(BiodataTataUsaha::class, 'user_id');
+    }
 
     public function BuktiPembayaran()
     {
@@ -117,24 +130,61 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(RequestDay::class, 'user_id');
     }
 
-    public function Cuti()
+    public function CutiPeserta()
     {
         return $this->hasMany(Cuti::class, 'user_id');
     }
+
+    public function CutiGuru()
+    {
+        return $this->hasMany(CutiGuru::class, 'user_id');
+    }
+    public function spp()
+    {
+        return $this->hasMany(Spp::class, 'user_id');
+    }
+    public function dpp()
+    {
+        return $this->hasMany(Dpp::class, 'user_id');
+    }
+    public function kegiatan()
+    {
+        return $this->hasMany(Kegiatan::class, 'user_id');
+    }
+    public function ziswaf()
+    {
+        return $this->hasMany(Ziswaf::class, 'user_id');
+    }
+    public function CutiTataUsaha()
+    {
+        return $this->hasMany(TataUsahaCuti::class, 'user_id');
+    }
+
     public function kelas()
     {
         return $this->hasMany(kelas::class, 'user_id');
     }
+
     public function absensi_peserta()
     {
         return $this->hasMany(AbsensiPeserta::class, 'user_id');
     }
+
     public function program_pembayaran()
     {
         return $this->hasMany(ProgramPembayaran::class, 'user_id');
     }
+
     public function examtype()
     {
         return $this->hasMany(ExamType::class, 'user_id');
+    }
+    public function input_nilai()
+    {
+        return $this->hasMany(InputNilatSiswa::class, 'user_id');
+    }
+    public function konsumen()
+    {
+        return $this->hasMany(Konsumen::class, 'user_id');
     }
 }

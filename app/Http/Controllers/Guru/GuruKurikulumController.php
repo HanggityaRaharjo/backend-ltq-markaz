@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\ExamType;
+use App\Models\Guru\Kurikulum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +11,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class PesertaExamTypeController extends Controller
+class GuruKurikulumController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function GetDataExamType()
+    public function GetDataKurikulum()
     {
-        $ExamType = ExamType::with('exampg')->get();
-        return response()->json($ExamType);
+        $Kurikulum = Kurikulum::get();
+        return response()->json($Kurikulum);
     }
 
     /**
@@ -40,29 +35,28 @@ class PesertaExamTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataExamType(Request $request)
+    public function CreateDataKurikulum(Request $request)
     {
         try {
-            $request->validate([
-                'type_name' => 'required',
-            ]);
+            $request->validate([]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-        $user = Auth::user()->id;
-        $ExamType = ExamType::create([
-            'user_id' => $user,
-            'type_name' => $request->type_name,
-            'code' => $request->code,
+
+        // $user = Auth::user()->id;
+        // $user_id = User::where('uuid', $uuid)->first();
+        $Kurikulum = Kurikulum::create([
+            'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
+            'periode' => $request->periode,
         ]);
 
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Ditambahkan']);
+        if ($Kurikulum) {
+            return response()->json(['message' => 'Kurikulum Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Ditambahkan']);
+            return response()->json(['message' => 'Kurikulum Gagal Ditambahkan']);
         }
     }
 
@@ -72,10 +66,10 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataExamType($id)
+    public function ShowDataKurikulum($id)
     {
-        $ExamType = ExamType::with('exampg')->where('id', $id)->first();
-        return response()->json($ExamType);
+        $Kurikulum = Kurikulum::where('id', $id)->first();
+        return response()->json($Kurikulum);
     }
 
     /**
@@ -96,18 +90,17 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataExamType(Request $request, $id)
+    public function UpdateDataKurikulum(Request $request, $id)
     {
-        // $user = Auth::user()->id;
-        $ExamType = ExamType::where('id', $id)->first()->update([
-            'type_name' => $request->type_name,
-            'code' => $request->code,
+        $Kurikulum = Kurikulum::where('id', $id)->first()->update([
+            'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
+            'periode' => $request->periode,
         ]);
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Diubah']);
+        if ($Kurikulum) {
+            return response()->json(['message' => 'Kurikulum Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Diubah']);
+            return response()->json(['message' => 'Kurikulum Gagal Diubah']);
         }
     }
 
@@ -117,9 +110,9 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataExamType($id)
+    public function DeleteDataKurikulum($id)
     {
-        $data = ExamType::where('id', $id)->first();
+        $data = Kurikulum::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

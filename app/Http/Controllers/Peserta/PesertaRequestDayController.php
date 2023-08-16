@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class RequestDayController extends Controller
+class PesertaRequestDayController extends Controller
 {
     /**
      * Display a listing of the resource.

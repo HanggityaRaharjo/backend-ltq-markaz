@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\ExamType;
+use App\Models\Guru\CutiGuru;
+use App\Models\Peserta\Cuti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +12,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class PesertaExamTypeController extends Controller
+class GuruCutiController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataExamType()
+    public function GetDataCuti()
     {
-        $ExamType = ExamType::with('exampg')->get();
-        return response()->json($ExamType);
+        $Cuti = CutiGuru::latest()->get();
+        return response()->json($Cuti);
     }
 
     /**
@@ -40,29 +41,32 @@ class PesertaExamTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataExamType(Request $request)
+    public function CreateDataCuti(Request $request, $uuid)
     {
         try {
             $request->validate([
-                'type_name' => 'required',
+                'date_start' => 'required',
+                'date_end' => 'required',
+                'reason' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-        $user = Auth::user()->id;
-        $ExamType = ExamType::create([
-            'user_id' => $user,
-            'type_name' => $request->type_name,
-            'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
+
+        $user = User::where('uuid', $uuid)->first();
+        $Cuti = CutiGuru::create([
+            'user_id' => $user->id,
+            'date_start' => $request->date_start,
+            'date_end' => $request->date_end,
+            'reason' => $request->reason,
         ]);
 
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Ditambahkan']);
+        if ($Cuti) {
+            return response()->json(['message' => 'Cuti Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Ditambahkan']);
+            return response()->json(['message' => 'Cuti Gagal Ditambahkan']);
         }
     }
 
@@ -72,10 +76,11 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataExamType($id)
+    public function ShowDataCuti($uuid)
     {
-        $ExamType = ExamType::with('exampg')->where('id', $id)->first();
-        return response()->json($ExamType);
+        $user = User::where('uuid', $uuid)->first();
+        $Cuti = CutiGuru::where('user_id', $user->id)->first();
+        return response()->json(['Data' => $Cuti]);
     }
 
     /**
@@ -96,18 +101,19 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataExamType(Request $request, $id)
+    public function UpdateDataCuti(Request $request, $uuid)
     {
-        // $user = Auth::user()->id;
-        $ExamType = ExamType::where('id', $id)->first()->update([
-            'type_name' => $request->type_name,
-            'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
+        $user = User::where('uuid', $uuid)->first();
+        $Cuti = CutiGuru::where('user_id', $user->id)->first()->update([
+            'user_id' => $user->id,
+            'date_start' => $request->date_start,
+            'date_end' => $request->date_end,
+            'reason' => $request->reason,
         ]);
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Diubah']);
+        if ($Cuti) {
+            return response()->json(['message' => 'Cuti Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Diubah']);
+            return response()->json(['message' => 'Cuti Gagal Diubah']);
         }
     }
 
@@ -117,9 +123,9 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataExamType($id)
+    public function DeleteDataCuti($id)
     {
-        $data = ExamType::where('id', $id)->first();
+        $data = CutiGuru::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

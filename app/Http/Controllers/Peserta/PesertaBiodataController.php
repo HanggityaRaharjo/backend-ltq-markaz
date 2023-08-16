@@ -11,7 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class PesertaBiodataPesertaController extends Controller
+class PesertaBiodataController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,8 +20,8 @@ class PesertaBiodataPesertaController extends Controller
      */
     public function getbiodatapeserta()
     {
-        $biodata = BiodataPeserta::with('userbiodata')->latest()->get();
-        return response()->json(['Data' => $biodata]);
+        $biodata = BiodataPeserta::with('userbiodata')->where('status', 'active')->get();
+        return response()->json($biodata);
     }
 
     /**
@@ -66,11 +66,11 @@ class PesertaBiodataPesertaController extends Controller
         $user_id = User::where('uuid', $request->uuid)->first();
         $user = Auth::user()->id;
 
-        // $file_name = $request->photo->getClientOriginalName();
-        // $image = $request->photo->storeAs('public/photo', $file_name);
+        $file_name = $request->photo->getClientOriginalName();
+        $image = $request->photo->storeAs('public/photo', $file_name);
 
-        // $file_name2 = $request->photo_ktp->getClientOriginalName();
-        // $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
+        $file_name2 = $request->photo_ktp->getClientOriginalName();
+        $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
 
         $biodata = BiodataPeserta::create([
             'uuid' => Str::uuid(),
@@ -116,8 +116,8 @@ class PesertaBiodataPesertaController extends Controller
      */
     public function showbiodatapeserta($uuid)
     {
-        $user = Auth::user()->uuid;
-        $biodata = BiodataPeserta::with('userbiodata')->where('uuid', $user)->orWhere('uuid', $uuid)->first();
+        $user = User::where('uuid', $uuid)->first();
+        $biodata = BiodataPeserta::with('userbiodata')->where('user_id', $user->id)->first();
         return response()->json(['Data' => $biodata]);
     }
 

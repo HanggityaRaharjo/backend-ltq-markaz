@@ -21,7 +21,7 @@ class GuruKelasController extends Controller
     public function GetDataKelas()
     {
         $kelas = kelas::latest()->get();
-        return response()->json(['data' => $kelas]);
+        return response()->json($kelas);
     }
 
     /**
@@ -77,9 +77,8 @@ class GuruKelasController extends Controller
      */
     public function ShowDataKelas($id)
     {
-        $user = Auth::user()->id;
-        $kelas = kelas::where('id', $id)->where('id', $user)->first();
-        return response()->json(['data' => $kelas]);
+        $kelas = kelas::where('id', $id)->first();
+        return response()->json($kelas);
     }
 
     /**
@@ -102,9 +101,8 @@ class GuruKelasController extends Controller
      */
     public function UpdateDataKelas(Request $request, $id)
     {
-        $user_id = Auth::user()->id;
         $Kelas = Kelas::where('id', $id)->first()->update([
-            'user_id' => $user_id,
+            'user_id' => $request->user_id,
             'nama_pengajar' => $request->nama_pengajar,
             'jumlah_peserta' => $request->jumlah_peserta,
             'nama_kelas' => $request->nama_kelas,

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models\Peserta;
+namespace App\Models\TataUsaha;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cuti extends Model
+class BiodataTataUsaha extends Model
 {
+
     use HasFactory;
 
     protected $guarded = ['id'];

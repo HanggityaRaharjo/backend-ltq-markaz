@@ -14,9 +14,17 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function get_user_active()
     {
-        //
+        $user = User::with('roles')->whereHas('roles', function ($query) {
+            $query->where('nama_role', 'peserta');
+        })->where('status', 'active')->get();
+        return response()->json($user);
+    }
+    public function get_user()
+    {
+        $user = User::with('roles', 'UserCabang', 'biodata_peserta', 'biodata_guru', 'biodata_tatausaha')->get();
+        return response()->json($user);
     }
 
     /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\TataUsaha;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\PaketPeserta;
+use App\Models\TataUsaha\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +11,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class PaketController extends Controller
+class TataUsahaBarangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function GetDataPaket()
+    public function GetDataBarang()
     {
-        $Paket = PaketPeserta::latest()->all();
-        return response()->json(['Data' => $Paket]);
+        $Barang = Barang::latest()->get();
+        return response()->json($Barang);
     }
 
     /**
@@ -40,30 +35,26 @@ class PaketController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataPaket(Request $request)
+    public function CreateDataBarang(Request $request,)
     {
         try {
-            $request->validate([
-                'paket_name' => 'required',
-                'code' => 'required',
-                'price' => 'required',
-            ]);
+            $request->validate([]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $Paket = PaketPeserta::create([
-            'paket_name' => $request->paket_name,
-            'code' => $request->code,
-            'price' => $request->price,
+        $Barang = Barang::create([
+            'nama_barang' => $request->nama_barang,
+            'harga' => $request->harga,
+            'stok' => $request->stok,
         ]);
 
-        if ($Paket) {
-            return response()->json(['message' => 'Paket Berhasil Ditambahkan']);
+        if ($Barang) {
+            return response()->json(['message' => 'Barang Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'Paket Gagal Ditambahkan']);
+            return response()->json(['message' => 'Barang Gagal Ditambahkan']);
         }
     }
 
@@ -73,11 +64,11 @@ class PaketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataPaketPeserta($id)
+    public function ShowDataBarang($id)
     {
-        $user = Auth::user()->id;
-        $PaketPeserta = PaketPeserta::where('id', $user)->orWhere('id', $id)->first();
-        return response()->json(['Data' => $PaketPeserta]);
+        // $user = User::where('uuid', $uuid)->first();
+        $Barang = Barang::where('id', $id)->first();
+        return response()->json(['Data' => $Barang]);
     }
 
     /**
@@ -98,17 +89,18 @@ class PaketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataPaket(Request $request, $id)
+    public function UpdateDataBarang(Request $request, $id)
     {
-        $Paket = PaketPeserta::where('id', $id)->first()->update([
-            'paket_name' => $request->paket_name,
-            'code' => $request->code,
-            'price' => $request->price,
+        // $user = User::where('uuid', $uuid)->first();
+        $Barang = Barang::where('id', $id)->first()->update([
+            'nama_barang' => $request->nama_barang,
+            'harga' => $request->harga,
+            'stok' => $request->stok,
         ]);
-        if ($Paket) {
-            return response()->json(['message' => 'Paket Berhasil Diubah']);
+        if ($Barang) {
+            return response()->json(['message' => 'Barang Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'Paket Gagal Diubah']);
+            return response()->json(['message' => 'Barang Gagal Diubah']);
         }
     }
 
@@ -118,9 +110,9 @@ class PaketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataPaket($id)
+    public function DeleteDataBarang($id)
     {
-        $data = PaketPeserta::where('id', $id)->first();
+        $data = Barang::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

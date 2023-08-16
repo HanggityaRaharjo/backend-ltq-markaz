@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('exam_types', function (Blueprint $table) {
+        Schema::create('pembayaran_barangs', function (Blueprint $table) {
             $table->id();
-            $table->string('type_exam');
-            $table->string('code');
+            $table->unsignedBigInteger('konsumen_id')->nullable();
+            $table->foreign('konsumen_id')->references('id')->on('konsumens')->onDelete('cascade');
+            $table->date('tanggal_pembayaran');
+            $table->decimal('jumlah_pembayaran');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_types');
+        Schema::dropIfExists('pembayaran_barangs');
     }
 };

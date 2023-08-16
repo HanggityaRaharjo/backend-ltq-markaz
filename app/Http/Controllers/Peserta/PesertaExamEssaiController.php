@@ -74,10 +74,10 @@ class PesertaExamEssaiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataExamEssai($id)
+    public function ShowDataExamEssai($uuid)
     {
-        $user = Auth::user()->id;
-        $ExamEssai = ExamEssai::where('id', $user)->orWhere('id', $id)->first();
+        $user = User::where('uuid', $uuid)->first();
+        $ExamEssai = ExamEssai::where('id', $user)->orWhere('user_id', $user->id)->first();
         return response()->json(['Data' => $ExamEssai]);
     }
 

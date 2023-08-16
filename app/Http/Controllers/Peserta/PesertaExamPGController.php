@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Peserta;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peserta\ExamPg;
+use App\Models\Peserta\ExamType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -20,7 +21,7 @@ class PesertaExamPGController extends Controller
      */
     public function GetDataExamPG()
     {
-        $ExamPg = ExamPg::with('ExamTypePG')->latest()->get();
+        $ExamPg = ExamPg::with('ExamTypePG')->get();
         return response()->json(['Data' => $ExamPg]);
     }
 
@@ -42,41 +43,49 @@ class PesertaExamPGController extends Controller
      */
     public function CreateDataExamPG(Request $request)
     {
+        // $test = "";
+        // foreach ($request->soal as $data) {
+        //     $test = $test . $data['option_a'];
+        // }
+        // return response()->json($test);
         try {
-            $request->validate([
-                'question' => 'required',
-                'option_a' => 'required',
-                'option_b' => 'required',
-                'option_c' => 'required',
-                'option_d' => 'required',
-                'option_e' => 'required',
-                'true_answer' => 'required',
-                'code' => 'required',
-            ]);
+            $request->validate([]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $ExamPg = ExamPg::create([
-            'user_level_id' => $request->user_level_id,
-            'jenis_exam' => $request->jenis_exam,
-            'question' => $request->question,
-            'option_a' => $request->option_a,
-            'option_b' => $request->option_b,
-            'option_c' => $request->option_c,
-            'option_d' => $request->option_d,
-            'option_e' => $request->option_e,
-            'true_answer' => $request->true_answer,
-            'code' => $request->code,
-        ]);
+        $type = $request->type_exam;
+        $code = $request->code;
 
-        if ($ExamPg) {
-            return response()->json(['message' => 'ExamPg Berhasil Ditambahkan']);
-        } else {
-            return response()->json(['message' => 'ExamPg Gagal Ditambahkan']);
+        $ExamType = ExamType::create([
+            'type_exam' => $type,
+            'code' => $code,
+        ]);
+        // return response()->json($request->soal);
+
+        foreach ($request->soal as $data) {
+            $ExamPg = ExamPg::create([
+                'exam_id' => $ExamType->id,
+                'jenis_exam' => 'pg',
+                'question' => $data['question'],
+                'option_a' => $data['option_a'],
+                'option_b' => $data['option_b'],
+                'option_c' => $data['option_c'],
+                'option_d' => $data['option_d'],
+                'option_e' => $data['option_e'],
+                'true_answer' => $data['true_answer'],
+                'code' => $ExamType->code,
+            ]);
         }
+        return response()->json(['message' => 'ExamPg Berhasil Ditambahkan']);
+
+        // if ($ExamPg) {
+        //     return response()->json(['message' => 'ExamPg Berhasil Ditambahkan']);
+        // } else {
+        //     return response()->json(['message' => 'ExamPg Gagal Ditambahkan']);
+        // }
     }
 
     /**
@@ -87,8 +96,8 @@ class PesertaExamPGController extends Controller
      */
     public function ShowDataExamPG($id)
     {
-        $user = Auth::user()->id;
-        $ExamPg = ExamPg::with('ExamTypePG')->where('id', $user)->orWhere('id', $id)->first();
+
+        $ExamPg = ExamPg::with('ExamTypePG')->where('id', $id)->first();
         return response()->json(['Data' => $ExamPg]);
     }
 

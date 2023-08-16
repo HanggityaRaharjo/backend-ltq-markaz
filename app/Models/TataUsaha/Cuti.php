@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Peserta;
+namespace App\Models\TataUsaha;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,6 +10,7 @@ class Cuti extends Model
 {
     use HasFactory;
 
+    protected $table = 'cuti_tatausaha';
     protected $guarded = ['id'];
 
     public function users()

@@ -20,7 +20,7 @@ class AdminRoleController extends Controller
      */
     public function GetDataRole()
     {
-        $role = Role::latest()->get();
+        $role = Role::with('user')->get();
         return response()->json(['data' => $role]);
     }
 
@@ -31,7 +31,6 @@ class AdminRoleController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -40,7 +39,7 @@ class AdminRoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataRole(Request $request)
+    public function CreateDataRole(Request $request, $uuid, $id, $nama_role)
     {
         try {
             $request->validate([
@@ -52,12 +51,21 @@ class AdminRoleController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $role = Role::create([
-            'user_id' => $request->user_id,
-            'nama_role' => $request->nama_role,
-        ]);
+        foreach ($request->data as $data) {
 
-        return response()->json(['masage' => 'success', 'data' => $role]);
+            $user = User::where('uuid', $uuid)->first();
+            if ($request->input == 1) {
+                $role = Role::create([
+                    'user_id' => $data->user_id,
+                    'nama_role' => $data->nama_role,
+                ]);
+                return response()->json(['masage' => 'Success Create Data']);
+            } elseif ($request->input == 0) {
+                $role = Role::where('user_id', $user->id)->where('nama_role', $nama_role)->first();
+                $role->delete();
+                return response()->json(['masage' => 'Success Delete Data']);
+            }
+        }
     }
 
     /**
@@ -66,10 +74,10 @@ class AdminRoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataRole($id)
+    public function ShowDataRole($id, $uuid)
     {
-        $user = Auth::user()->id;
-        $role = Role::where('id', $user)->orWhere('id', $id)->first();
+        $user = User::where('uuid', $uuid)->first();
+        $role = Role::where('user_id', $user->id)->orWhere('id', $id)->first();
         return response()->json(['data' => $role]);
     }
 

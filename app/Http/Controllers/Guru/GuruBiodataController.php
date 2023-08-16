@@ -12,7 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class GuruBiodataGuruController extends Controller
+class GuruBiodataController extends Controller
 {
     public function getbiodataguru()
     {

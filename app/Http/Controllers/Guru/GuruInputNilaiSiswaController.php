@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
-use App\Models\Peserta\ExamType;
+use App\Models\Guru\InputNilatSiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class PesertaExamTypeController extends Controller
+class GuruInputNilaiSiswaController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataExamType()
+    public function GetDataNilaiSiswa()
     {
-        $ExamType = ExamType::with('exampg')->get();
-        return response()->json($ExamType);
+        $nilai = InputNilatSiswa::latest()->get();
+        return response()->json($nilai);
     }
 
     /**
@@ -40,29 +40,31 @@ class PesertaExamTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataExamType(Request $request)
+    public function CreateDataNilaiSiswa(Request $request)
     {
         try {
             $request->validate([
-                'type_name' => 'required',
+                'program' => 'required',
+                'nilai' => 'required',
             ]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-        $user = Auth::user()->id;
-        $ExamType = ExamType::create([
-            'user_id' => $user,
-            'type_name' => $request->type_name,
-            'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
+
+        // $user = Auth::user()->id;
+        // $user_id = User::where('uuid', $uuid)->first();
+        $nilai = InputNilatSiswa::create([
+            'user_id' => $request->user_id,
+            'program' => $request->program,
+            'nilai' => $request->nilai,
         ]);
 
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Ditambahkan']);
+        if ($nilai) {
+            return response()->json(['message' => 'nilai Berhasil Ditambahkan']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Ditambahkan']);
+            return response()->json(['message' => 'nilai Gagal Ditambahkan']);
         }
     }
 
@@ -72,10 +74,10 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataExamType($id)
+    public function ShowDataNilaiSiswa($id)
     {
-        $ExamType = ExamType::with('exampg')->where('id', $id)->first();
-        return response()->json($ExamType);
+        $nilai = InputNilatSiswa::where('id', $id)->first();
+        return response()->json($nilai);
     }
 
     /**
@@ -96,18 +98,18 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataExamType(Request $request, $id)
+    public function UpdateDataNilaiSiswa(Request $request, $id)
     {
-        // $user = Auth::user()->id;
-        $ExamType = ExamType::where('id', $id)->first()->update([
-            'type_name' => $request->type_name,
-            'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
+        // $user_id = User::where('uuid', $uuid)->first();
+        $nilai = InputNilatSiswa::where('id', $id)->first()->update([
+            'user_id' => $request->user_id,
+            'program' => $request->program,
+            'nilai' => $request->nilai,
         ]);
-        if ($ExamType) {
-            return response()->json(['message' => 'ExamType Berhasil Diubah']);
+        if ($nilai) {
+            return response()->json(['message' => 'nilai Berhasil Diubah']);
         } else {
-            return response()->json(['message' => 'ExamType Gagal Diubah']);
+            return response()->json(['message' => 'nilai Gagal Diubah']);
         }
     }
 
@@ -117,9 +119,9 @@ class PesertaExamTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function DeleteDataExamType($id)
+    public function DeleteDataNilaiSiswa($id)
     {
-        $data = ExamType::where('id', $id)->first();
+        $data = InputNilatSiswa::where('id', $id)->first();
         $data->delete();
         return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
     }

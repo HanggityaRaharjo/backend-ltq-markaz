@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('exam_types', function (Blueprint $table) {
+        Schema::create('raport_siswas', function (Blueprint $table) {
             $table->id();
-            $table->string('type_exam');
-            $table->string('code');
+            $table->unsignedBigInteger('nilai_id')->nullable();
+            $table->foreign('nilai_id')->references('id')->on('input_nilai_siswas')->onDelete('cascade');
+            $table->string('rata-rata');
+            $table->string('semester');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_types');
+        Schema::dropIfExists('raport_siswas');
     }
 };

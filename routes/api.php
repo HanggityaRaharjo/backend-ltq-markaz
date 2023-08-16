@@ -12,8 +12,13 @@ use App\Http\Controllers\Guru\AbsensiGuruController;
 use App\Http\Controllers\Guru\AbsensiPesertaController;
 use App\Http\Controllers\Guru\GuruAbsensiGuruController;
 use App\Http\Controllers\Guru\GuruAbsensiPesertaController;
+use App\Http\Controllers\Guru\GuruBiodataController;
 use App\Http\Controllers\Guru\GuruBiodataGuruController;
+use App\Http\Controllers\Guru\GuruCutiController;
+use App\Http\Controllers\Guru\GuruInputNilaiSiswaController;
 use App\Http\Controllers\Guru\GuruKelasController;
+use App\Http\Controllers\Guru\GuruKurikulumController;
+use App\Http\Controllers\Guru\GuruRaportSiswaController;
 use App\Http\Controllers\Guru\KelasController;
 use App\Http\Controllers\Peserta\AdminProgramDayController;
 use App\Http\Controllers\Peserta\BiodataPesertaController;
@@ -25,19 +30,25 @@ use App\Http\Controllers\Peserta\ExamTypeController;
 use App\Http\Controllers\Peserta\Paket;
 use App\Http\Controllers\Peserta\PaketController;
 use App\Http\Controllers\Peserta\PembayaranController;
+use App\Http\Controllers\Peserta\PesertaBiodataController;
 use App\Http\Controllers\Peserta\PesertaBiodataPesertaController;
+use App\Http\Controllers\Peserta\PesertaCutiController;
 use App\Http\Controllers\Peserta\PesertaExamEssaiController;
 use App\Http\Controllers\Peserta\PesertaExamPGController;
 use App\Http\Controllers\Peserta\PesertaExamPraktikumController;
 use App\Http\Controllers\Peserta\PesertaExamTypeController;
 use App\Http\Controllers\Peserta\PesertaProgramPembayaranController;
+use App\Http\Controllers\Peserta\PesertaRequestDayController;
+use App\Http\Controllers\Peserta\PesertaUserCabangController as PesertaPesertaUserCabangController;
 use App\Http\Controllers\Peserta\PesertaUserLevelController;
+use App\Http\Controllers\Peserta\PesertaUserPaketCntroller;
 use App\Http\Controllers\Peserta\PesertaUserProgramController;
 use App\Http\Controllers\Peserta\PesertaVerifikasiPembayaranController;
 use App\Http\Controllers\Peserta\ProgramController;
 use App\Http\Controllers\Peserta\ProgramDayController;
 use App\Http\Controllers\Peserta\ProgramHargaController;
 use App\Http\Controllers\Peserta\ProgramPembayaranController;
+use App\Http\Controllers\Peserta\TataUsahaBiodataController;
 use App\Http\Controllers\Peserta\UserLevelController;
 use App\Http\Controllers\Peserta\UserPaketCntroller;
 use App\Http\Controllers\Peserta\UserProgramController;
@@ -52,6 +63,13 @@ use App\Http\Controllers\SuperAdmin\CreateTableController;
 use App\Http\Controllers\SuperAdmin\PesertaUserCabangController;
 use App\Http\Controllers\SuperAdmin\SuperAdminCabangLembagaController;
 use App\Http\Controllers\SuperAdmin\UserCabangController;
+use App\Http\Controllers\TataUsaha\TataUsahaBarangController;
+use App\Http\Controllers\TataUsaha\TataUsahaBiodataController as TataUsahaTataUsahaBiodataController;
+use App\Http\Controllers\TataUsaha\TataUsahaCutiController;
+use App\Http\Controllers\TataUsaha\TataUsahaDPPController;
+use App\Http\Controllers\TataUsaha\TataUsahaKonsumenController;
+use App\Http\Controllers\TataUsaha\TataUsahaPembayaranBarang;
+use App\Http\Controllers\TataUsaha\TataUsahaSPPController;
 use App\Http\Controllers\UserController;
 use App\Models\Peserta\UserPaket;
 use Illuminate\Http\Request;
@@ -91,12 +109,12 @@ Route::group(['middleware' => 'api'], function ($router) {
 
     //Biodata Peserta
     Route::prefix('biodata')->group(function () {
-        Route::get('/', [PesertaBiodataPesertaController::class, 'getbiodatapeserta']);
-        Route::get('/show/{uuid}', [PesertaBiodataPesertaController::class, 'showbiodatapeserta']);
-        Route::post('/create', [PesertaBiodataPesertaController::class, 'createbiodatapeserta']);
-        Route::post('/update/{id}', [PesertaBiodataPesertaController::class, 'updatebiodatapeserta']);
-        Route::post('/delete/{uuid}', [PesertaBiodataPesertaController::class, 'deletebiodatapeserta']);
-        Route::post('/show/{uuid}', [PesertaBiodataPesertaController::class, 'showbiodatapeserta']);
+        Route::get('/', [PesertaBiodataController::class, 'getbiodatapeserta']);
+        Route::get('/show/{uuid}', [PesertaBiodataController::class, 'showbiodatapeserta']);
+        Route::post('/create', [PesertaBiodataController::class, 'createbiodatapeserta']);
+        Route::post('/update/{id}', [PesertaBiodataController::class, 'updatebiodatapeserta']);
+        Route::post('/delete/{uuid}', [PesertaBiodataController::class, 'deletebiodatapeserta']);
+        Route::post('/show/{uuid}', [PesertaBiodataController::class, 'showbiodatapeserta']);
     });
 
     //Program
@@ -201,6 +219,13 @@ Route::group(['middleware' => 'api'], function ($router) {
 
     //Management Admin Cabang
     Route::prefix('admincabang')->middleware('role:admincabang,superadmin')->group(function () {
+        Route::prefix('user')->middleware('role:superadmi,admincabang,peserta')->group(function () {
+            Route::get('/', [UserController::class, 'get_user']);
+            Route::get('/show/{id}', [UserController::class, 'ShowDataProfileCabang']);
+            Route::post('/create', [UserController::class, 'CreateDataProfileCabang']);
+            Route::post('/{uuid}', [UserController::class, 'update_user']);
+        });
+
         //Profile Cabang
         Route::prefix('Profile')->group(function () {
             Route::get('/', [ProfileCabangController::class, 'GetDataProfileCabang']);
@@ -214,15 +239,19 @@ Route::group(['middleware' => 'api'], function ($router) {
         Route::prefix('status')->group(function () {
             Route::post('/update/{uuid}', [StatusController::class, 'UpdateDataStatus']);
         });
+        //User Active
+        Route::prefix('status')->group(function () {
+            Route::get('/user/active', [UserController::class, 'get_user_active']);
+        });
 
         //Role
         Route::prefix('role')->group(function () {
-            Route::get('/', [RoleController::class, 'GetDataRole']);
-            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
-            Route::post('/create', [RoleController::class, 'CreateDataRole']);
-            Route::get('/show/{id}', [RoleController::class, 'ShowDataRole']);
-            Route::post('/update/{id}', [RoleController::class, 'UpdateDataRole']);
-            Route::post('/delete/{id}', [RoleController::class, 'DeleteDataRole']);
+            Route::get('/', [AdminRoleController::class, 'GetDataRole']);
+            Route::get('/show/{id}', [AdminRoleController::class, 'ShowDataRole']);
+            Route::post('/create', [AdminRoleController::class, 'CreateDataRole']);
+            Route::get('/show/{id}', [AdminRoleController::class, 'ShowDataRole']);
+            Route::post('/update/{id}', [AdminRoleController::class, 'UpdateDataRole']);
+            Route::post('/delete/{id}', [AdminRoleController::class, 'DeleteDataRole']);
         });
 
         //Formulir
@@ -378,11 +407,11 @@ Route::group(['middleware' => 'api'], function ($router) {
 
         //UserPaket
         Route::prefix('userpaket')->group(function () {
-            Route::get('/', [UserPaketCntroller::class, 'GetDataUserPaket']);
-            Route::get('/show/{id}', [UserPaketCntroller::class, 'ShowDataUserPaket']);
-            Route::post('/create', [UserPaketCntroller::class, 'CreateDataUserPaket']);
-            Route::post('/update/{id}', [UserPaketCntroller::class, 'UpdateDataUserPaket']);
-            Route::post('/delete/{id}', [UserPaketCntroller::class, 'DeleteDataUserPaket']);
+            Route::get('/', [PesertaUserPaketCntroller::class, 'GetDataUserPaket']);
+            Route::get('/show/{id}', [PesertaUserPaketCntroller::class, 'ShowDataUserPaket']);
+            Route::post('/create', [PesertaUserPaketCntroller::class, 'CreateDataUserPaket']);
+            Route::post('/update/{id}', [PesertaUserPaketCntroller::class, 'UpdateDataUserPaket']);
+            Route::post('/delete/{id}', [PesertaUserPaketCntroller::class, 'DeleteDataUserPaket']);
         });
 
         //Program Day
@@ -396,47 +425,38 @@ Route::group(['middleware' => 'api'], function ($router) {
 
         //UserProgram
         Route::prefix('userprogram')->group(function () {
-            Route::get('/', [UserProgramController::class, 'GetDataUserProgram']);
-            Route::get('/show/{id}', [UserProgramController::class, 'ShowDataUserProgram']);
-            Route::post('/create', [UserProgramController::class, 'CreateDataUserProgram']);
-            Route::post('/update/{id}', [UserProgramController::class, 'UpdateDataUserProgram']);
-            Route::post('/delete/{id}', [UserProgramController::class, 'DeleteDataUserProgram']);
+            Route::get('/', [PesertaUserProgramController::class, 'GetDataUserProgram']);
+            Route::get('/show/{id}', [PesertaUserProgramController::class, 'ShowDataUserProgram']);
+            Route::post('/create', [PesertaUserProgramController::class, 'CreateDataUserProgram']);
+            Route::post('/update/{id}', [PesertaUserProgramController::class, 'UpdateDataUserProgram']);
+            Route::post('/delete/{id}', [PesertaUserProgramController::class, 'DeleteDataUserProgram']);
         });
 
         //RequestDay
         Route::prefix('requestday')->group(function () {
-            Route::get('/', [UserProgramController::class, 'GetDataRequestDay']);
-            Route::get('/show/{id}', [UserProgramController::class, 'ShowDataRequestDay']);
-            Route::post('/create', [UserProgramController::class, 'CreateDataRequestDay']);
-            Route::post('/update/{id}', [UserProgramController::class, 'UpdateDataRequestDay']);
-            Route::post('/delete/{id}', [UserProgramController::class, 'DeleteDataRequestDay']);
+            Route::get('/', [PesertaRequestDayController::class, 'GetDataRequestDay']);
+            Route::get('/show/{id}', [PesertaRequestDayController::class, 'ShowDataRequestDay']);
+            Route::post('/create', [PesertaRequestDayController::class, 'CreateDataRequestDay']);
+            Route::post('/update/{id}', [PesertaRequestDayController::class, 'UpdateDataRequestDay']);
+            Route::post('/delete/{id}', [PesertaRequestDayController::class, 'DeleteDataRequestDay']);
         });
 
         //Cuti
         Route::prefix('cuti')->group(function () {
-            Route::get('/', [UserProgramController::class, 'GetDataCuti']);
-            Route::get('/show/{id}', [UserProgramController::class, 'ShowDataCuti']);
-            Route::post('/create', [UserProgramController::class, 'CreateDataCuti']);
-            Route::post('/update/{id}', [UserProgramController::class, 'UpdateDataCuti']);
-            Route::post('/delete/{id}', [UserProgramController::class, 'DeleteGetDataCuti']);
-        });
-
-        //Bukti Pembayaran
-        Route::prefix('buktipembayaran')->group(function () {
-            Route::get('/', [BuktiPembayaranController::class, 'GetDataBuktiPembayaran']);
-            Route::get('/show/{id}', [BuktiPembayaranController::class, 'ShowDataBuktiPembayaran']);
-            Route::post('/create', [BuktiPembayaranController::class, 'CreateDataBuktiPembayaran']);
-            Route::post('/update/{id}', [BuktiPembayaranController::class, 'UpdateDataBuktiPembayaran']);
-            Route::post('/delete/{id}', [BuktiPembayaranController::class, 'DeleteGetDataBuktiPembayaran']);
+            Route::get('/', [PesertaCutiController::class, 'GetDataCuti']);
+            Route::get('/show/{id}', [PesertaCutiController::class, 'ShowDataCuti']);
+            Route::post('/create', [PesertaCutiController::class, 'CreateDataCuti']);
+            Route::post('/update/{id}', [PesertaCutiController::class, 'UpdateDataCuti']);
+            Route::post('/delete/{id}', [PesertaCutiController::class, 'DeleteGetDataCuti']);
         });
 
         //User Cabang
         Route::prefix('user-cabang')->group(function () {
-            Route::get('/', [UserCabangController::class, 'GetDataUserCabang']);
-            Route::get('/show/{id}', [UserCabangController::class, 'ShowDataUserCabang']);
-            Route::post('/create', [UserCabangController::class, 'CreateDataUserCabang']);
-            Route::post('/update/{id}', [UserCabangController::class, 'UpdateDataUserCabang']);
-            Route::post('/delete/{id}', [UserCabangController::class, 'DeleteGetDataUserCabang']);
+            Route::get('/', [PesertaUserCabangController::class, 'GetDataUserCabang']);
+            Route::get('/show/{id}', [PesertaUserCabangController::class, 'ShowDataUserCabang']);
+            Route::post('/create', [PesertaUserCabangController::class, 'CreateDataUserCabang']);
+            Route::post('/update/{id}', [PesertaUserCabangController::class, 'UpdateDataUserCabang']);
+            Route::post('/delete/{id}', [PesertaUserCabangController::class, 'DeleteGetDataUserCabang']);
         });
     });
 
@@ -449,12 +469,12 @@ Route::group(['middleware' => 'api'], function ($router) {
 
 //Biodata Guru
 Route::prefix('biodata-guru')->group(function () {
-    Route::get('/', [GuruBiodataGuruController::class, 'getbiodataguru']);
-    Route::get('/show/{uuid}', [GuruBiodataGuruController::class, 'showbiodataguru']);
-    Route::post('/create', [GuruBiodataGuruController::class, 'createbiodataguru']);
-    Route::post('/update/{id}', [GuruBiodataGuruController::class, 'updatebiodataguru']);
-    Route::post('/delete/{uuid}', [GuruBiodataGuruController::class, 'deletebiodataguru']);
-    Route::post('/show/{uuid}', [GuruBiodataGuruController::class, 'showbiodataguru']);
+    Route::get('/', [GuruBiodataController::class, 'getbiodataguru']);
+    Route::get('/show/{uuid}', [GuruBiodataController::class, 'showbiodataguru']);
+    Route::post('/create', [GuruBiodataController::class, 'createbiodataguru']);
+    Route::post('/update/{id}', [GuruBiodataController::class, 'updatebiodataguru']);
+    Route::post('/delete/{uuid}', [GuruBiodataController::class, 'deletebiodataguru']);
+    Route::post('/show/{uuid}', [GuruBiodataController::class, 'showbiodataguru']);
 });
 
 //Kelas
@@ -484,6 +504,100 @@ Route::prefix('absensi-guru')->group(function () {
     Route::post('/delete/{id}', [GuruAbsensiGuruController::class, 'DeleteDataAbsensiGuru']);
 });
 
+//Cuti Guru
+Route::prefix('cuti-guru')->group(function () {
+    Route::get('/', [GuruCutiController::class, 'GetDataCuti']);
+    Route::get('/show/{id}', [GuruCutiController::class, 'ShowDataCuti']);
+    Route::post('/create/{uuid}', [GuruCutiController::class, 'CreateDataCuti']);
+    Route::post('/update/{id}', [GuruCutiController::class, 'UpdateDataCuti']);
+    Route::post('/delete/{id}', [GuruCutiController::class, 'DeleteDataCuti']);
+});
+//Input NIlai
+Route::prefix('input-nilai')->group(function () {
+    Route::get('/', [GuruInputNilaiSiswaController::class, 'GetDataNilaiSiswa']);
+    Route::get('/show/{id}', [GuruInputNilaiSiswaController::class, 'ShowDataNilaiSiswa']);
+    Route::post('/create', [GuruInputNilaiSiswaController::class, 'CreateDataNilaiSiswa']);
+    Route::post('/update/{id}', [GuruInputNilaiSiswaController::class, 'UpdateDataNilaiSiswa']);
+    Route::post('/delete/{id}', [GuruInputNilaiSiswaController::class, 'DeleteDataNilaiSiswa']);
+});
+//Raport Siswa
+Route::prefix('raport')->group(function () {
+    Route::get('/', [GuruRaportSiswaController::class, 'GetDataRaport']);
+    Route::get('/show/{id}', [GuruRaportSiswaController::class, 'ShowDataRaport']);
+    Route::post('/create', [GuruRaportSiswaController::class, 'CreateDataRaport']);
+    Route::post('/update/{id}', [GuruRaportSiswaController::class, 'UpdateDataRaport']);
+    Route::post('/delete/{id}', [GuruRaportSiswaController::class, 'DeleteDataRaport']);
+});
+//Kurikulum
+Route::prefix('kurikulum')->group(function () {
+    Route::get('/', [GuruKurikulumController::class, 'GetDataKurikulum']);
+    Route::get('/show/{id}', [GuruKurikulumController::class, 'ShowDataKurikulum']);
+    Route::post('/create', [GuruKurikulumController::class, 'CreateDataKurikulum']);
+    Route::post('/update/{id}', [GuruKurikulumController::class, 'UpdateDataKurikulum']);
+    Route::post('/delete/{id}', [GuruKurikulumController::class, 'DeleteDataKurikulum']);
+});
+
+
+// Management Tata Usaha
+
+//Biodata Tata Usaha
+Route::prefix('biodata-tatausaha')->group(function () {
+    Route::get('/', [TataUsahaTataUsahaBiodataController::class, 'getbiodatatatausaha']);
+    Route::get('/show/{uuid}', [TataUsahaTataUsahaBiodataController::class, 'showbiodatatatausaha']);
+    Route::post('/create', [TataUsahaTataUsahaBiodataController::class, 'createbiodatatatausaha']);
+    Route::post('/update/{id}', [TataUsahaTataUsahaBiodataController::class, 'updatebiodatatatausaha']);
+    Route::post('/delete/{uuid}', [TataUsahaTataUsahaBiodataController::class, 'deletebiodatatatausaha']);
+    Route::post('/show/{uuid}', [TataUsahaTataUsahaBiodataController::class, 'showbiodatatatausaha']);
+});
+//Cuti Tata Usaha
+Route::prefix('cuti-tatausaha')->group(function () {
+    Route::get('/', [TataUsahaCutiController::class, 'GetDataCuti']);
+    Route::get('/show/{id}', [TataUsahaCutiController::class, 'ShowDataCuti']);
+    Route::post('/create/{uuid}', [TataUsahaCutiController::class, 'CreateDataCuti']);
+    Route::post('/update/{id}', [TataUsahaCutiController::class, 'UpdateDataCuti']);
+    Route::post('/delete/{id}', [TataUsahaCutiController::class, 'DeleteDataCuti']);
+});
+//SPP
+Route::prefix('spp')->group(function () {
+    Route::get('/', [TataUsahaSPPController::class, 'GetDataSpp']);
+    Route::get('/show/{id}', [TataUsahaSPPController::class, 'ShowDataSpp']);
+    Route::post('/create', [TataUsahaSPPController::class, 'CreateDataSpp']);
+    Route::post('/update/{id}', [TataUsahaSPPController::class, 'UpdateDataSpp']);
+    Route::post('/delete/{id}', [TataUsahaSPPController::class, 'DeleteDataSpp']);
+});
+//DPP
+Route::prefix('dpp')->group(function () {
+    Route::get('/', [TataUsahaDPPController::class, 'GetDataDpp']);
+    Route::get('/show/{id}', [TataUsahaDPPController::class, 'ShowDataDpp']);
+    Route::post('/create', [TataUsahaDPPController::class, 'CreateDataDpp']);
+    Route::post('/update/{id}', [TataUsahaDPPController::class, 'UpdateDataDpp']);
+    Route::post('/delete/{id}', [TataUsahaDPPController::class, 'DeleteDataDpp']);
+});
+//Konsumen
+Route::prefix('konsumen')->group(function () {
+    Route::get('/', [TataUsahaKonsumenController::class, 'GetDataKonsumen']);
+    Route::get('/show/{id}', [TataUsahaKonsumenController::class, 'ShowDataKonsumen']);
+    Route::post('/create', [TataUsahaKonsumenController::class, 'CreateDataKonsumen']);
+    Route::post('/update/{id}', [TataUsahaKonsumenController::class, 'UpdateDataKonsumen']);
+    Route::post('/delete/{id}', [TataUsahaKonsumenController::class, 'DeleteDataKonsumen']);
+});
+//Barang
+Route::prefix('barang')->group(function () {
+    Route::get('/', [TataUsahaBarangController::class, 'GetDataBarang']);
+    Route::get('/show/{id}', [TataUsahaBarangController::class, 'ShowDataBarang']);
+    Route::post('/create', [TataUsahaBarangController::class, 'CreateDataBarang']);
+    Route::post('/update/{id}', [TataUsahaBarangController::class, 'UpdateDataBarang']);
+    Route::post('/delete/{id}', [TataUsahaBarangController::class, 'DeleteDataBarang']);
+});
+
+//Pembayaran
+Route::prefix('pembayaran-barang')->group(function () {
+    Route::get('/', [TataUsahaPembayaranBarang::class, 'GetDataPembayranBarang']);
+    Route::get('/show/{id}', [TataUsahaPembayaranBarang::class, 'ShowDataPembayranBarang']);
+    Route::post('/create', [TataUsahaPembayaranBarang::class, 'CreateDataPembayranBarang']);
+    Route::post('/update/{id}', [TataUsahaPembayaranBarang::class, 'UpdateDataPembayranBarang']);
+    Route::post('/delete/{id}', [TataUsahaPembayaranBarang::class, 'DeleteDataPembayranBarang']);
+});
 
 //Create Table
 Route::prefix('createtable')->group(function () {
