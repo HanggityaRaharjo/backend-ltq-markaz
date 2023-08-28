@@ -10,6 +10,7 @@ use App\Models\Peserta\BiodataPeserta;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class PesertaBiodataController extends Controller
 {
@@ -20,7 +21,7 @@ class PesertaBiodataController extends Controller
      */
     public function getbiodatapeserta()
     {
-        $biodata = BiodataPeserta::with('userbiodata')->where('status', 'active')->get();
+        $biodata = BiodataPeserta::with('userbiodata')->get();
         return response()->json($biodata);
     }
 
@@ -42,25 +43,23 @@ class PesertaBiodataController extends Controller
      */
     public function createbiodatapeserta(Request $request)
     {
-        try {
-            $request->validate([
-                'full_name' => 'required',
-                // 'photo' => 'required',
-                // 'photo_ktp' => 'required',
-                'usia' => 'required',
-                'jenis_kelamin' => 'required',
-                'alamat' => 'required',
-                'kelurahan' => 'required',
-                'kecamatan' => 'required',
-                'kabupaten_kota' => 'required',
-                'provinsi' => 'required',
-                'no_wa' => 'required',
-                'no_alternatif' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required',
+            // 'photo' => 'required',
+            // 'photo_ktp' => 'required',
+            'usia' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'kabupaten_kota' => 'required',
+            'provinsi' => 'required',
+            'no_wa' => 'required',
+            'no_alternatif' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user_id = User::where('uuid', $request->uuid)->first();
@@ -77,8 +76,8 @@ class PesertaBiodataController extends Controller
             'user_id' => $user_id->id,
             'full_name' => $request->full_name,
             'tanggal_lahir' => $request->tanggal_lahir,
-            'photo_ktp' => 'photo_ktp',
-            'photo' => 'photo',
+            'photo' => 'photo/' . $file_name,
+            'photo_ktp' => 'photo_ktp/' . $file_name2,
             'usia' => $request->usia,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat' => $request->alamat,
@@ -118,7 +117,7 @@ class PesertaBiodataController extends Controller
     {
         $user = User::where('uuid', $uuid)->first();
         $biodata = BiodataPeserta::with('userbiodata')->where('user_id', $user->id)->first();
-        return response()->json(['Data' => $biodata]);
+        return response()->json($biodata);
     }
 
     /**
@@ -130,6 +129,23 @@ class PesertaBiodataController extends Controller
      */
     public function updatebiodatapeserta(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required',
+            'usia' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'kabupaten_kota' => 'required',
+            'provinsi' => 'required',
+            'no_wa' => 'required',
+            'no_alternatif' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         $biodata = BiodataPeserta::find($id);
         $user = Auth::user()->id;
         if (Request()->hasFile('photo')) {
@@ -145,7 +161,7 @@ class PesertaBiodataController extends Controller
                 'user_id' => $user,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'photo' => $image,
+                'photo' => 'photo/' . $file_name,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,
@@ -169,7 +185,7 @@ class PesertaBiodataController extends Controller
                 'user_id' => $user,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'photo_ktp' => $image2,
+                'photo_ktp' => 'photo_ktp/' . $file_name2,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,

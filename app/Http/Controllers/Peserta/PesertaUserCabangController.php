@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserCabang;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaUserCabangController extends Controller
@@ -20,10 +21,16 @@ class PesertaUserCabangController extends Controller
      */
     public function GetDataUserCabang()
     {
-        $UserCabang = UserCabang::with('cabang')->latest()->get();
-        return response()->json(['data' => $UserCabang]);
+        $UserCabang = UserCabang::with('cabang')->get();
+        return response()->json($UserCabang);
     }
 
+    public function GetDataCabangByUser($uuid)
+    {
+        $user = User::where('uuid', $uuid)->first();
+        $dataCabangByUser = UserCabang::with('cabang')->where('user_id', $user->id)->first();
+        return response()->json($dataCabangByUser);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -42,15 +49,12 @@ class PesertaUserCabangController extends Controller
      */
     public function CreateDataUserCabang(Request $request)
     {
-        try {
-            $request->validate([
-                'cabang_lembaga_id' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $user_id = User::where('uuid', $request->uuid)->first();
         $UserCabang = UserCabang::create([
             'user_id' => $user_id->id,
@@ -96,14 +100,10 @@ class PesertaUserCabangController extends Controller
      */
     public function UpdateDataUserCabang(Request $request, $id)
     {
-        try {
-            $request->validate([
-                'cabang_lembaga_id' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $UserCabang = UserCabang::where('id', $id)->first()->update([

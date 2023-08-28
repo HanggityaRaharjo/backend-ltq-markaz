@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use App\Models\Guru\kelas;
+use App\Models\Peserta\UserKelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class GuruKelasController extends Controller
@@ -42,25 +44,29 @@ class GuruKelasController extends Controller
      */
     public function CreateDataKelas(Request $request)
     {
-        try {
-            $request->validate([
-                'nama_pengajar' => 'required',
-                'jumlah_peserta' => 'required',
-                'nama_kelas' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user_id = Auth::user()->id;
+        $nama_pengajar = $request->nama_pengajar;
+        $nama_kelas = $request->nama_kelas;
+        $jumlah_peserta = $request->jumlah_peserta;
+
         $Kelas = Kelas::create([
-            'user_id' => $user_id,
-            'nama_pengajar' => $request->nama_pengajar,
-            'jumlah_peserta' => $request->jumlah_peserta,
-            'nama_kelas' => $request->nama_kelas,
+            'user_id' => $request->user_id,
+            'nama_pengajar' => $nama_pengajar,
+            'nama_kelas' => $nama_kelas,
+            'jumlah_peserta' => $jumlah_peserta,
         ]);
+        foreach ($request['peserta'] as $peserta) {
+            $data = UserKelas::create([
+                'user_id' => $peserta['user_id'],
+                'name' => $peserta['name'],
+                'kelas_id' => $Kelas->id,
+            ]);
+        }
 
         if ($Kelas) {
             return response()->json(['message' => 'Kelas Berhasil Ditambahkan']);
@@ -101,6 +107,11 @@ class GuruKelasController extends Controller
      */
     public function UpdateDataKelas(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $Kelas = Kelas::where('id', $id)->first()->update([
             'user_id' => $request->user_id,
             'nama_pengajar' => $request->nama_pengajar,

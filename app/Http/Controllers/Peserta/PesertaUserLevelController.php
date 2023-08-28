@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaUserLevelController extends Controller
@@ -42,24 +43,36 @@ class PesertaUserLevelController extends Controller
      */
     public function CreateDataUserLevel(Request $request)
     {
-        try {
-            $request->validate([
-                'level' => 'required',
-                'file' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = Auth::user()->id;
-        $file_name = $request->file->getClientOriginalName();
-        $image = $request->file->storeAs('public/file', $file_name);
+        $total_nilai = 0;
+        $predikat = "";
+        foreach ($request->soal as $soal) {
+            if ($soal['true_answer'] === $soal['select']) {
+                $total_nilai += 10;
+            }
+        }
+        if ($total_nilai >= 90) {
+            $predikat = "A";
+        } elseif ($total_nilai >= 80 && $total_nilai < 90) {
+            $predikat = "B";
+        } elseif ($total_nilai >= 70 && $total_nilai < 80) {
+            $predikat = "C";
+        } elseif ($total_nilai >= 60 && $total_nilai < 70) {
+            $predikat = "D";
+        } elseif ($total_nilai <= 59) {
+            $predikat = "E";
+        }
+
+        // return response()->json(["data" => $request->uuid, 'massage' => 'sampe sini']);
+        $user_id = User::where('uuid', $request->uuid)->first();
         $userlevel = UserLevel::create([
-            'user_id' => $user,
-            'level' => $request->level,
-            'file' => $image,
+            'user_id' => $user_id->id,
+            'predikat' => $predikat,
         ]);
 
         if ($userlevel) {
@@ -75,10 +88,10 @@ class PesertaUserLevelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataUserLevel($id)
+    public function ShowDataUserLevel($uuid)
     {
-        $user = Auth::user()->id;
-        $userlevel = UserLevel::with('users')->where('id', $user)->orWhere('id', $id)->all();
+        $user = User::where('uuid', $uuid)->first();
+        $userlevel = UserLevel::with('users')->where('user_id', $user->id)->first();
         return response()->json(['Data' => $userlevel]);
     }
 
@@ -102,6 +115,11 @@ class PesertaUserLevelController extends Controller
      */
     public function UpdateDataUserLevel(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $userlevel = UserLevel::find($id);
         $user = Auth::user()->id;
         if (Request()->hasFile('file')) {
@@ -110,15 +128,12 @@ class PesertaUserLevelController extends Controller
             }
             $file_name = $request->file->getClientOriginalName();
             $image = $request->file->storeAs('public/file', $file_name);
-            // $image = $request->poto->store('thumbnail');
             $userlevel->update([
-                'user_id' => $user,
                 'level' => $request->level,
-                'file' => $image,
+                'file' => 'photo/' . $file_name,
             ]);
         } else {
             $userlevel->update([
-                'user_id' => $user,
                 'level' => $request->level,
             ]);
         }

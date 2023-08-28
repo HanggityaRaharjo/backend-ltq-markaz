@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaRequestDayController extends Controller
@@ -42,15 +43,13 @@ class PesertaRequestDayController extends Controller
      */
     public function CreateDataRequestDay(Request $request)
     {
-        try {
-            $request->validate([
-                'date_start' => 'required',
-                'date_end' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'date_start' => 'required',
+            'date_end' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = Auth::user()->id;
@@ -100,6 +99,14 @@ class PesertaRequestDayController extends Controller
      */
     public function UpdateDataRequestDay(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'date_start' => 'required',
+            'date_end' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $user = Auth::user()->id;
         $RequestDay = RequestDay::where('id', $id)->first()->update([
             'user_id' => $user,

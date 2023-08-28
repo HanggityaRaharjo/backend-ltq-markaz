@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaExamPGController extends Controller
@@ -48,12 +49,10 @@ class PesertaExamPGController extends Controller
         //     $test = $test . $data['option_a'];
         // }
         // return response()->json($test);
-        try {
-            $request->validate([]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $type = $request->type_exam;
@@ -101,6 +100,7 @@ class PesertaExamPGController extends Controller
         return response()->json(['Data' => $ExamPg]);
     }
 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -121,6 +121,12 @@ class PesertaExamPGController extends Controller
      */
     public function UpdateDataExamPG(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         $ExamPg = ExamPg::where('id', $id)->first()->update([
             'user_level_id' => $request->user_level_id,
             'jenis_exam' => $request->jenis_exam,

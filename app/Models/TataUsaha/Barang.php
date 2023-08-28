@@ -15,4 +15,12 @@ class Barang extends Model
     {
         return $this->hasMany(DetailPembelian::class, 'barang_id');
     }
+    public function barang_masuk()
+    {
+        return $this->hasMany(BarangMasuk::class, 'barang_id');
+    }
+    public function barang_keluar()
+    {
+        return $this->hasMany(BarangKeluar::class, 'barang_id');
+    }
 }

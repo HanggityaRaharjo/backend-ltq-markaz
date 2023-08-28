@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('kurikulums', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->text('deskripsi');
-            $table->string('periode');
+            $table->string('nama')->nullable();
+            $table->text('deskripsi')->nullable();
+            $table->string('periode')->nullable();
+            $table->string('file_kurikulum')->nullable();
             $table->timestamps();
         });
     }

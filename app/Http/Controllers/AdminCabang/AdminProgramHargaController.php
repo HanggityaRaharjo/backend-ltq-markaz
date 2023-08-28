@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Validator;
 
 class AdminProgramHargaController extends Controller
 {
@@ -43,14 +43,12 @@ class AdminProgramHargaController extends Controller
      */
     public function CreateDataProgramHarga(Request $request)
     {
-        try {
-            $request->validate([
-                'harga' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'harga' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $ProgramHarga = ProgramHarga::create([
@@ -97,6 +95,13 @@ class AdminProgramHargaController extends Controller
      */
     public function UpdateDataProgramHarga(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'harga' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $ProgramHarga = ProgramHarga::where('id', $id)->first()->update([
             'program_id' => $request->program_id,
             'cabang_lembaga_id' => $request->cabang_lembaga_id,

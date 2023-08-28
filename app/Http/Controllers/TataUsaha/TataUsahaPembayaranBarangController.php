@@ -8,7 +8,7 @@ use App\Models\TataUsaha\DetailPembelian;
 use App\Models\TataUsaha\PembayaranBarang;
 use Illuminate\Http\Request;
 
-class TataUsahaPembayaranBarang extends Controller
+class TataUsahaPembayaranBarangController extends Controller
 {
     public function CreateDataPembayranBarang(Request $request)
     {

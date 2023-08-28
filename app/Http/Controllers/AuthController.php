@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Dotenv\Validator;
+use App\Models\Role;
 use Illuminate\Support\Str;
 use App\Models\User;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
 
 class AuthController extends Controller
 {
@@ -24,17 +23,14 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $validator = FacadesValidator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required',
+        ]);
 
-        try {
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
-
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = User::create([
@@ -42,6 +38,15 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+        ]);
+        $dataRole = Role::create([
+            'user_id' => $user->id,
+            'superadmin' => 0,
+            'admincabang' => 0,
+            'peserta' => 0,
+            'guru' => 0,
+            'tatausaha' => 0,
+            'bendahara' => 0,
         ]);
 
         if ($user) {

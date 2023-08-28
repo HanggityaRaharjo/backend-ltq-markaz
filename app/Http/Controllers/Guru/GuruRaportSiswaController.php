@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class GuruRaportSiswaController extends Controller
@@ -42,12 +43,10 @@ class GuruRaportSiswaController extends Controller
      */
     public function CreateDataRaport(Request $request)
     {
-        try {
-            $request->validate([]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // $user = Auth::user()->id;
@@ -97,6 +96,11 @@ class GuruRaportSiswaController extends Controller
      */
     public function UpdateDataRaport(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $raport = RaportSiswa::where('id', $id)->first()->update([
             'nilai_id' => $request->nilai_id,
             'rata_rata' => $request->rata_rata,

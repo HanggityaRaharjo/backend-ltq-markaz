@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class GuruKurikulumController extends Controller
@@ -37,13 +38,14 @@ class GuruKurikulumController extends Controller
      */
     public function CreateDataKurikulum(Request $request)
     {
-        try {
-            $request->validate([]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $file_name = $request->file_kurikulum->getClientOriginalName();
+        $image = $request->file_kurikulum->storeAs('public/file_kurikulum', $file_name);
 
         // $user = Auth::user()->id;
         // $user_id = User::where('uuid', $uuid)->first();
@@ -51,6 +53,7 @@ class GuruKurikulumController extends Controller
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'periode' => $request->periode,
+            'file_kurikulum' => 'file/' . $file_name,
         ]);
 
         if ($Kurikulum) {
@@ -92,11 +95,34 @@ class GuruKurikulumController extends Controller
      */
     public function UpdateDataKurikulum(Request $request, $id)
     {
-        $Kurikulum = Kurikulum::where('id', $id)->first()->update([
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'periode' => $request->periode,
-        ]);
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $Kurikulum = Kurikulum::find($id);
+
+        if (Request()->hasFile('file_kurikulum')) {
+            if (Storage::exists($Kurikulum->file_kurikulum)) {
+                Storage::delete($Kurikulum->file_kurikulum);
+            }
+
+            $file_name = $request->file_kurikulum->getClientOriginalName();
+            $image = $request->file_kurikulum->storeAs('public/file_kurikulum', $file_name);
+
+            $Kurikulum->update([
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'periode' => $request->periode,
+                'file_kurikulum' => 'file/' . $file_name,
+            ]);
+        } else {
+            $Kurikulum->update([
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'periode' => $request->periode,
+            ]);
+        }
         if ($Kurikulum) {
             return response()->json(['message' => 'Kurikulum Berhasil Diubah']);
         } else {

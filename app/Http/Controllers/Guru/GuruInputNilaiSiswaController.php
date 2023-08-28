@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class GuruInputNilaiSiswaController extends Controller
@@ -42,15 +43,13 @@ class GuruInputNilaiSiswaController extends Controller
      */
     public function CreateDataNilaiSiswa(Request $request)
     {
-        try {
-            $request->validate([
-                'program' => 'required',
-                'nilai' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'program' => 'required',
+            'nilai' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // $user = Auth::user()->id;
@@ -100,6 +99,14 @@ class GuruInputNilaiSiswaController extends Controller
      */
     public function UpdateDataNilaiSiswa(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'program' => 'required',
+            'nilai' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         // $user_id = User::where('uuid', $uuid)->first();
         $nilai = InputNilatSiswa::where('id', $id)->first()->update([
             'user_id' => $request->user_id,

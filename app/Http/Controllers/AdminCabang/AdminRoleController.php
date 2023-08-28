@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminRoleController extends Controller
@@ -29,8 +30,29 @@ class AdminRoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function CreateUserRole(Request $request)
     {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $roledata = $request->user_id;
+        $hasRole = Role::where('user_id', $roledata)->first();
+        if (empty($hasRole)) {
+            $dataRole = Role::create([
+                'user_id' => $roledata,
+                'superadmin' => $request->superadmin,
+                'admincabang' => $request->admincabang,
+                'peserta' => $request->peserta,
+                'guru' => $request->guru,
+                'tatausaha' => $request->tatausaha,
+                'bendahara' => $request->bendahara,
+            ]);
+            return response()->json(['message' => 'Berhasil dibuat']);
+        } else {
+            return response()->json(['message' => 'sudah dibuat']);
+        }
     }
 
     /**

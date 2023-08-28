@@ -11,13 +11,14 @@ use App\Models\Peserta\BiodataPeserta;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class GuruBiodataController extends Controller
 {
     public function getbiodataguru()
     {
         $biodata = BiodataGuru::with('userbiodata')->latest()->get();
-        return response()->json(['Data' => $biodata]);
+        return response()->json($biodata);
     }
 
     /**
@@ -38,25 +39,24 @@ class GuruBiodataController extends Controller
      */
     public function createbiodataguru(Request $request)
     {
-        try {
-            $request->validate([
-                'full_name' => 'required',
-                // 'photo' => 'required',
-                // 'photo_ktp' => 'required',
-                'usia' => 'required',
-                'jenis_kelamin' => 'required',
-                'alamat' => 'required',
-                'kelurahan' => 'required',
-                'kecamatan' => 'required',
-                'kabupaten_kota' => 'required',
-                'provinsi' => 'required',
-                'no_wa' => 'required',
-                'no_alternatif' => 'required',
-            ]);
+        // return response()->json($request->all(), 'sampe sini');
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required',
+            // 'photo' => 'required',
+            // 'photo_ktp' => 'required',
+            'usia' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'kabupaten_kota' => 'required',
+            'provinsi' => 'required',
+            'no_wa' => 'required',
+            'no_alternatif' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user_id = User::where('uuid', $request->uuid)->first();
@@ -112,9 +112,9 @@ class GuruBiodataController extends Controller
      */
     public function showbiodataguru($uuid)
     {
-        $user = Auth::user()->uuid;
-        $biodata = BiodataGuru::with('userbiodata')->where('uuid', $user)->orWhere('uuid', $uuid)->first();
-        return response()->json(['Data' => $biodata]);
+        $user = User::where('uuid', $uuid)->first();
+        $biodata = BiodataGuru::with('user')->where('user_id', $user->id)->first();
+        return response()->json($biodata);
     }
 
     /**
@@ -126,6 +126,24 @@ class GuruBiodataController extends Controller
      */
     public function updatebiodataguru(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required',
+            // 'photo' => 'required',
+            // 'photo_ktp' => 'required',
+            'usia' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'kabupaten_kota' => 'required',
+            'provinsi' => 'required',
+            'no_wa' => 'required',
+            'no_alternatif' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $biodata = BiodataGuru::find($id);
         $user = Auth::user()->id;
         if (Request()->hasFile('photo')) {

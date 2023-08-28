@@ -9,9 +9,10 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class FormulirController extends Controller
+class AdminFormulirController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +21,7 @@ class FormulirController extends Controller
      */
     public function GetDataFormulir()
     {
-        $formulir = Formulir::latest()->get();
+        $formulir = Formulir::get();
         return response()->json(['data' => $formulir]);
     }
 
@@ -42,14 +43,12 @@ class FormulirController extends Controller
      */
     public function CreateDataFormulir(Request $request)
     {
-        try {
-            $request->validate([
-                'nama_formulir' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'nama_formulir' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $formulir = Formulir::create([
@@ -96,6 +95,13 @@ class FormulirController extends Controller
      */
     public function UpdateDataFormulir(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'nama_formulir' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $formulir = Formulir::where('id', $id)->first()->update([
             'nama_formulir' => $request->nama_formulir,
         ]);

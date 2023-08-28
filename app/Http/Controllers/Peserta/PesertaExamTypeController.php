@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaExamTypeController extends Controller
@@ -21,6 +22,12 @@ class PesertaExamTypeController extends Controller
     public function GetDataExamType()
     {
         $ExamType = ExamType::with('exampg')->get();
+        return response()->json($ExamType);
+    }
+
+    public function ShowDataByExamTypeExamPG()
+    {
+        $ExamType = ExamType::with('exampg')->where('type_exam', 'Placement Test')->first();
         return response()->json($ExamType);
     }
 
@@ -42,21 +49,18 @@ class PesertaExamTypeController extends Controller
      */
     public function CreateDataExamType(Request $request)
     {
-        try {
-            $request->validate([
-                'type_name' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'type_name' => 'required',
+            'code' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        $user = Auth::user()->id;
+
         $ExamType = ExamType::create([
-            'user_id' => $user,
             'type_name' => $request->type_name,
             'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
         ]);
 
         if ($ExamType) {
@@ -98,11 +102,18 @@ class PesertaExamTypeController extends Controller
      */
     public function UpdateDataExamType(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'type_name' => 'required',
+            'code' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         // $user = Auth::user()->id;
         $ExamType = ExamType::where('id', $id)->first()->update([
             'type_name' => $request->type_name,
             'code' => $request->code,
-            'deskripsi' => $request->deskripsi,
         ]);
         if ($ExamType) {
             return response()->json(['message' => 'ExamType Berhasil Diubah']);

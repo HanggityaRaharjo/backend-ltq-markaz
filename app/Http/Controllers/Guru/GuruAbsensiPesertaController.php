@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class GuruAbsensiPesertaController extends Controller
@@ -42,14 +43,12 @@ class GuruAbsensiPesertaController extends Controller
      */
     public function CreateDataAbsensiPeserta(Request $request)
     {
-        try {
-            $request->validate([
-                'keterangan' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'keterangan' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $AbsensiPeserta = AbsensiPeserta::create([
@@ -99,6 +98,13 @@ class GuruAbsensiPesertaController extends Controller
      */
     public function UpdateDataAbsensiPeserta(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'keterangan' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $AbsensiPeserta = AbsensiPeserta::where('id', $id)->first()->update([
             'user_id' => $request->user_id,
             'kelas_id' => $request->kelas_id,

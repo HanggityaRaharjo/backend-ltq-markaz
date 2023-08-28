@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\AdminCabang;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peserta\PaketPeserta;
@@ -9,9 +9,10 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class PesertaPaketController extends Controller
+class AdminPaketController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,16 +43,14 @@ class PesertaPaketController extends Controller
      */
     public function CreateDataPaket(Request $request)
     {
-        try {
-            $request->validate([
-                'paket_name' => 'required',
-                'code' => 'required',
-                'price' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'paket_name' => 'required',
+            'code' => 'required',
+            'price' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $Paket = PaketPeserta::create([
@@ -100,6 +99,15 @@ class PesertaPaketController extends Controller
      */
     public function UpdateDataPaket(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'paket_name' => 'required',
+            'code' => 'required',
+            'price' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $Paket = PaketPeserta::where('id', $id)->first()->update([
             'paket_name' => $request->paket_name,
             'code' => $request->code,

@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Peserta\BiodataPeserta;
 use App\Models\Peserta\VerifikasiPembayaran;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 
@@ -21,8 +23,8 @@ class PesertaVerifikasiPembayaranController extends Controller
      */
     public function GetDataVerifikasiPembayaran()
     {
-        $VerifikasiPembayaran = VerifikasiPembayaran::latest()->get();
-        return response()->json(['Data' => $VerifikasiPembayaran]);
+        $VerifikasiPembayaran = VerifikasiPembayaran::with('users')->get();
+        return response()->json($VerifikasiPembayaran);
     }
 
     /**
@@ -43,12 +45,10 @@ class PesertaVerifikasiPembayaranController extends Controller
      */
     public function CreateDataVerifikasiPembayaran(Request $request)
     {
-        try {
-            $request->validate([]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = User::where('uuid', $request->uuid)->first();
@@ -77,9 +77,18 @@ class PesertaVerifikasiPembayaranController extends Controller
      */
     public function ShowDataVerifikasiPembayaran($id)
     {
-        $user = Auth::user()->id;
-        $VerifikasiPembayaran = VerifikasiPembayaran::where('id', $user)->orWhere('id', $id)->first();
-        return response()->json(['Data' => $VerifikasiPembayaran]);
+        // $user = Auth::user()->id;
+        $VerifikasiPembayaran = VerifikasiPembayaran::where('id', $id)->first();
+        return response()->json($VerifikasiPembayaran);
+    }
+    public function ShowDataByUserVerifikasiPembayaran($uuid)
+    {
+        $user = User::where('uuid', $uuid)->first();
+        $VerifikasiPembayaran = VerifikasiPembayaran::where('user_id', $user->id)->first();
+        if (empty($VerifikasiPembayaran)) {
+            return response()->json(['status' => 404, 'massage' => 'Data Tidak Ditemukan']);
+        }
+        return response()->json(['status' => 200, 'data' => $VerifikasiPembayaran]);
     }
 
     /**
@@ -102,7 +111,12 @@ class PesertaVerifikasiPembayaranController extends Controller
      */
     public function UpdateDataVerifikasiPembayaran(Request $request, $id)
     {
-        $user = User::where('uuid', $request->uuid)->first();
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        // $user = User::where('uuid', $request->uuid)->first();
         $VerifikasiPembayaran = VerifikasiPembayaran::find($id);
         if (Request()->hasFile('bukti_pembayaran')) {
             if (Storage::exists($VerifikasiPembayaran->bukti_pembayaran)) {
@@ -113,16 +127,29 @@ class PesertaVerifikasiPembayaranController extends Controller
             $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $file_name);
 
             $VerifikasiPembayaran->update([
-                'user_id' => $user->id,
+                'user_id' => $request->user_id,
                 'bukti_pembayaran' => 'bukti_pembayaran/' . $file_name,
                 'status' => $request->status,
             ]);
+            $user = User::where('id', $request->user_id)->first();
+            $user->update([
+                'status' => 'active',
+            ]);
+            $dataRole = Role::where('id', $request->user_id)->first()->create([
+                'peserta' => 1,
+            ]);
         } else {
             $VerifikasiPembayaran->update([
-                'user_id' => $user,
+                'user_id' => $request->user_id,
                 'status' => $request->status,
             ]);
+
+            $user = User::where('id', $request->user_id)->first();
+            $user->update([
+                'status' => 'active',
+            ]);
         }
+
         if ($VerifikasiPembayaran) {
             return response()->json(['message' => 'VerifikasiPembayaran Berhasil Diubah']);
         } else {

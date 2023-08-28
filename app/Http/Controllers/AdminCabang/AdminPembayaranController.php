@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminPembayaranController extends Controller
@@ -66,14 +67,13 @@ class AdminPembayaranController extends Controller
 
     public function CreateDataPembayaran(Request $request)
     {
-        try {
-            $request->validate([
-                'norek' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'norek' => 'required',
+            'nama_bank' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $branchCode = 'ltq';
@@ -129,6 +129,14 @@ class AdminPembayaranController extends Controller
      */
     public function UpdateDataPembayaran(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'norek' => 'required',
+            'nama_bank' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $Pembayaran = Pembayaran::find($id);
         if (Request()->hasFile('type_bank')) {
             if (Storage::exists($Pembayaran->type_bank)) {

@@ -4,11 +4,13 @@ namespace App\Http\Controllers\AdminCabang;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peserta\Program;
+use App\Models\SuperAdmin\CabangLembaga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminProgramController extends Controller
@@ -42,16 +44,14 @@ class AdminProgramController extends Controller
      */
     public function CreateDataProgram(Request $request)
     {
-        try {
-            $request->validate([
-                'program_name' => 'required',
-                'description' => 'required',
-                'program_day_id' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'program_name' => 'required',
+            'description' => 'required',
+            'program_day_id' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $Program = Program::create([
@@ -73,17 +73,16 @@ class AdminProgramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataProgram($uuid)
+    public function ShowDataProgram($id)
     {
-        $user = User::where('uuid', $uuid)->first();
-        $Program = Program::with('ProgramDay', 'program_harga')->where('user_id', $user->id)->get();
+        $Program = Program::with('ProgramDay', 'program_harga')->where('id', $id)->first();
         return response()->json($Program);
     }
 
     public function ShowDataProgramByCabang($id)
     {
-        $user = Auth::user()->id;
-        $Program = Program::with('ProgramDay', 'program_harga')->where('id', $user)->orWhere('id', $id)->first();
+        $cabang = CabangLembaga::where('id', $id)->first();
+        $Program = Program::with('ProgramDay', 'program_harga')->where('cabang_lembaga_id', $cabang)->first();
         return response()->json($Program);
     }
 

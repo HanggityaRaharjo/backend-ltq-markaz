@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaExamEssaiController extends Controller
@@ -42,16 +43,14 @@ class PesertaExamEssaiController extends Controller
      */
     public function CreateDataExamEssai(Request $request)
     {
-        try {
-            $request->validate([
-                'question' => 'required',
-                'true_answer' => 'required',
-                'code' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'question' => 'required',
+            'true_answer' => 'required',
+            'code' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $ExamEssai = ExamEssai::create([
@@ -101,6 +100,15 @@ class PesertaExamEssaiController extends Controller
      */
     public function UpdateDataExamEssai(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'question' => 'required',
+            'true_answer' => 'required',
+            'code' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $ExamEssai = ExamEssai::where('id', $id)->first()->update([
             'jenis_ujian' => $request->jenis_exam,
             'question' => $request->question,

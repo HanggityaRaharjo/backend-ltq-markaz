@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaUserPaketCntroller extends Controller
@@ -42,15 +43,13 @@ class PesertaUserPaketCntroller extends Controller
      */
     public function CreateDataUserPaket(Request $request)
     {
-        try {
-            $request->validate([
-                'status' => 'required',
-                'upload_file' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+            'upload_file' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = Auth::user()->id;
@@ -103,6 +102,13 @@ class PesertaUserPaketCntroller extends Controller
      */
     public function UpdateDataUserPaket(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $UserPaket = UserPaket::find($id);
         $user = Auth::user()->id;
         if (Request()->hasFile('upload_file')) {

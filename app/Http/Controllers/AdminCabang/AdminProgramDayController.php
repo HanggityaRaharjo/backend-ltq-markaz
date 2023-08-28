@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AdminProgramDayController extends Controller
@@ -42,15 +43,13 @@ class AdminProgramDayController extends Controller
      */
     public function CreateDataProgramDay(Request $request)
     {
-        try {
-            $request->validate([
-                'date_start' => 'required',
-                'date_end' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'date_start' => 'required',
+            'date_end' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $ProgramDay = ProgramDay::create([
@@ -99,6 +98,14 @@ class AdminProgramDayController extends Controller
      */
     public function UpdateDataProgramDay(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'date_start' => 'required',
+            'date_end' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $ProgramDay = ProgramDay::where('id', $id)->first()->update([
             'date_start' => $request->date_start,
             'date_end' => $request->date_end,

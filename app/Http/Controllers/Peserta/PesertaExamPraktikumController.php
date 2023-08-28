@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaExamPraktikumController extends Controller
@@ -42,16 +43,13 @@ class PesertaExamPraktikumController extends Controller
      */
     public function CreateDataExamPraktikum(Request $request)
     {
-        try {
-            $request->validate([
-                'media' => 'required',
-                'grade' => 'required',
-                'code' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'media' => 'required',
+            'grade' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $ExamPraktikum = ExamPraktikum::create([
@@ -100,6 +98,14 @@ class PesertaExamPraktikumController extends Controller
      */
     public function UpdateDataExamPraktikum(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'media' => 'required',
+            'grade' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $ExamPraktikum = ExamPraktikum::where('id', $id)->first()->update([
             'jenis_ujian' => $request->jenis_exam,
             'media' => $request->media,

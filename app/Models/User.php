@@ -16,8 +16,11 @@ use App\Models\Peserta\ExamType;
 use App\Models\Peserta\Pembayaran;
 use App\Models\Peserta\ProgramPembayaran;
 use App\Models\Peserta\RequestDay;
+use App\Models\Peserta\UserKelas;
 use App\Models\Peserta\UserLevel;
 use App\Models\Peserta\UserPaket;
+use App\Models\Peserta\UserProgram;
+use App\Models\Peserta\VerifikasiPembayaran;
 use App\Models\SuperAdmin\CabangLembaga;
 use App\Models\TataUsaha\BiodataTataUsaha;
 use App\Models\TataUsaha\Cuti as TataUsahaCuti;
@@ -186,5 +189,13 @@ class User extends Authenticatable implements JWTSubject
     public function konsumen()
     {
         return $this->hasMany(Konsumen::class, 'user_id');
+    }
+    public function verifikasi()
+    {
+        return $this->hasOne(VerifikasiPembayaran::class, 'user_id');
+    }
+    public function user_kelas()
+    {
+        return $this->hasMany(UserKelas::class, 'user_id');
     }
 }

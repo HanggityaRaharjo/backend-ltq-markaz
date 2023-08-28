@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use JWTAuth;
 use Exception;
 use Closure;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CheckRole
 {

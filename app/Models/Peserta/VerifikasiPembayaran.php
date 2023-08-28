@@ -2,6 +2,7 @@
 
 namespace App\Models\Peserta;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,6 @@ class VerifikasiPembayaran extends Model
     protected $guarded = ['id'];
     public function users()
     {
-        return $this->hasOne(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

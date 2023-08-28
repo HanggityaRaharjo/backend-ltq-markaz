@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class SuperAdminCabangLembagaController extends Controller
@@ -21,7 +22,7 @@ class SuperAdminCabangLembagaController extends Controller
     public function GetDataCabang()
     {
         $cabang = CabangLembaga::get();
-        return response()->json(['data' => $cabang]);
+        return response()->json($cabang);
     }
 
     /**
@@ -42,17 +43,15 @@ class SuperAdminCabangLembagaController extends Controller
      */
     public function CreateDataCabang(Request $request)
     {
-        try {
-            $request->validate([
-                'nama_cabang' => 'required',
-                'no_cabang' => 'required',
-                'logo' => 'required',
-                'alamat' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'nama_cabang' => 'required',
+            'no_cabang' => 'required',
+            'logo' => 'required',
+            'alamat' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = Auth::user()->id;
@@ -104,6 +103,15 @@ class SuperAdminCabangLembagaController extends Controller
      */
     public function UpdateDataCabang(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'nama_cabang' => 'required',
+            'no_cabang' => 'required',
+            'alamat' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $cabang = CabangLembaga::find($id);
         if (Request()->hasFile('logo')) {
             if (Storage::exists($cabang->logo)) {

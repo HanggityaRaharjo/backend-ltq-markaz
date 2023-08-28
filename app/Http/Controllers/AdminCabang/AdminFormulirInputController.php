@@ -9,9 +9,10 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class FormulirInputController extends Controller
+class AdminFormulirInputController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,16 +43,14 @@ class FormulirInputController extends Controller
      */
     public function CreateDataFormulirInput(Request $request)
     {
-        try {
-            $request->validate([
-                'formulir_id' => 'required',
-                'type' => 'required',
-                'label' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'formulir_id' => 'required',
+            'type' => 'required',
+            'label' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $FormulirInput = FormulirInput::create([
@@ -100,6 +99,15 @@ class FormulirInputController extends Controller
      */
     public function UpdateDataFormulirInput(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'formulir_id' => 'required',
+            'type' => 'required',
+            'label' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $FormulirInput = FormulirInput::where('id', $id)->first()->update([
             'formulir_id' => $request->formulir_id,
             'type' => $request->type,

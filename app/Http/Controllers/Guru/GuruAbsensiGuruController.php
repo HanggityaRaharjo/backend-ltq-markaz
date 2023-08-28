@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class GuruAbsensiGuruController extends Controller
@@ -42,15 +43,14 @@ class GuruAbsensiGuruController extends Controller
      */
     public function CreateDataAbsensiGuru(Request $request)
     {
-        try {
-            $request->validate([
-                'keterangan' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'keterangan' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $user_id = Auth::user()->id;
         $AbsensiGuru = AbsensiGuru::create([
             'user_id' => $user_id,
@@ -99,6 +99,13 @@ class GuruAbsensiGuruController extends Controller
      */
     public function UpdateDataAbsensiGuru(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'keterangan' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $user_id = Auth::user()->id;
         $AbsensiGuru = AbsensiGuru::where('id', $id)->first()->update([
             'user_id' => $user_id,

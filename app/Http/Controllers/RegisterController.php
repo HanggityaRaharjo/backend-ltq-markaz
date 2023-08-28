@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use App\Models\Peserta\BiodataPeserta;
+use App\Models\Role;
 
 class RegisterController extends Controller
 {
@@ -50,6 +51,17 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
+
+        $role = Role::create([
+            'user_id' => $data->id,
+            'superadmin' => 0,
+            'admincabang' => 0,
+            'peserta' => 0,
+            'guru' => 0,
+            'tatausaha' => 0,
+            'bendahara' => 0,
+        ]);
+
         return response()->json(['msg' => ['status' => 201, 'pesan' => 'success created'], "data" => $data]);
     }
 

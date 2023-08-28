@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Guru\BiodataGuru;
+use App\Models\Peserta\BiodataPeserta;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class BuatAkunController extends Controller
@@ -29,9 +32,8 @@ class BuatAkunController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function CreateUserRole(Request $request)
     {
-        //
     }
 
     /**
@@ -42,29 +44,29 @@ class BuatAkunController extends Controller
      */
     public function CreateDataAkun(Request $request)
     {
-        try {
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
-
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        }
-
-        $user = User::create([
-            'uuid' => Str::uuid(),
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        if ($user) {
-            return response()->json(['message' => 'Berhasil Dibuat']);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $userData = $request->email;
+
+        $user = User::where('email', $userData)->first();
+
+        if (empty($user)) {
+            $dataUser = User::create([
+                'uuid' => Str::uuid(),
+                'name' => $request->name,
+                'email' => $userData,
+                'password' => encrypt($request->password),
+            ]);
+            return response()->json(['massage' => 'Akun Berhasil diBuat']);
         } else {
-            return response()->json(['message' => 'Gagal Dibuat']);
+            return response()->json(['massage' => 'Akun Sudah Ada']);
         }
     }
 
@@ -100,16 +102,14 @@ class BuatAkunController extends Controller
      */
     public function UpdateDataAkun(Request $request, $id)
     {
-        try {
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = User::where('id', $id)->first()->update([

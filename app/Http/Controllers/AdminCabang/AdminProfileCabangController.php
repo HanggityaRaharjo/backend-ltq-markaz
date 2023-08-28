@@ -9,9 +9,10 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-class ProfileCabangController extends Controller
+class AdminProfileCabangController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,16 +43,14 @@ class ProfileCabangController extends Controller
      */
     public function CreateDataProfileCabang(Request $request)
     {
-        try {
-            $request->validate([
-                'nama_cabang' => 'required',
-                'logo' => 'required',
-                'alamat' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'nama_cabang' => 'required',
+            'logo' => 'required',
+            'alamat' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = Auth::user()->id;
@@ -103,6 +102,14 @@ class ProfileCabangController extends Controller
      */
     public function UpdateDataProfileCabang(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'nama_cabang' => 'required',
+            'alamat' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $profilecabang = ProfileCabang::find($id);
         if (Request()->hasFile('logo')) {
             if (Storage::exists($profilecabang->logo)) {

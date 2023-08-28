@@ -10,6 +10,7 @@ use App\Models\TataUsaha\BiodataTataUsaha;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class TataUsahaBiodataController extends Controller
 {
@@ -42,25 +43,23 @@ class TataUsahaBiodataController extends Controller
      */
     public function createbiodatatatausaha(Request $request)
     {
-        try {
-            $request->validate([
-                'full_name' => 'required',
-                // 'photo' => 'required',
-                // 'photo_ktp' => 'required',
-                'usia' => 'required',
-                'jenis_kelamin' => 'required',
-                'alamat' => 'required',
-                'kelurahan' => 'required',
-                'kecamatan' => 'required',
-                'kabupaten_kota' => 'required',
-                'provinsi' => 'required',
-                'no_wa' => 'required',
-                'no_alternatif' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required',
+            // 'photo' => 'required',
+            // 'photo_ktp' => 'required',
+            'usia' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'kabupaten_kota' => 'required',
+            'provinsi' => 'required',
+            'no_wa' => 'required',
+            'no_alternatif' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user_id = User::where('uuid', $request->uuid)->first();
@@ -130,6 +129,23 @@ class TataUsahaBiodataController extends Controller
      */
     public function updatebiodatatatausaha(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required',
+            'usia' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'kabupaten_kota' => 'required',
+            'provinsi' => 'required',
+            'no_wa' => 'required',
+            'no_alternatif' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         $biodata = BiodataTataUsaha::find($id);
         $user = Auth::user()->id;
         if (Request()->hasFile('photo')) {

@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class GuruCutiController extends Controller
@@ -43,16 +44,14 @@ class GuruCutiController extends Controller
      */
     public function CreateDataCuti(Request $request, $uuid)
     {
-        try {
-            $request->validate([
-                'date_start' => 'required',
-                'date_end' => 'required',
-                'reason' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'date_start' => 'required',
+            'date_end' => 'required',
+            'reason' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $user = User::where('uuid', $uuid)->first();
@@ -103,6 +102,15 @@ class GuruCutiController extends Controller
      */
     public function UpdateDataCuti(Request $request, $uuid)
     {
+        $validator = Validator::make($request->all(), [
+            'date_start' => 'required',
+            'date_end' => 'required',
+            'reason' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $user = User::where('uuid', $uuid)->first();
         $Cuti = CutiGuru::where('user_id', $user->id)->first()->update([
             'user_id' => $user->id,

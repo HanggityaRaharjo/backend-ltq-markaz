@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class PesertaProgramPembayaranController extends Controller
@@ -43,14 +44,10 @@ class PesertaProgramPembayaranController extends Controller
      */
     public function CreateDataProgramPembayaran(Request $request)
     {
-        try {
-            $request->validate([
-                'total' => 'required',
-            ]);
+        $validator = Validator::make($request->all(), []);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // $user_id = Auth::user()->id;
@@ -85,7 +82,7 @@ class PesertaProgramPembayaranController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ShowDataProgramPembayaran($id, $uuid)
+    public function ShowDataProgramPembayaran($uuid)
     {
         $user = User::where('uuid', $uuid)->first();
         $ProgramPembayaran = ProgramPembayaran::with('program', 'pembayaran', 'cabang')->where('user_id', $user->id)->first();
@@ -112,6 +109,11 @@ class PesertaProgramPembayaranController extends Controller
      */
     public function UpdateDataProgramPembayaran(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         $ProgramPembayaran = ProgramPembayaran::create([
             'program_id' => $request->program_id,
             'cabang_lembaga_id' => $request->cabang_lembaga_id,

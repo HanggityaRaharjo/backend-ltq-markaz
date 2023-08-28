@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class TataUsahaBarangController extends Controller
@@ -37,12 +38,14 @@ class TataUsahaBarangController extends Controller
      */
     public function CreateDataBarang(Request $request,)
     {
-        try {
-            $request->validate([]);
+        $validator = Validator::make($request->all(), [
+            'nama_barang' => 'required',
+            'harga' => 'required',
+            'stok' => 'required',
+        ]);
 
-            // Kode untuk mengupdate data pengguna jika validasi berhasil
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         $Barang = Barang::create([
@@ -91,6 +94,15 @@ class TataUsahaBarangController extends Controller
      */
     public function UpdateDataBarang(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'nama_barang' => 'required',
+            'harga' => 'required',
+            'stok' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         // $user = User::where('uuid', $uuid)->first();
         $Barang = Barang::where('id', $id)->first()->update([
             'nama_barang' => $request->nama_barang,
