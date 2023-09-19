@@ -1,24 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Peserta;
+namespace App\Http\Controllers\PanitiaPsb;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peserta\UserLevel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
-class PesertaUserLevelController extends Controller
+class PanitisPsbUserLevelController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function GetDataUserLevel()
     {
         $userlevel = UserLevel::with('users')->latest()->get();

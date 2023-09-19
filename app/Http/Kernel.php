@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'guru' => \App\Http\Middleware\Guru::class,
         'tatausaha' => \App\Http\Middleware\TataUsaha::class,
         'bendahara' => \App\Http\Middleware\Bendahara::class,
+        'panitia_pasb' => \App\Http\Middleware\PanitiaPsb::class,
     ];
 }

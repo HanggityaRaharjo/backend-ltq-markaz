@@ -28,15 +28,16 @@ class UserController extends Controller
         })->where('status', 'active')->get();
         return response()->json($user);
     }
-    public function get_user()
+    public function get_user(Request $request)
     {
+        return response()->json($request->tujuan);
         $user = User::with('roles', 'UserCabang', 'biodata_peserta', 'biodata_guru', 'biodata_tatausaha', 'user_level', 'UserPaket', 'UserProgram', 'RequestDay', 'CutiPeserta', 'CutiGuru', 'spp', 'dpp', 'kegiatan', 'ziswaf', 'CutiTataUsaha', 'kelas', 'absensi_peserta', 'program_pembayaran', 'input_nilai', 'konsumen')->get();
         return response()->json($user);
     }
 
     public function kirimEmail(Request $request)
     {
-
+        return response()->json($request->tujuan);
         $pesan = "<p>Selamat Datang Di LTQ</p>";
 
         $data_email = [

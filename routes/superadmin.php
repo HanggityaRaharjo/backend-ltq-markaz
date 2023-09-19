@@ -26,6 +26,8 @@ Route::prefix('superadmin')->middleware('superadmin')->group(function () {
     //Create Cabang
     Route::prefix('cabang')->group(function () {
         Route::get('/', [SuperAdminCabangLembagaController::class, 'GetDataCabang']);
+        // Route::get('/by-slug', [SuperAdminCabangLembagaController::class, 'getCabangBySlug']);
+        Route::get('/get-kota', [SuperAdminCabangLembagaController::class, 'getAllKotaCabang']);
         Route::get('/show/{id}', [SuperAdminCabangLembagaController::class, 'ShowDataCabang']);
         Route::post('/create', [SuperAdminCabangLembagaController::class, 'CreateDataCabang']);
         Route::post('/update/{id}', [SuperAdminCabangLembagaController::class, 'UpdateDataCabang']);

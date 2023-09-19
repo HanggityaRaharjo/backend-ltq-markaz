@@ -23,8 +23,19 @@ class kelas extends Model
     {
         return $this->hasMany(AbsensiPeserta::class, 'kelas_id');
     }
+
     public function user_kelas()
     {
         return $this->hasMany(UserKelas::class, 'kelas_id');
+    }
+
+    public function nilai()
+    {
+        return $this->hasMany(InputNilatSiswa::class, 'kelas_id');
+    }
+
+    public function taskKelas()
+    {
+        return $this->hasMany(TaskKelas::class, 'kelas_id');
     }
 }

@@ -20,12 +20,17 @@ class GuruKelasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function GetDataKelas()
+    public function GetAllKelas()
     {
-        $kelas = kelas::latest()->get();
+        $kelas = kelas::get();
         return response()->json($kelas);
     }
 
+    public function getByNamaKelas($nama_kelas)
+    {
+        $kelas = kelas::where('nama_kelas', $nama_kelas)->first();
+        return response()->json($kelas);
+    }
     /**
      * Show the form for creating a new resource.
      *

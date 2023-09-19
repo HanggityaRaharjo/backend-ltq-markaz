@@ -97,7 +97,7 @@ class GuruAbsensiGuruController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function UpdateDataAbsensiGuru(Request $request, $id)
+    public function UpdateDataAbsensiGuru(Request $request, $uuid)
     {
         $validator = Validator::make($request->all(), [
             'keterangan' => 'required',
@@ -106,9 +106,9 @@ class GuruAbsensiGuruController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $user_id = Auth::user()->id;
-        $AbsensiGuru = AbsensiGuru::where('id', $id)->first()->update([
-            'user_id' => $user_id,
+        $user_id = User::where('uuid', $uuid)->first();
+        $AbsensiGuru = AbsensiGuru::where('user_id', $user_id->id)->first()->update([
+            'user_id' => $user_id->id,
             'kelas_id' => $request->kelas_id,
             'nomor_id' => $request->nomor_id,
             'keterangan' => $request->keterangan,

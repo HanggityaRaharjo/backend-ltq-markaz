@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\UserCabang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
@@ -24,9 +25,17 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = FacadesValidator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
+            'name' => 'required|regex:/^[a-zA-Z]+$/',
+            'email' => 'required|email|unique:users|ends_with:@gmail.com',
+            'password' => 'required|min:6',
+        ], [
+            'name.required' => 'Harus di isi',
+            'name.regex' => 'Input nama harus huruf saja',
+            'email.email' => 'Email tidak valid',
+            'email.ends_with' => 'Email Harus gmail',
+            'email.required' => 'Email Harus di isi',
+            'password.required' => 'Password harus di isi',
+            'password.min' => 'Password minimal 6 karakter'
         ]);
 
         if ($validator->fails()) {
@@ -39,11 +48,15 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
+        $data = UserCabang::create([
+            'user_id' => $user->id,
+            'cabang_lembaga_id' => $request->cabang_id,
+        ]);
         $dataRole = Role::create([
             'user_id' => $user->id,
             'superadmin' => 0,
             'admincabang' => 0,
-            'peserta' => 0,
+            'peserta' => 1,
             'guru' => 0,
             'tatausaha' => 0,
             'bendahara' => 0,

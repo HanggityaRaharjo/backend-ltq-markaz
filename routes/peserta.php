@@ -27,11 +27,11 @@ Route::prefix('cabang')->group(function () {
 //User Cabang
 Route::prefix('user-cabang')->group(function () {
     Route::get('/', [PesertaUserCabangController::class, 'GetDataUserCabang']);
-    Route::get('/show/{id}', [PesertaPesertaUserCabangController::class, 'ShowDataUserCabang']);
-    Route::get('/by-user/{uuid}', [PesertaPesertaUserCabangController::class, 'GetDataCabangByUser']);
-    Route::post('/create', [PesertaPesertaUserCabangController::class, 'CreateDataUserCabang']);
-    Route::post('/update/{id}', [PesertaPesertaUserCabangController::class, 'UpdateDataUserCabang']);
-    Route::post('/delete/{id}', [PesertaPesertaUserCabangController::class, 'DeleteGetDataUserCabang']);
+    Route::get('/show/{id}', [PesertaUserCabangController::class, 'ShowDataUserCabang']);
+    Route::get('/by-user/{uuid}', [PesertaUserCabangController::class, 'GetDataCabangByUser']);
+    Route::post('/create', [PesertaUserCabangController::class, 'CreateDataUserCabang']);
+    Route::post('/update/{id}', [PesertaUserCabangController::class, 'UpdateDataUserCabang']);
+    Route::post('/delete/{id}', [PesertaUserCabangController::class, 'DeleteGetDataUserCabang']);
 });
 
 //Biodata Peserta
@@ -39,7 +39,7 @@ Route::prefix('biodata')->group(function () {
     Route::get('/', [PesertaBiodataController::class, 'getbiodatapeserta']);
     Route::get('/show/{uuid}', [PesertaBiodataController::class, 'showbiodatapeserta']);
     Route::post('/create', [PesertaBiodataController::class, 'createbiodatapeserta']);
-    Route::post('/update/{id}', [PesertaBiodataController::class, 'updatebiodatapeserta']);
+    Route::post('/update/{uuid}', [PesertaBiodataController::class, 'updatebiodatapeserta']);
     Route::post('/delete/{uuid}', [PesertaBiodataController::class, 'deletebiodatapeserta']);
 });
 

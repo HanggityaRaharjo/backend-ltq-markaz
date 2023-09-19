@@ -21,10 +21,27 @@ class GuruRaportSiswaController extends Controller
      */
     public function GetDataRaport()
     {
-        $raport = RaportSiswa::with('nilai')->get();
+        $raport = RaportSiswa::with('user')->get();
         return response()->json($raport);
     }
 
+    public function getNilaiRapotyByUser($user_id)
+    {
+        $raport = RaportSiswa::with('user')->where('user_id', $user_id)->first();
+        return response()->json($raport);
+    }
+
+    public function getNilaiRapotyBySemester($semester)
+    {
+        $raport = RaportSiswa::with('user')->where('semester', $semester)->get();
+        return response()->json($raport);
+    }
+
+    public function getNilaiRapotyByUserSemester($user_id, $semester)
+    {
+        $raport = RaportSiswa::with('user')->where('user_id', $user_id)->where('semester', $semester)->first();
+        return response()->json($raport);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -52,7 +69,7 @@ class GuruRaportSiswaController extends Controller
         // $user = Auth::user()->id;
         // $user_id = User::where('uuid', $uuid)->first();
         $raport = RaportSiswa::create([
-            'nilai_id' => $request->nilai_id,
+            'user_id' => $request->user_id,
             'rata_rata' => $request->rata_rata,
             'semester' => $request->semester,
         ]);
@@ -102,7 +119,7 @@ class GuruRaportSiswaController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         $raport = RaportSiswa::where('id', $id)->first()->update([
-            'nilai_id' => $request->nilai_id,
+            'user_id' => $request->user_id,
             'rata_rata' => $request->rata_rata,
             'semester' => $request->semester,
         ]);
@@ -123,6 +140,6 @@ class GuruRaportSiswaController extends Controller
     {
         $data = RaportSiswa::where('id', $id)->first();
         $data->delete();
-        return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
+        return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted']]);
     }
 }

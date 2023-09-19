@@ -13,12 +13,16 @@ class InputNilatSiswa extends Model
     protected $table = 'input_nilai_siswas';
     protected $guarded = ['id'];
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
     public function raport()
     {
         return $this->hasOne(RaportSiswa::class, 'nilai_id');
+    }
+    public function kelas()
+    {
+        return $this->belongsTo(kelas::class, 'kelas_id');
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Guru\BiodataGuru;
 use App\Models\Guru\CutiGuru;
 use App\Models\Guru\InputNilatSiswa;
 use App\Models\Guru\kelas;
+use App\Models\Guru\RaportSiswa;
 use App\Models\Peserta\BiodataPeserta;
 use App\Models\Peserta\BuktiPembayaran;
 use App\Models\Peserta\Cuti;
@@ -197,5 +198,10 @@ class User extends Authenticatable implements JWTSubject
     public function user_kelas()
     {
         return $this->hasMany(UserKelas::class, 'user_id');
+    }
+
+    public function rapot()
+    {
+        return $this->hasMany(RaportSiswa::class, 'user_id');
     }
 }

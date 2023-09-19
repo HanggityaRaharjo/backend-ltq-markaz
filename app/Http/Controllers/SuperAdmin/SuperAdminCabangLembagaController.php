@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminCabang\kota;
 use App\Models\SuperAdmin\CabangLembaga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -23,6 +24,17 @@ class SuperAdminCabangLembagaController extends Controller
     {
         $cabang = CabangLembaga::get();
         return response()->json($cabang);
+    }
+    public function getAllKotaCabang()
+    {
+        $datas = kota::with('cabang')->get();
+        return response()->json($datas);
+    }
+
+    public function getCabangBySlug($slug)
+    {
+        $datas = CabangLembaga::where('slug', $slug)->first();
+        return response()->json($datas);
     }
 
     /**
@@ -53,15 +65,17 @@ class SuperAdminCabangLembagaController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        $user = Auth::user()->id;
-        $file_name = $request->logo->getClientOriginalName();
-        $image = $request->logo->storeAs('public/logo', $file_name);
+        $cabang_name = $request->nama_cabang;
+        $file_name = $request->logo->getClientOriginalExtension();
+        $nama = Str::slug($cabang_name) . '.' . $file_name;
+        $image = $request->logo->storeAs('public/logo', $nama);
         $cabang = CabangLembaga::create([
             'nama_cabang' => $request->nama_cabang,
+            'slug' => Str::slug($request->nama_cabang),
             'no_cabang' => $request->no_cabang,
-            'logo' => 'logo/' . $file_name,
+            'logo' => 'logo/' . $nama,
             'alamat' => $request->alamat,
+            'kota_id' => 1,
         ]);
 
         if ($cabang) {

@@ -39,9 +39,12 @@ class TataUsahaBarangController extends Controller
     public function CreateDataBarang(Request $request,)
     {
         $validator = Validator::make($request->all(), [
-            'nama_barang' => 'required',
+            'nama_barang' => 'required|string|alpha',
             'harga' => 'required',
-            'stok' => 'required',
+            'stok' => 'required|integer',
+        ], [
+            'nama_barang.alpha' => 'harus di isi dengan huruf',
+            'stok.integer' => 'harus di isi dengan angka',
         ]);
 
         if ($validator->fails()) {

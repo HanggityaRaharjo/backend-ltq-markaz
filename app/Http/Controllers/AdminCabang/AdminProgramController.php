@@ -22,7 +22,7 @@ class AdminProgramController extends Controller
      */
     public function GetDataProgram()
     {
-        $Program = Program::with('ProgramDay', 'programharga')->latest()->get();
+        $Program = Program::with('ProgramDay', 'programharga')->get();
         return response()->json($Program);
     }
 

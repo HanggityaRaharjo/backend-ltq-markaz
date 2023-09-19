@@ -9,6 +9,7 @@ use App\Http\Controllers\Guru\GuruKelasController;
 use App\Http\Controllers\Guru\GuruKurikulumController;
 use App\Http\Controllers\Guru\GuruPetunjukPengajarController;
 use App\Http\Controllers\Guru\GuruRaportSiswaController;
+use App\Http\Controllers\Guru\GuruTaskKelasController;
 use Illuminate\Support\Facades\Route;
 
 // Management Guru
@@ -19,18 +20,28 @@ Route::prefix('guru')->middleware('guru')->group(function () {
         Route::get('/', [GuruBiodataController::class, 'getbiodataguru']);
         Route::get('/show/{uuid}', [GuruBiodataController::class, 'showbiodataguru']);
         Route::post('/create', [GuruBiodataController::class, 'createbiodataguru']);
-        Route::post('/update/{id}', [GuruBiodataController::class, 'updatebiodataguru']);
+        Route::post('/update/{uuid}', [GuruBiodataController::class, 'updatebiodataguru']);
         Route::post('/delete/{uuid}', [GuruBiodataController::class, 'deletebiodataguru']);
         Route::post('/show/{uuid}', [GuruBiodataController::class, 'showbiodataguru']);
     });
 
     //Kelas
     Route::prefix('kelas')->group(function () {
-        Route::get('/', [GuruKelasController::class, 'GetDataKelas']);
+        Route::get('/', [GuruKelasController::class, 'GetAllKelas']);
+        Route::get('/by-namakelas', [GuruKelasController::class, 'GetByNamaKelas']);
         Route::get('/show/{id}', [GuruKelasController::class, 'ShowDataKelas']);
         Route::post('/create', [GuruKelasController::class, 'CreateDataKelas']);
         Route::post('/update/{id}', [GuruKelasController::class, 'UpdateDataKelas']);
         Route::post('/delete/{id}', [GuruKelasController::class, 'DeleteDataKelas']);
+    });
+
+    //Task
+    Route::prefix('task')->group(function () {
+        Route::get('/', [GuruTaskKelasController::class, 'getTaskAllKelas']);
+        Route::get('/by-kelas/{kelas_id}', [GuruTaskKelasController::class, 'getTaskByKelas']);
+        Route::post('/create', [GuruTaskKelasController::class, 'createTaskKelas']);
+        Route::post('/update/{id}', [GuruTaskKelasController::class, 'updateTaskKelas']);
+        Route::post('/delete/{id}', [GuruTaskKelasController::class, 'deleteTaskKelas']);
     });
 
     //Absensi Peserta
@@ -62,6 +73,10 @@ Route::prefix('guru')->middleware('guru')->group(function () {
     //Input NIlai
     Route::prefix('input-nilai')->group(function () {
         Route::get('/', [GuruInputNilaiSiswaController::class, 'GetDataNilaiSiswa']);
+        Route::get('/get/by-userid/{user_id}', [GuruInputNilaiSiswaController::class, 'getNilaiByUserId']);
+        Route::get('/get/by-userid-pertemuan/{user_id}/{pertemuan_ke}', [GuruInputNilaiSiswaController::class, 'getNilaiByUserByAllPertemuan']);
+        Route::get('/get/by-kelas/{kelas_id}', [GuruInputNilaiSiswaController::class, 'getNilaiAllUserByKelas']);
+        Route::get('/get/by-userid-kelas/{user_id}/{kelas_id}', [GuruInputNilaiSiswaController::class, 'getNilaiByUserByKelas']);
         Route::get('/show/{id}', [GuruInputNilaiSiswaController::class, 'ShowDataNilaiSiswa']);
         Route::post('/create', [GuruInputNilaiSiswaController::class, 'CreateDataNilaiSiswa']);
         Route::post('/update/{id}', [GuruInputNilaiSiswaController::class, 'UpdateDataNilaiSiswa']);
@@ -71,6 +86,9 @@ Route::prefix('guru')->middleware('guru')->group(function () {
     Route::prefix('raport')->group(function () {
         Route::get('/', [GuruRaportSiswaController::class, 'GetDataRaport']);
         Route::get('/show/{id}', [GuruRaportSiswaController::class, 'ShowDataRaport']);
+        Route::get('/by-userid/{id}', [GuruRaportSiswaController::class, 'getNilaiRapotyByUser']);
+        Route::get('/by-semester/{semester}', [GuruRaportSiswaController::class, 'getNilaiRapotyBySemester']);
+        Route::get('/by-user-semester/{user_id}/{semester}', [GuruRaportSiswaController::class, 'getNilaiRapotyByUserSemester']);
         Route::post('/create', [GuruRaportSiswaController::class, 'CreateDataRaport']);
         Route::post('/update/{id}', [GuruRaportSiswaController::class, 'UpdateDataRaport']);
         Route::post('/delete/{id}', [GuruRaportSiswaController::class, 'DeleteDataRaport']);

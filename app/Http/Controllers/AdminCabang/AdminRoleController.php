@@ -16,7 +16,7 @@ class AdminRoleController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     *\
      * @return \Illuminate\Http\Response
      */
     public function GetDataRole()
@@ -61,12 +61,10 @@ class AdminRoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function CreateDataRole(Request $request, $uuid, $id, $nama_role)
+    public function CreateDataRole(Request $request, $uuid)
     {
         try {
-            $request->validate([
-                'nama_role' => 'required',
-            ]);
+            $request->validate([]);
 
             // Kode untuk mengupdate data pengguna jika validasi berhasil
         } catch (ValidationException $e) {
@@ -76,14 +74,20 @@ class AdminRoleController extends Controller
         foreach ($request->data as $data) {
 
             $user = User::where('uuid', $uuid)->first();
-            if ($request->input == 1) {
+            if ($data == 1) {
                 $role = Role::create([
-                    'user_id' => $data->user_id,
-                    'nama_role' => $data->nama_role,
+                    "user_id" => $user->id,
+                    "superadmin" => $request->superadmin,
+                    "peserta" => $request->peserta,
+                    "guru" => $request->guru,
+                    "tatausaha" => $request->tatausaha,
+                    "bendahara" => $request->bendahara,
+                    "panitia_psb" => $request->panitia_psb,
+                    "admincabang" => $request->admincabang,
                 ]);
                 return response()->json(['masage' => 'Success Create Data']);
-            } elseif ($request->input == 0) {
-                $role = Role::where('user_id', $user->id)->where('nama_role', $nama_role)->first();
+            } elseif ($data == 0) {
+                $role = Role::where('user_id', $user->id)->first();
                 $role->delete();
                 return response()->json(['masage' => 'Success Delete Data']);
             }
@@ -132,13 +136,34 @@ class AdminRoleController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
-        $user_id = User::get();
-        $role = Role::where('id', $id)->first()->update([
-            'user_id' => $request->user_id,
-            'nama_role' => $request->nama_role,
-        ]);
+        $user_role = Role::where('user_id', $id)->first();
+        if (!empty($user_role)) {
+            $user_role->update([
+                "superadmin" => $request->superadmin,
+                "peserta" => $request->peserta,
+                "guru" => $request->guru,
+                "tatausaha" => $request->tatausaha,
+                "bendahara" => $request->bendahara,
+                "panitia_psb" => $request->panitia_psb,
+                "admincabang" => $request->admincabang,
+            ]);
 
-        return response()->json(['masage' => 'success', 'data' => $role]);
+            return response()->json(["msg" => "success"]);
+        } else {
+            Role::create([
+                "user_id" => $id,
+                "superadmin" => $request->superadmin,
+                "peserta" => $request->peserta,
+                "guru" => $request->guru,
+                "tatausaha" => $request->tatausaha,
+                "bendahara" => $request->bendahara,
+                "panitia_psb" => $request->panitia_psb,
+                "admincabang" => $request->admincabang,
+            ]);
+            return response()->json("ksoong");
+        }
+
+        // return response()->json(['masage' => 'success', 'data' => $role]);
     }
 
     /**

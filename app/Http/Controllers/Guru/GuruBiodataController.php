@@ -124,7 +124,7 @@ class GuruBiodataController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updatebiodataguru(Request $request, $id)
+    public function updatebiodataguru(Request $request, $uuid)
     {
         $validator = Validator::make($request->all(), [
             'full_name' => 'required',
@@ -144,8 +144,8 @@ class GuruBiodataController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $biodata = BiodataGuru::find($id);
-        $user = Auth::user()->id;
+        $user = User::where('uuid', $uuid)->first();
+        $biodata = BiodataGuru::where('user_id', $user->id);
         if (Request()->hasFile('photo')) {
             if (Storage::exists($biodata->photo)) {
                 Storage::delete($biodata->photo);
@@ -156,7 +156,7 @@ class GuruBiodataController extends Controller
 
             $biodata->update([
                 'uuid' => Str::uuid(),
-                'user_id' => $user,
+                'user_id' => $user->id,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'photo' => 'photo/' . $file_name,
@@ -180,7 +180,7 @@ class GuruBiodataController extends Controller
 
             $biodata->update([
                 'uuid' => Str::uuid(),
-                'user_id' => $user,
+                'user_id' => $user->id,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'photo_ktp' => 'photo_ktp/' . $file_name2,

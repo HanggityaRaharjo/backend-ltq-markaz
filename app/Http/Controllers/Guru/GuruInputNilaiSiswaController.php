@@ -21,9 +21,42 @@ class GuruInputNilaiSiswaController extends Controller
      */
     public function GetDataNilaiSiswa()
     {
-        $nilai = InputNilatSiswa::latest()->get();
+        $nilai = InputNilatSiswa::with("user")->get();
         return response()->json($nilai);
     }
+
+    public function getNilaiByUserId($user_id)
+    {
+
+        $nilai = InputNilatSiswa::where('user_id', $user_id)->get();
+        return response()->json($nilai);
+    }
+
+    public function getNilaiByUserByAllPertemuan($user_id, $pertemuan_ke)
+    {
+
+        $nilai = InputNilatSiswa::where('user_id', $user_id)->where('pertemuan_ke', $pertemuan_ke)->get();
+        return response()->json($nilai);
+    }
+
+    public function getNilaiAllUserByPertemuan($pertemuan_ke)
+    {
+        $nilai = InputNilatSiswa::where('pertemuan_ke', $pertemuan_ke)->get();
+        return response()->json($nilai);
+    }
+
+    public function getNilaiByUserByKelas($user_id, $kelas_id)
+    {
+        $nilai = InputNilatSiswa::where('user_id', $user_id)->where('kelas_id', $kelas_id)->get();
+        return response()->json($nilai);
+    }
+
+    public function getNilaiAllUserByKelas($kelas_id)
+    {
+        $nilai = InputNilatSiswa::where('kelas_id', $kelas_id)->get();
+        return response()->json($nilai);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -44,8 +77,13 @@ class GuruInputNilaiSiswaController extends Controller
     public function CreateDataNilaiSiswa(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'program' => 'required',
+            'user_id' => 'required',
+            'kelas_id' => 'required',
             'nilai' => 'required',
+            'pertemuan_ke' => 'required',
+            'tanggal' => 'required',
+            'type' => 'required',
+            'task' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -56,8 +94,12 @@ class GuruInputNilaiSiswaController extends Controller
         // $user_id = User::where('uuid', $uuid)->first();
         $nilai = InputNilatSiswa::create([
             'user_id' => $request->user_id,
-            'program' => $request->program,
+            'kelas_id' => $request->kelas_id,
             'nilai' => $request->nilai,
+            'pertemuan_ke' => $request->pertemuan_ke,
+            'tanggal' => $request->tanggal,
+            'type' => $request->type,
+            'task' => $request->task,
         ]);
 
         if ($nilai) {
@@ -100,7 +142,6 @@ class GuruInputNilaiSiswaController extends Controller
     public function UpdateDataNilaiSiswa(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'program' => 'required',
             'nilai' => 'required',
         ]);
 
@@ -110,8 +151,12 @@ class GuruInputNilaiSiswaController extends Controller
         // $user_id = User::where('uuid', $uuid)->first();
         $nilai = InputNilatSiswa::where('id', $id)->first()->update([
             'user_id' => $request->user_id,
-            'program' => $request->program,
+            'kelas_id' => $request->kelas_id,
             'nilai' => $request->nilai,
+            'pertemuan_ke' => $request->pertemuan_ke,
+            'tanggal' => $request->tanggal,
+            'type' => $request->type,
+            'task' => $request->task,
         ]);
         if ($nilai) {
             return response()->json(['message' => 'nilai Berhasil Diubah']);
@@ -130,6 +175,6 @@ class GuruInputNilaiSiswaController extends Controller
     {
         $data = InputNilatSiswa::where('id', $id)->first();
         $data->delete();
-        return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted'], "data" => $data]);
+        return response()->json(['msg' => ['status' => 200, 'pesan' => 'success deleted']]);
     }
 }

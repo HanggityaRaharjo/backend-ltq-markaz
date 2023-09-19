@@ -2,6 +2,7 @@
 
 namespace App\Models\SuperAdmin;
 
+use App\Models\AdminCabang\kota;
 use App\Models\ProgramHarga;
 use App\Models\UserCabang;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,6 @@ class CabangLembaga extends Model
     {
         return $this->hasOne(UserCabang::class, 'cabang_lembaga_id');
     }
-
     public function program_harga()
     {
         return $this->hasMany(ProgramHarga::class, 'cabang_lembaga_id');
@@ -25,5 +25,9 @@ class CabangLembaga extends Model
     public function program()
     {
         return $this->hasMany(Program::class, 'cabang_lembaga_id');
+    }
+    public function kota()
+    {
+        return $this->belongsTo(kota::class, 'kota_id');
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Peserta;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use App\Models\Peserta\BiodataPeserta;
 use App\Models\User;
@@ -45,8 +44,8 @@ class PesertaBiodataController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'full_name' => 'required',
-            // 'photo' => 'required',
-            // 'photo_ktp' => 'required',
+            'photo' => 'required',
+            'photo_ktp' => 'required',
             'usia' => 'required',
             'jenis_kelamin' => 'required',
             'alamat' => 'required',
@@ -63,7 +62,6 @@ class PesertaBiodataController extends Controller
         }
 
         $user_id = User::where('uuid', $request->uuid)->first();
-        $user = Auth::user()->id;
 
         $file_name = $request->photo->getClientOriginalName();
         $image = $request->photo->storeAs('public/photo', $file_name);
@@ -127,7 +125,7 @@ class PesertaBiodataController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updatebiodatapeserta(Request $request, $id)
+    public function updatebiodatapeserta(Request $request, $uuid)
     {
         $validator = Validator::make($request->all(), [
             'full_name' => 'required',
@@ -146,8 +144,8 @@ class PesertaBiodataController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $biodata = BiodataPeserta::find($id);
-        $user = Auth::user()->id;
+        $user = User::where('uuid', $uuid)->first();
+        $biodata = BiodataPeserta::where('user_id', $user->id)->first();
         if (Request()->hasFile('photo')) {
             if (Storage::exists($biodata->photo)) {
                 Storage::delete($biodata->photo);
@@ -158,7 +156,7 @@ class PesertaBiodataController extends Controller
 
             $biodata->update([
                 'uuid' => Str::uuid(),
-                'user_id' => $user,
+                'user_id' => $user->id,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'photo' => 'photo/' . $file_name,
@@ -182,7 +180,7 @@ class PesertaBiodataController extends Controller
 
             $biodata->update([
                 'uuid' => Str::uuid(),
-                'user_id' => $user,
+                'user_id' => $user->id,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'photo_ktp' => 'photo_ktp/' . $file_name2,
