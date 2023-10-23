@@ -34,6 +34,19 @@ Route::prefix('superadmin')->middleware('superadmin')->group(function () {
         Route::post('/delete/{id}', [SuperAdminCabangLembagaController::class, 'DeleteDataCabang']);
     });
 
+    //User Cabang
+    Route::prefix('user-cabang')->group(function () {
+        Route::get('/', [PesertaUserCabangController::class, 'GetDataUserCabang']);
+        Route::get('/show/{id}', [PesertaUserCabangController::class, 'ShowDataUserCabang']);
+        Route::get('/byuser/{uuid}', [PesertaUserCabangController::class, 'GetDataCabangByUser']);
+        Route::get('/by-user/{user_id}', [PesertaUserCabangController::class, 'GetCabangByUser']);
+        Route::get('/all-user/by-cabang/{cabang_id}', [PesertaUserCabangController::class, 'GetDataCabangByCabang']);
+        Route::get('/all-user-cabang', [PesertaUserCabangController::class, 'GetAllUserCabang']);
+        Route::post('/create-user-cabang', [PesertaUserCabangController::class, 'CreateUserCabang']);
+        Route::post('/update-user-cabang/{id}', [PesertaUserCabangController::class, 'UpdateDataUserCabang']);
+        Route::post('/delete-user-cabang/{id}', [PesertaUserCabangController::class, 'DeleteDataUserCabang']);
+    });
+
     //User
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'get_user']);

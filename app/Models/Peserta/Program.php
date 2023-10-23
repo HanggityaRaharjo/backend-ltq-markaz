@@ -2,6 +2,7 @@
 
 namespace App\Models\Peserta;
 
+use App\Models\Guru\kelas;
 use App\Models\ProgramHarga;
 use App\Models\SuperAdmin\CabangLembaga;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,5 +32,9 @@ class Program extends Model
     public function cabang()
     {
         return $this->belongsTo(CabangLembaga::class, 'cabang_lembaga_id');
+    }
+    public function kelas()
+    {
+        return $this->hasMany(kelas::class, 'program_id');
     }
 }

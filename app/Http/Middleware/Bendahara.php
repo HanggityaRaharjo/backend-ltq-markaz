@@ -21,7 +21,7 @@ class Bendahara
             $user = JWTAuth::parseToken()->authenticate();
 
             // Jika token valid, periksa apakah pengguna memiliki peran yang diizinkan (admin atau peserta)
-            if ($user->roles->contains('panitia_psb', 1)) {
+            if ($user->roles->contains('bendahara', 1)) {
                 return $next($request);
             }
 

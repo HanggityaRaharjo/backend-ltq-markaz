@@ -23,6 +23,11 @@ class GuruTaskKelasController extends Controller
         $taskKelas = TaskKelas::with("kelas")->where('kelas_id', $kelas_id)->get();
         return response()->json($taskKelas);
     }
+    public function getTaskById($id)
+    {
+        $taskKelas = TaskKelas::with("kelas")->where('id', $id)->get();
+        return response()->json($taskKelas);
+    }
     public function createTaskKelas(Request $request)
     {
         // return response()->json($request->all());
@@ -44,16 +49,18 @@ class GuruTaskKelasController extends Controller
             if ($request->hasFile('additional') && Request()->hasFile('type')) {
 
                 $file_nametype = $request->type->getClientOriginalName();
-                $image = $request->type->storeAs('public/type', $file_nametype);
+                $namaGambar = str_replace(' ', '_', $file_nametype);
+                $image = $request->type->storeAs('public/type', $namaGambar);
 
                 $file_nameadditional = $request->additional->getClientOriginalName();
-                $image = $request->additional->storeAs('public/additional', $file_nameadditional);
+                $namaGambar2 = str_replace(' ', '_', $file_nameadditional);
+                $image = $request->additional->storeAs('public/additional', $namaGambar2);
 
                 $taskKelas = TaskKelas::create([
                     'kelas_id' => $request->kelas_id,
                     'description' => $request->description,
-                    'type' => $file_nametype,
-                    'additional' => $file_nameadditional
+                    'type' => 'type/' . $namaGambar,
+                    'additional' => 'additional/' . $namaGambar2
                 ]);
 
                 return response()->json($taskKelas);
@@ -91,39 +98,41 @@ class GuruTaskKelasController extends Controller
             if (Request()->hasFile('type') && Request()->hasFile('additional')) {
 
                 $file_nametype = $request->type->getClientOriginalName();
-                $image = $request->type->storeAs('public/type', $file_nametype);
+                $namaGambar = str_replace(' ', '_', $file_nametype);
+                $image = $request->type->storeAs('public/type', $namaGambar);
 
                 $file_nameadditional = $request->additional->getClientOriginalName();
-                $image = $request->additional->storeAs('public/additional', $file_nameadditional);
-
-
+                $namaGambar2 = str_replace(' ', '_', $file_nameadditional);
+                $image = $request->additional->storeAs('public/additional', $namaGambar2);
                 $taskKelas->update([
                     'kelas_id' => $request->kelas_id,
                     'description' => $request->description,
-                    'type' => $file_nametype,
-                    'additional' => $file_nameadditional
+                    'type' => 'type/' . $namaGambar,
+                    'additional' => 'additional/' . $namaGambar2
                 ]);
             }
             if (Request()->hasFile('type')) {
 
                 $file_nametype = $request->type->getClientOriginalName();
-                $image = $request->type->storeAs('public/type', $file_nametype);
+                $namaGambar = str_replace(' ', '_', $file_nametype);
+                $image = $request->type->storeAs('public/type', $namaGambar);
 
                 $taskKelas->update([
                     'kelas_id' => $request->kelas_id,
                     'description' => $request->description,
-                    'type' => $file_nametype,
+                    'type' => 'type/' . $namaGambar,
                 ]);
             }
             if (Request()->hasFile('additional')) {
 
                 $file_nameadditional = $request->additional->getClientOriginalName();
-                $image = $request->additional->storeAs('public/additional', $file_nameadditional);
+                $namaGambar2 = str_replace(' ', '_', $file_nameadditional);
+                $image = $request->additional->storeAs('public/additional', $namaGambar2);
 
                 $taskKelas->update([
                     'kelas_id' => $request->kelas_id,
                     'description' => $request->description,
-                    'additional' => $file_nameadditional
+                    'additional' => 'additional/' . $namaGambar2
                 ]);
             } else {
                 $taskKelas->update([

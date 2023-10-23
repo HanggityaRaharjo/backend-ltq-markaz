@@ -53,12 +53,14 @@ class AdminProfileCabangController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+
         $user = Auth::user()->id;
         $file_name = $request->logo->getClientOriginalName();
-        $image = $request->logo->storeAs('public/logo', $file_name);
+        $namaGambar = str_replace(' ', '_', $file_name);
+        $image = $request->logo->storeAs('public/logo', $namaGambar);
         $profilecabang = ProfileCabang::create([
             'nama_cabang' => $request->nama_cabang,
-            'logo' => $image,
+            'logo' => 'logo/' . $namaGambar,
             'alamat' => $request->alamat,
         ]);
 
@@ -116,11 +118,12 @@ class AdminProfileCabangController extends Controller
                 Storage::delete($profilecabang->logo);
             }
             $file_name = $request->logo->getClientOriginalName();
-            $image = $request->logo->storeAs('public/logo', $file_name);
+            $namaGambar = str_replace(' ', '_', $file_name);
+            $image = $request->logo->storeAs('public/logo', $namaGambar);
             // $image = $request->poto->store('thumbnail');
             $profilecabang->update([
                 'nama_cabang' => $request->nama_cabang,
-                'logo' => $image,
+                'logo' => 'logo/' . $namaGambar,
                 'alamat' => $request->alamat,
             ]);
         } else {

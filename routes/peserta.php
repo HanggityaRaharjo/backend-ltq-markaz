@@ -17,6 +17,8 @@ use App\Http\Controllers\Peserta\PesertaUserPaketCntroller;
 use App\Http\Controllers\Peserta\PesertaUserProgramController;
 use App\Http\Controllers\Peserta\PesertaVerifikasiPembayaranController;
 use App\Http\Controllers\SuperAdmin\SuperAdminCabangLembagaController;
+use App\Http\Controllers\TataUsaha\TataUsahaDPPController;
+use App\Http\Controllers\TataUsaha\TataUsahaSPPController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -79,6 +81,12 @@ Route::prefix('program-harga')->group(function () {
     Route::post('/create', [AdminProgramHargaController::class, 'CreateDataProgramHarga']);
     Route::post('/update/{id}', [AdminProgramHargaController::class, 'UpdateDataProgramHarga']);
     Route::post('/delete/{id}', [AdminProgramHargaController::class, 'DeleteGetDataProgramHarga']);
+});
+
+//SPP
+Route::prefix('spp')->group(function () {
+    Route::get('/', [TataUsahaSPPController::class, 'GetDataSpp']);
+    Route::get('/show/{id}', [TataUsahaSPPController::class, 'ShowDataSpp']);
 });
 
 //Pembayaran

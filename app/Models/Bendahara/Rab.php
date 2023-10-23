@@ -5,14 +5,14 @@ namespace App\Models\Bendahara;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AlurKas extends Model
+class Rab extends Model
 {
     use HasFactory;
-    protected $table = 'alur_kas';
+    protected $table = 'rab';
     protected $guarded = ['id'];
 
-    public function kategoriTransaksi()
+    public function subKegiatan()
     {
-        return $this->belongsTo(KategoriTransaksi::class, 'kategori_transaksi');
+        return $this->belongsTo(RabSubKegiatan::class, 'nama_kegiatan');
     }
 }

@@ -45,7 +45,8 @@ class GuruKurikulumController extends Controller
         }
 
         $file_name = $request->file_kurikulum->getClientOriginalName();
-        $image = $request->file_kurikulum->storeAs('public/file_kurikulum', $file_name);
+        $namaGambar = str_replace(' ', '_', $file_name);
+        $image = $request->file_kurikulum->storeAs('public/file_kurikulum', $namaGambar);
 
         // $user = Auth::user()->id;
         // $user_id = User::where('uuid', $uuid)->first();
@@ -53,7 +54,7 @@ class GuruKurikulumController extends Controller
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'periode' => $request->periode,
-            'file_kurikulum' => 'file/' . $file_name,
+            'file_kurikulum' => 'file/' . $namaGambar,
         ]);
 
         if ($Kurikulum) {
@@ -108,13 +109,14 @@ class GuruKurikulumController extends Controller
             }
 
             $file_name = $request->file_kurikulum->getClientOriginalName();
-            $image = $request->file_kurikulum->storeAs('public/file_kurikulum', $file_name);
+            $namaGambar = str_replace(' ', '_', $file_name);
+            $image = $request->file_kurikulum->storeAs('public/file_kurikulum', $namaGambar);
 
             $Kurikulum->update([
                 'nama' => $request->nama,
                 'deskripsi' => $request->deskripsi,
                 'periode' => $request->periode,
-                'file_kurikulum' => 'file/' . $file_name,
+                'file_kurikulum' => 'file/' . $namaGambar,
             ]);
         } else {
             $Kurikulum->update([

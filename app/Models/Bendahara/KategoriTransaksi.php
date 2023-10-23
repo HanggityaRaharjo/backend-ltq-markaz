@@ -10,8 +10,9 @@ class KategoriTransaksi extends Model
     use HasFactory;
     protected $table = 'kategori_transaksis';
     protected $guarded = ['id'];
+
     public function alurKas()
     {
-        return $this->hasMany(AlurKas::class, 'ketegori_transaksi');
+        return $this->hasMany(AlurKas::class, 'kategori_transaksi');
     }
 }

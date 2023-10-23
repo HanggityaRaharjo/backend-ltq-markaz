@@ -2,6 +2,7 @@
 
 namespace App\Models\Guru;
 
+use App\Models\Peserta\Program;
 use App\Models\Peserta\UserKelas;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,11 @@ class kelas extends Model
     public function users()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_id');
     }
 
     public function absensi_peserta()

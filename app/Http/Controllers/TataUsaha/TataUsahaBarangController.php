@@ -106,6 +106,7 @@ class TataUsahaBarangController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
         // $user = User::where('uuid', $uuid)->first();
         $Barang = Barang::where('id', $id)->first()->update([
             'nama_barang' => $request->nama_barang,

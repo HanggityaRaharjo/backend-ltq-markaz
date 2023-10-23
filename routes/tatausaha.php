@@ -9,6 +9,7 @@ use App\Http\Controllers\TataUsaha\TataUsahaDPPController;
 use App\Http\Controllers\TataUsaha\TataUsahaKonsumenController;
 use App\Http\Controllers\TataUsaha\TataUsahaPembayaranBarangController;
 use App\Http\Controllers\TataUsaha\TataUsahaSPPController;
+use App\Http\Controllers\TataUsaha\TataUsahaTagihanSPPController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('tata-usaha')->middleware('tatausaha')->group(function () {
@@ -40,6 +41,15 @@ Route::prefix('tata-usaha')->middleware('tatausaha')->group(function () {
         Route::post('/create', [TataUsahaSPPController::class, 'CreateDataSpp']);
         Route::post('/update/{id}', [TataUsahaSPPController::class, 'UpdateDataSpp']);
         Route::post('/delete/{id}', [TataUsahaSPPController::class, 'DeleteDataSpp']);
+    });
+
+    //Tagihan SPP
+    Route::prefix('tagihan')->group(function () {
+        Route::get('/', [TataUsahaTagihanSPPController::class, 'GetDataTagihanSpp']);
+        Route::get('/show/{id}', [TataUsahaTagihanSPPController::class, 'ShowDataTagihanSpp']);
+        Route::post('/create', [TataUsahaTagihanSPPController::class, 'CreateDataTagihanSpp']);
+        Route::post('/update/{id}', [TataUsahaTagihanSPPController::class, 'UpdateDataTagihanSpp']);
+        Route::post('/delete/{id}', [TataUsahaTagihanSPPController::class, 'DeleteDataTagihanSpp']);
     });
 
     //DPP

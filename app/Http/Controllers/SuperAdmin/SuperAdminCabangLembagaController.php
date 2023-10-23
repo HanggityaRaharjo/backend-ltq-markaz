@@ -25,6 +25,11 @@ class SuperAdminCabangLembagaController extends Controller
         $cabang = CabangLembaga::get();
         return response()->json($cabang);
     }
+    public function GetDataCabangAllUser()
+    {
+        $cabang = CabangLembaga::with('users')->get();
+        return response()->json($cabang);
+    }
     public function getAllKotaCabang()
     {
         $datas = kota::with('cabang')->get();
@@ -65,15 +70,19 @@ class SuperAdminCabangLembagaController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $cabang_name = $request->nama_cabang;
-        $file_name = $request->logo->getClientOriginalExtension();
-        $nama = Str::slug($cabang_name) . '.' . $file_name;
-        $image = $request->logo->storeAs('public/logo', $nama);
+        // $cabang_name = $request->nama_cabang;
+        // $file_name = $request->logo->getClientOriginalExtension();
+        // $nama = Str::slug($cabang_name) . '.' . $file_name;
+        // $image = $request->logo->storeAs('public/logo', $nama);
+
+        $file_name = $request->logo->getClientOriginalName();
+        $namaGambar = str_replace(' ', '_', $file_name);
+        $image = $request->logo->storeAs('public/logo', $namaGambar);
         $cabang = CabangLembaga::create([
             'nama_cabang' => $request->nama_cabang,
             'slug' => Str::slug($request->nama_cabang),
             'no_cabang' => $request->no_cabang,
-            'logo' => 'logo/' . $nama,
+            'logo' => 'logo/' . $namaGambar,
             'alamat' => $request->alamat,
             'kota_id' => 1,
         ]);
@@ -132,12 +141,13 @@ class SuperAdminCabangLembagaController extends Controller
                 Storage::delete($cabang->logo);
             }
             $file_name = $request->logo->getClientOriginalName();
-            $image = $request->logo->storeAs('public/logo', $file_name);
+            $namaGambar = str_replace(' ', '_', $file_name);
+            $image = $request->logo->storeAs('public/logo', $namaGambar);
             // $image = $request->poto->store('thumbnail');
             $cabang->update([
                 'nama_cabang' => $request->nama_cabang,
                 'no_cabang' => $request->no_cabang,
-                'logo' => 'logo/' . $file_name,
+                'logo' => 'logo/' . $namaGambar,
                 'alamat' => $request->alamat,
             ]);
         } else {

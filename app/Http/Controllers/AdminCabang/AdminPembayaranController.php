@@ -81,13 +81,15 @@ class AdminPembayaranController extends Controller
         $code = $dateCode  . $branchCode;
         return response()->json($code);
 
+
         $file_name = $request->type_bank->getClientOriginalName();
-        $image = $request->type_bank->storeAs('public/type_bank', $file_name);
+        $namaGambar = str_replace(' ', '_', $file_name);
+        $image = $request->type_bank->storeAs('public/type_bank', $namaGambar);
         $Pembayaran = Pembayaran::create([
             'nama_bank' => $request->nama_bank,
             'norek' => $code,
             'code' => $request->code,
-            'type_bank' => 'type_bank/' . $file_name,
+            'type_bank' => 'type_bank/' . $namaGambar,
         ]);
 
         if ($Pembayaran) {
@@ -143,12 +145,13 @@ class AdminPembayaranController extends Controller
                 Storage::delete($Pembayaran->type_bank);
             }
             $file_name = $request->type_bank->getClientOriginalName();
-            $image = $request->type_bank->storeAs('public/type_bank', $file_name);
+            $namaGambar = str_replace(' ', '_', $file_name);
+            $image = $request->type_bank->storeAs('public/type_bank', $namaGambar);
             // $image = $request->poto->store('thumbnail');
             $Pembayaran->update([
                 'nama_bank' => $request->nama_bank,
                 'norek' => $request->norek,
-                'type_bank' => 'type_bank/' . $file_name,
+                'type_bank' => 'type_bank/' . $namaGambar,
             ]);
         } else {
             $Pembayaran->update([

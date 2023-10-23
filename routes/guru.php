@@ -28,7 +28,7 @@ Route::prefix('guru')->middleware('guru')->group(function () {
     //Kelas
     Route::prefix('kelas')->group(function () {
         Route::get('/', [GuruKelasController::class, 'GetAllKelas']);
-        Route::get('/by-namakelas', [GuruKelasController::class, 'GetByNamaKelas']);
+        // Route::get('/by-namakelas', [GuruKelasController::class, 'GetByNamaKelas']);
         Route::get('/show/{id}', [GuruKelasController::class, 'ShowDataKelas']);
         Route::post('/create', [GuruKelasController::class, 'CreateDataKelas']);
         Route::post('/update/{id}', [GuruKelasController::class, 'UpdateDataKelas']);
@@ -38,6 +38,7 @@ Route::prefix('guru')->middleware('guru')->group(function () {
     //Task
     Route::prefix('task')->group(function () {
         Route::get('/', [GuruTaskKelasController::class, 'getTaskAllKelas']);
+        Route::get('/by-id/{id}', [GuruTaskKelasController::class, 'getTaskById']);
         Route::get('/by-kelas/{kelas_id}', [GuruTaskKelasController::class, 'getTaskByKelas']);
         Route::post('/create', [GuruTaskKelasController::class, 'createTaskKelas']);
         Route::post('/update/{id}', [GuruTaskKelasController::class, 'updateTaskKelas']);
@@ -70,6 +71,7 @@ Route::prefix('guru')->middleware('guru')->group(function () {
         Route::post('/update/{id}', [GuruCutiController::class, 'UpdateDataCuti']);
         Route::post('/delete/{id}', [GuruCutiController::class, 'DeleteDataCuti']);
     });
+
     //Input NIlai
     Route::prefix('input-nilai')->group(function () {
         Route::get('/', [GuruInputNilaiSiswaController::class, 'GetDataNilaiSiswa']);

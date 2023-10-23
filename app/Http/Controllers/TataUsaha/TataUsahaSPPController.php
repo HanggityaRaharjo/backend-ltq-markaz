@@ -20,7 +20,7 @@ class TataUsahaSPPController extends Controller
      */
     public function GetDataSpp()
     {
-        $Spp = Spp::latest()->get();
+        $Spp = Spp::with('users.UserProgram.program', 'tagihan')->get();
         return response()->json($Spp);
     }
 
@@ -52,9 +52,8 @@ class TataUsahaSPPController extends Controller
 
         $Spp = Spp::create([
             'user_id' => $request->user_id,
-            'nama_pembayaran' => $request->nama_pembayaran,
-            'jumlah_tagihan' => $request->jumlah_tagihan,
-            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+            'nominal' => $request->nominal,
+            'status' => $request->status,
         ]);
 
         if ($Spp) {
@@ -73,7 +72,7 @@ class TataUsahaSPPController extends Controller
     public function ShowDataSpp($id)
     {
         // $user = User::where('uuid', $uuid)->first();
-        $Spp = Spp::where('id', $id)->first();
+        $Spp = Spp::with('users.UserProgram.program', 'tagihan')->where('id', $id)->first();
         return response()->json(['Data' => $Spp]);
     }
 
@@ -100,9 +99,8 @@ class TataUsahaSPPController extends Controller
         // $user = User::where('uuid', $uuid)->first();
         $Spp = Spp::where('id', $id)->first()->update([
             'user_id' => $request->user_id,
-            'nama_pembayaran' => $request->nama_pembayaran,
-            'jumlah_tagihan' => $request->jumlah_tagihan,
-            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+            'nominal' => $request->nominal,
+            'status' => $request->status,
         ]);
         if ($Spp) {
             return response()->json(['message' => 'Spp Berhasil Diubah']);

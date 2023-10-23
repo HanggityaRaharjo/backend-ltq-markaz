@@ -22,15 +22,15 @@ class GuruKelasController extends Controller
      */
     public function GetAllKelas()
     {
-        $kelas = kelas::get();
+        $kelas = kelas::with('program.cabang')->get();
         return response()->json($kelas);
     }
 
-    public function getByNamaKelas($nama_kelas)
-    {
-        $kelas = kelas::where('nama_kelas', $nama_kelas)->first();
-        return response()->json($kelas);
-    }
+    // public function getByNamaKelas($nama_kelas)
+    // {
+    //     $kelas = kelas::with('program.cabang')->where('nama_kelas', $nama_kelas)->first();
+    //     return response()->json($kelas);
+    // }
     /**
      * Show the form for creating a new resource.
      *
@@ -61,6 +61,7 @@ class GuruKelasController extends Controller
 
         $Kelas = Kelas::create([
             'user_id' => $request->user_id,
+            'program_id' => $request->program_id,
             'nama_pengajar' => $nama_pengajar,
             'nama_kelas' => $nama_kelas,
             'jumlah_peserta' => $jumlah_peserta,
@@ -88,7 +89,7 @@ class GuruKelasController extends Controller
      */
     public function ShowDataKelas($id)
     {
-        $kelas = kelas::where('id', $id)->first();
+        $kelas = kelas::with('program.cabang')->where('id', $id)->first();
         return response()->json($kelas);
     }
 
@@ -119,6 +120,7 @@ class GuruKelasController extends Controller
         }
         $Kelas = Kelas::where('id', $id)->first()->update([
             'user_id' => $request->user_id,
+            'program_id' => $request->program_id,
             'nama_pengajar' => $request->nama_pengajar,
             'jumlah_peserta' => $request->jumlah_peserta,
             'nama_kelas' => $request->nama_kelas,

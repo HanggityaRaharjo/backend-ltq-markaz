@@ -43,6 +43,7 @@ class PesertaUserLevelController extends Controller
      */
     public function CreateDataUserLevel(Request $request)
     {
+
         $validator = Validator::make($request->all(), []);
 
         if ($validator->fails()) {
@@ -51,24 +52,28 @@ class PesertaUserLevelController extends Controller
 
         $total_nilai = 0;
         $predikat = "";
+        $total_soal = count($request->soal);
         foreach ($request->soal as $soal) {
             if ($soal['true_answer'] === $soal['select']) {
-                $total_nilai += 10;
+                $total_nilai += 1;
             }
         }
-        if ($total_nilai >= 90) {
+
+        $persentase = ($total_nilai / $total_soal) * 100;
+
+        if ($persentase >= 90) {
             $predikat = "A";
-        } elseif ($total_nilai >= 80 && $total_nilai < 90) {
+        } elseif ($persentase >= 80 && $persentase < 90) {
             $predikat = "B";
-        } elseif ($total_nilai >= 70 && $total_nilai < 80) {
+        } elseif ($persentase >= 70 && $persentase < 80) {
             $predikat = "C";
-        } elseif ($total_nilai >= 60 && $total_nilai < 70) {
+        } elseif ($persentase >= 60 && $persentase < 70) {
             $predikat = "D";
-        } elseif ($total_nilai <= 59) {
+        } elseif ($persentase <= 59) {
             $predikat = "E";
         }
 
-        // return response()->json(["data" => $request->uuid, 'massage' => 'sampe sini']);
+        // return response()->json($persentase);
         $user_id = User::where('uuid', $request->uuid)->first();
         $userlevel = UserLevel::create([
             'user_id' => $user_id->id,

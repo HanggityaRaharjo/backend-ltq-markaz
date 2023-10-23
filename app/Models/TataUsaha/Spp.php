@@ -12,6 +12,10 @@ class Spp extends Model
     protected $table = 'spps';
     protected $guarded = ['id'];
 
+    public function tagihan()
+    {
+        return $this->hasMany(TagihanSpp::class, 'spp_id');
+    }
     public function users()
     {
         return $this->belongsTo(User::class, 'user_id');

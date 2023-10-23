@@ -44,7 +44,8 @@ class GuruPetunjukPengajarController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         $file_name = $request->file_PetenjukPenganjar->getClientOriginalName();
-        $image = $request->file_PetenjukPenganjar->storeAs('public/file_PetenjukPenganjar', $file_name);
+        $namaGambar = str_replace(' ', '_', $file_name);
+        $image = $request->file_PetenjukPenganjar->storeAs('public/file_PetenjukPenganjar', $namaGambar);
 
         // $user = Auth::user()->id;
         // $user_id = User::where('uuid', $uuid)->first();
@@ -52,7 +53,7 @@ class GuruPetunjukPengajarController extends Controller
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
             'periode' => $request->periode,
-            'file_PetenjukPenganjar' => 'file/' . $file_name,
+            'file_PetenjukPenganjar' => 'file/' . $namaGambar,
         ]);
 
         if ($PetenjukPenganjar) {
@@ -107,13 +108,14 @@ class GuruPetunjukPengajarController extends Controller
             }
 
             $file_name = $request->file_PetenjukPenganjar->getClientOriginalName();
-            $image = $request->file_PetenjukPenganjar->storeAs('public/file_PetenjukPenganjar', $file_name);
+            $namaGambar = str_replace(' ', '_', $file_name);
+            $image = $request->file_PetenjukPenganjar->storeAs('public/file_PetenjukPenganjar', $namaGambar);
 
             $PetenjukPenganjar->update([
                 'nama' => $request->nama,
                 'deskripsi' => $request->deskripsi,
                 'periode' => $request->periode,
-                'file_PetenjukPenganjar' => 'file/' . $file_name,
+                'file_PetenjukPenganjar' => 'file/' . $namaGambar,
             ]);
         } else {
             $PetenjukPenganjar->update([

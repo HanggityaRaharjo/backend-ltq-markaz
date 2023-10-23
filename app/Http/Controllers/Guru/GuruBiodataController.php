@@ -63,18 +63,20 @@ class GuruBiodataController extends Controller
         $user = Auth::user()->id;
 
         $file_name = $request->photo->getClientOriginalName();
-        $image = $request->photo->storeAs('public/photo', $file_name);
+        $namaGambar = str_replace(' ', '_', $file_name);
+        $image = $request->photo->storeAs('public/photo', $namaGambar);
 
         $file_name2 = $request->photo_ktp->getClientOriginalName();
-        $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
+        $namaGambar2 = str_replace(' ', '_', $file_name2);
+        $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $namaGambar2);
 
         $biodata = BiodataGuru::create([
             'uuid' => Str::uuid(),
             'user_id' => $user_id->id,
             'full_name' => $request->full_name,
             'tanggal_lahir' => $request->tanggal_lahir,
-            'photo_ktp' => 'photo_ktp/' . $file_name2,
-            'photo' => 'photo/' . $file_name,
+            'photo' => 'photo/' . $namaGambar,
+            'photo_ktp' => 'photo_ktp/' . $namaGambar2,
             'usia' => $request->usia,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat' => $request->alamat,
@@ -152,7 +154,8 @@ class GuruBiodataController extends Controller
             }
 
             $file_name = $request->photo->getClientOriginalName();
-            $image = $request->photo->storeAs('public/photo', $file_name);
+            $namaGambar = str_replace(' ', '_', $file_name);
+            $image = $request->photo->storeAs('public/photo', $namaGambar);
 
             $biodata->update([
                 'uuid' => Str::uuid(),
@@ -176,14 +179,15 @@ class GuruBiodataController extends Controller
             }
 
             $file_name2 = $request->photo_ktp->getClientOriginalName();
-            $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $file_name2);
+            $namaGambar2 = str_replace(' ', '_', $file_name2);
+            $image2 = $request->photo_ktp->storeAs('public/photo_ktp', $namaGambar2);
 
             $biodata->update([
                 'uuid' => Str::uuid(),
                 'user_id' => $user->id,
                 'full_name' => $request->full_name,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'photo_ktp' => 'photo_ktp/' . $file_name2,
+                'photo_ktp' => 'photo_ktp/' . $namaGambar2,
                 'usia' => $request->usia,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'alamat' => $request->alamat,

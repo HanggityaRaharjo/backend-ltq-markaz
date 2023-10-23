@@ -21,16 +21,34 @@ class PesertaUserCabangController extends Controller
      */
     public function GetDataUserCabang()
     {
-        $UserCabang = UserCabang::with('cabang')->get();
+        $UserCabang = UserCabang::with('cabang.kota', 'user')->get();
         return response()->json($UserCabang);
     }
 
     public function GetDataCabangByUser($uuid)
     {
         $user = User::where('uuid', $uuid)->first();
-        $dataCabangByUser = UserCabang::with('cabang')->where('user_id', $user->id)->first();
+        $dataCabangByUser = UserCabang::with('cabang.kota', 'user')->where('user_id', $user->id)->first();
         return response()->json($dataCabangByUser);
     }
+    public function GetCabangByUser($user_id)
+    {
+        $dataCabangByUser = UserCabang::with('cabang.kota', 'user')->where('user_id', $user_id)->first();
+        return response()->json($dataCabangByUser);
+    }
+
+    public function GetDataCabangByCabang($cabang_id)
+    {
+        $dataCabangByUser = UserCabang::with('cabang.kota', 'user')->where('cabang_lembaga_id', $cabang_id)->get();
+        return response()->json($dataCabangByUser);
+    }
+
+    public function GetAllUserCabang()
+    {
+        $datas = UserCabang::with('cabang.kota', 'user')->get();
+        return response()->json($datas);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -58,6 +76,27 @@ class PesertaUserCabangController extends Controller
         $user_id = User::where('uuid', $request->uuid)->first();
         $UserCabang = UserCabang::create([
             'user_id' => $user_id->id,
+            'cabang_lembaga_id' => $request->cabang_lembaga_id,
+        ]);
+
+        if ($UserCabang) {
+            return response()->json(['message' => 'UserCabang Berhasil Ditambahkan']);
+        } else {
+            return response()->json(['message' => 'UserCabang Gagal Ditambahkan']);
+        }
+    }
+
+
+    public function CreateUserCabang(Request $request)
+    {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $UserCabang = UserCabang::create([
+            'user_id' => $request->user_id,
             'cabang_lembaga_id' => $request->cabang_lembaga_id,
         ]);
 
@@ -117,6 +156,7 @@ class PesertaUserCabangController extends Controller
             return response()->json(['message' => 'UserCabang Gagal Diupdate']);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

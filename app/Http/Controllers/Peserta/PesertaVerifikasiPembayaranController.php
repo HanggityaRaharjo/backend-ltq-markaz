@@ -54,11 +54,12 @@ class PesertaVerifikasiPembayaranController extends Controller
         $user = User::where('uuid', $request->uuid)->first();
 
         $file_name = $request->bukti_pembayaran->getClientOriginalName();
-        $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $file_name);
+        $namaGambar = str_replace(' ', '_', $file_name);
+        $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $namaGambar);
 
         $VerifikasiPembayaran = VerifikasiPembayaran::create([
             'user_id' => $user->id,
-            'bukti_pembayaran' => 'bukti_pembayaran/' . $file_name,
+            'bukti_pembayaran' => 'bukti_pembayaran/' . $namaGambar,
             'status' => 'Unpaid',
         ]);
 
@@ -124,11 +125,12 @@ class PesertaVerifikasiPembayaranController extends Controller
             }
 
             $file_name = $request->bukti_pembayaran->getClientOriginalName();
-            $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $file_name);
+            $namaGambar = str_replace(' ', '_', $file_name);
+            $image = $request->bukti_pembayaran->storeAs('public/bukti_pembayaran', $namaGambar);
 
             $VerifikasiPembayaran->update([
                 'user_id' => $request->user_id,
-                'bukti_pembayaran' => 'bukti_pembayaran/' . $file_name,
+                'bukti_pembayaran' => 'bukti_pembayaran/' . $namaGambar,
                 'status' => $request->status,
             ]);
             $user = User::where('id', $request->user_id)->first();
